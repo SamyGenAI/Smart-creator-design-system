@@ -1,0 +1,92 @@
+# Design Tokens — Layout
+# Source: Figma file GBovqF34FkjgtWPj3wUmO3 (Foundations page)
+
+canvas:
+  infographic:
+    width: 1080        # px
+    height: 1350       # px
+    aspect-ratio: "4/5"
+    background: "#fffceb"
+
+  # Future formats
+  carousel-slide:
+    width: 1080
+    height: 1080
+  story:
+    width: 1080
+    height: 1920
+  ad-square:
+    width: 1200
+    height: 1200
+
+infographic:
+  inner-width: 981       # Main content column width (px) — canvas minus side padding
+  side-padding: 49.5     # (1080 - 981) / 2 ≈ 49.5px
+  row-gap: 22            # Gap between rows (px)
+
+  header-height: 146     # px
+  footer-height: 60      # px
+  footer-width: 1048     # px (wider than inner content, bleeds slightly)
+
+  rows:
+    row1-height: 257
+    row2-height: 225     # section height (content overflows)
+    row3-height: 314
+    row4-height: 176     # section height (content overflows)
+
+components:
+  glass-section:
+    header-height: 51    # Navy header strip inside glass section
+    icon-size: 35        # Icon in section header (px)
+    icon-offset-left: 9  # px from section left edge
+    icon-offset-top: 3   # px from section top edge
+
+  checklist:
+    default-width: 236
+    default-height: 189
+    icon-size: 25
+
+  icon-bullet:
+    default-width: 319
+    default-height: 173
+    chip-size: 32        # Icon chip size (px)
+    icon-size: 24        # Icon inside chip (px)
+
+  number-bullet:
+    default-width: 179
+    default-height: 138
+    badge-width: 31      # Pink numbered badge width (px)
+
+  table:
+    default-width: 390
+    default-height: 133
+    columns: 3
+    rows: 4              # 1 header + 3 data rows
+
+  grid-8-logos:
+    default-width: 272
+    default-height: 112
+    cols: 4
+    rows: 2
+    cell-border-radius: 5
+
+  pastel-shadow-card:
+    default-width: 381
+    default-height: 161
+
+  text-box:
+    default-width: 153
+    default-height: 34
+
+  colored-text-boxes:
+    default-width: 172
+    default-height: 98
+    grid: "2x2"
+
+spacing:
+  xs: 4
+  sm: 8
+  md: 10
+  lg: 16
+  xl: 22
+  xxl: 32

@@ -1,0 +1,102 @@
+# Design Tokens — Colors
+# Source: Figma file GBovqF34FkjgtWPj3wUmO3 (Foundations > colors node 4:107)
+# CSS variable convention: --category/subcategory/name (Figma native format)
+
+# ─── PRIMITIVES ──────────────────────────────────────────────────────────────
+
+color:
+  blue:
+    100: "rgba(126, 218, 255, 0.15)"  # --color/blue/100
+    200: "#c7efff"                    # --color/blue/200
+    300: "#b4eaff"                    # --color/blue/300
+    400: "#7edaff"                    # --color/blue/400
+    500: "#092c69"                    # --color/blue/500 — Navy, primary brand color
+
+  cream:
+    100: "#fffceb"                    # --color/cream/100 — Canvas background
+    200: "#fff4e8"                    # --color/cream/200 — Warm background
+
+  neutral:
+    0:    "white"                     # --color/neutral/0
+    200:  "#f9fafc"                   # --color/neutral/200
+    300:  "#f4f4f8"                   # --color/neutral/300
+    400:  "#e3e4eb"                   # --color/neutral/400
+    500:  "#cacbd4"                   # --color/neutral/500
+    600:  "#a8a9b2"                   # --color/neutral/600
+    700:  "#717188"                   # --color/neutral/700
+    800:  "#323241"                   # --color/neutral/800
+    1000: "black"                     # --color/neutral/1000
+
+  pink:
+    100: "rgba(255, 178, 218, 0.15)" # --color/pink/100
+    200: "#ffe6f3"                    # --color/pink/200
+    300: "#ffb2da"                    # --color/pink/300
+
+  amber:
+    100: "#fef3c7"                    # --color/amber/100
+    200: "#fde68a"                    # --color/amber/200
+    300: "#fcd34d"                    # --color/amber/300
+
+  green:
+    100: "rgba(169, 255, 62, 0.15)"  # --color/green/100
+    200: "#d2ff9a"                    # --color/green/200
+    300: "#a9ff3e"                    # --color/green/300
+
+  orange:
+    100: "rgba(255, 145, 77, 0.15)"  # --color/orange/100
+    200: "#ffa066"                    # --color/orange/200
+    300: "#ff914d"                    # --color/orange/300
+
+# ─── SEMANTIC TOKENS ─────────────────────────────────────────────────────────
+
+text:
+  primary:    "black"      # --text/primary
+  secondary:  "#323241"    # --text/secondary
+  contrast:   "#a8a9b2"    # --text/contrast
+  invert:     "white"      # --text/invert
+  text-brand: "#092c69"    # --text/text-brand
+
+border:
+  primary:   "black"       # --border/primary
+  secondary: "#092c69"     # --border/secondary
+  blue:      "#7edaff"     # --border/blue
+  pink:      "#ffb2da"     # --border/pink
+  green:     "#a9ff3e"     # --border/green
+  orange:    "#ff914d"     # --border/orange
+  amber:     "#fcd34d"     # --border/amber
+  grey:      "#e3e4eb"     # --border/grey
+
+components:
+  background:
+    primary:   "#fffceb"   # --components/background/primary — Canvas cream
+    secondary: "#fff4e8"   # --components/background/secondary — Warm cream
+    white:     "white"     # --components/background/white
+
+  card:
+    white:  "white"                     # --components/card/white
+    cream:  "#fffceb"                   # --components/card/cream
+    blue:   "rgba(126, 218, 255, 0.15)" # --components/card/blue — Glass blue bg
+    pink:   "rgba(255, 178, 218, 0.15)" # --components/card/pink
+    amber:  "#fef3c7"                   # --components/card/amber
+
+  card-title:
+    pink:   "#ffe6f3"      # --components/card-title/pink
+    green:  "#d2ff9a"      # --components/card-title/green
+    orange: "#ffa066"      # --components/card-title/orange
+    blue:   "#b4eaff"      # --components/card-title/blue
+    amber:  "#fde68a"      # --components/card-title/amber
+
+highlight:
+  blue:   "rgba(126, 218, 255, 0.15)"  # --highlight/blue
+  green:  "rgba(169, 255, 62, 0.15)"   # --highlight/green
+  orange: "rgba(255, 145, 77, 0.15)"   # --highlight/orange
+  amber:  "#fef3c7"                     # --highlight/amber
+
+# ─── INFOGRAPHIC HARDCODED VALUES ─────────────────────────────────────────────
+# Not Figma variables — used directly in infographic components
+
+raw:
+  glass-white:  "rgba(255, 255, 255, 0.1)" # Semi-transparent glass card bg
+  pink-bullet:  "rgba(255, 178, 218, 0.7)" # Number bullet badge bg
+  white: "#ffffff"
+  black: "#000000"

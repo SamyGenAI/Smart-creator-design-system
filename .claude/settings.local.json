@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma__get_variable_defs",
+      "mcp__figma__get_metadata",
+      "mcp__figma__get_design_context",
+      "Bash(powershell -Command \"$content = Get-Content ''C:\\\\Users\\\\Samy Chouaf\\\\.claude\\\\projects\\\\c--Users-Samy-Chouaf-Desktop-Figma-Design-System\\\\96ffea97-b1b9-470f-a511-19a453584f3c\\\\tool-results\\\\mcp-figma-get_metadata-1772873782918.txt'' -Raw; $json = $content | ConvertFrom-Json; $text = $json[0].text; $text.Substring\\(0, 2000\\)\")",
+      "Bash(powershell -File:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\parse_meta.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\parse_meta2.ps1\")",
+      "WebSearch",
+      "Bash(node scripts/fetch-logo.mjs google.com)",
+      "Bash(node scripts/fetch-logo.mjs notion.com figma.com hubspot.com atlassian.com clay.com drive.google.com mail.google.com calendar.google.com)",
+      "Bash(node scripts/fetch-app-logo.mjs notion.com figma.com hubspot.com atlassian.com drive.google.com mail.google.com calendar.google.com google.com)",
+      "mcp__figma__generate_figma_design",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":5173\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=7a5d882a-7cf9-47ec-b6dc-5ad9ff0cec4f&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F7a5d882a-7cf9-47ec-b6dc-5ad9ff0cec4f%2Fsubmit&figmadelay=2000\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=b78ff8b6-c7fe-42f1-b341-ce3287259166&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fb78ff8b6-c7fe-42f1-b341-ce3287259166%2Fsubmit&figmadelay=2000\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=3bc2f590-d600-4b98-9912-6e54208cca68&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F3bc2f590-d600-4b98-9912-6e54208cca68%2Fsubmit&figmadelay=2000\")",
+      "mcp__figma__get_screenshot",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=763b7753-ee6a-4adc-9103-303ae8e5d5fe&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F763b7753-ee6a-4adc-9103-303ae8e5d5fe%2Fsubmit&figmadelay=2000\")",
+      "Bash(findstr :5173)",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=a322a963-70c2-4156-b216-6304f00c607c&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fa322a963-70c2-4156-b216-6304f00c607c%2Fsubmit&figmadelay=1000\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=7c01739f-0bbd-4251-a825-f10f838eb9c8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F7c01739f-0bbd-4251-a825-f10f838eb9c8%2Fsubmit&figmadelay=1000\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=1bab505b-a207-46bb-a4cf-54bb9db710f8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1bab505b-a207-46bb-a4cf-54bb9db710f8%2Fsubmit&figmadelay=1000\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=329bfe87-d656-4aa1-9f07-df1fc1a43cab&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F329bfe87-d656-4aa1-9f07-df1fc1a43cab%2Fsubmit&figmadelay=1000\")"
+    ]
+  }
+}

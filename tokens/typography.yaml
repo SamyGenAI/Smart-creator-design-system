@@ -1,0 +1,58 @@
+# Design Tokens — Typography
+# Source: Figma file GBovqF34FkjgtWPj3wUmO3 (Foundations > typography node 2:131)
+
+font:
+  family:
+    title:       "'Montserrat', sans-serif"   # --font/family/title — Titles & infographic text
+    body:        "'Montserrat', sans-serif"   # --font/family/body — Body text
+    title-serif: "'Noto Serif', serif"        # --font/family/title-serif — Serif display (big title option)
+
+  # Size scale (from Figma CSS variables)
+  size:
+    xs:  "12px"    # --font/size/xs  — body caption
+    sm:  "16px"    # --font/size/sm  — body base / title base
+    md:  "18px"    # --font/size/md  — body medium
+    lg:  "20px"    # --font/size/lg  — body large / body bold
+    xl:  "24px"    # --font/size/xl  — title medium / infographic footer
+    2xl: "32px"    # --font/size/2xl — title large / section header / subtitle
+    4xl: "56px"    # --font/size/4xl — title 4xlarge
+    5xl: "72px"    # --font/size/5xl — title 5xlarge / hero (72.948px in infographic)
+
+  # Line-height scale
+  line-height:
+    xs: "16px"     # --font/line-height/xs
+    sm: "24px"     # --font/line-height/sm
+    md: "32px"     # --font/line-height/md
+    lg: "40px"     # --font/line-height/lg
+    xl: "48px"     # --font/line-height/xl
+
+  # Weights
+  weights:
+    bold:          700   # Montserrat:Bold
+    semibold:      600   # Montserrat:SemiBold
+    medium:        500   # Montserrat:Medium
+    medium-italic: 500   # Montserrat:Medium_Italic (italic: true)
+    regular:       400   # Montserrat:Regular
+
+# ─── INFOGRAPHIC SCALE (fixed canvas, not responsive) ────────────────────────
+# All text in infographic components uses Montserrat (--font/family/title)
+
+infographic:
+  hero-title:  "72.948px"    # Main title, Montserrat Bold
+  subtitle:    "32px"        # Subtitle italic, Montserrat Medium Italic
+  section:     "32px"        # Section header, Montserrat Bold
+  body:        "14px"        # Body copy in components, Montserrat Medium
+  footer:      "24px"        # Footer, Montserrat SemiBold
+  highlight:   "19.711px"    # Text highlight overlay
+
+tracking:
+  hero:     "-2.1884px"   # letter-spacing for hero title
+  subtitle: "-0.96px"     # letter-spacing for subtitle / section header
+  body:     "-0.42px"     # letter-spacing for body text
+  footer:   "-0.72px"     # letter-spacing for footer
+  default:  "-0.408px"    # letter-spacing for general UI text
+
+# ─── GOOGLE FONTS ─────────────────────────────────────────────────────────────
+# Load all three families used in the design system
+
+google-fonts-url: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Noto+Serif:wght@400;700&display=swap"

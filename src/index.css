@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design token CSS variables — mirroring Figma variable names exactly.
+  Source: Figma file GBovqF34FkjgtWPj3wUmO3 (Foundations page)
+
+  Forward slashes in variable names are valid in modern browsers (Chrome 49+, Firefox 31+, Safari 9.1+).
+  Tailwind arbitrary values escape them as \/  e.g. bg-[var(--color\/blue\/500,#092c69)]
+  The fallback values (after the comma) ensure components render even without this file.
+*/
+:root {
+  /* ── Primitive: Blue ──────────────────────────────────────── */
+  --color\/blue\/100: rgba(126, 218, 255, 0.15);
+  --color\/blue\/200: #c7efff;
+  --color\/blue\/300: #b4eaff;
+  --color\/blue\/400: #7edaff;
+  --color\/blue\/500: #092c69;
+
+  /* ── Primitive: Cream ────────────────────────────────────── */
+  --color\/cream\/100: #fffceb;
+  --color\/cream\/200: #fff4e8;
+
+  /* ── Primitive: Neutral ──────────────────────────────────── */
+  --color\/neutral\/0:    white;
+  --color\/neutral\/200:  #f9fafc;
+  --color\/neutral\/300:  #f4f4f8;
+  --color\/neutral\/400:  #e3e4eb;
+  --color\/neutral\/500:  #cacbd4;
+  --color\/neutral\/600:  #a8a9b2;
+  --color\/neutral\/700:  #717188;
+  --color\/neutral\/800:  #323241;
+  --color\/neutral\/1000: black;
+
+  /* ── Primitive: Pink ─────────────────────────────────────── */
+  --color\/pink\/100: rgba(255, 178, 218, 0.15);
+  --color\/pink\/200: #ffe6f3;
+  --color\/pink\/300: #ffb2da;
+
+  /* ── Primitive: Amber ────────────────────────────────────── */
+  --color\/amber\/100: #fef3c7;
+  --color\/amber\/200: #fde68a;
+  --color\/amber\/300: #fcd34d;
+
+  /* ── Primitive: Green ────────────────────────────────────── */
+  --color\/green\/100: rgba(169, 255, 62, 0.15);
+  --color\/green\/200: #d2ff9a;
+  --color\/green\/300: #a9ff3e;
+
+  /* ── Primitive: Orange ───────────────────────────────────── */
+  --color\/orange\/100: rgba(255, 145, 77, 0.15);
+  --color\/orange\/200: #ffa066;
+  --color\/orange\/300: #ff914d;
+
+  /* ── Text ────────────────────────────────────────────────── */
+  --text\/primary:    black;
+  --text\/secondary:  #323241;
+  --text\/contrast:   #a8a9b2;
+  --text\/invert:     white;
+  --text\/text-brand: #092c69;
+
+  /* ── Border ──────────────────────────────────────────────── */
+  --border\/primary:   black;
+  --border\/secondary: #092c69;
+  --border\/blue:      #7edaff;
+  --border\/pink:      #ffb2da;
+  --border\/green:     #a9ff3e;
+  --border\/orange:    #ff914d;
+  --border\/amber:     #fcd34d;
+  --border\/grey:      #e3e4eb;
+
+  /* ── Background ──────────────────────────────────────────── */
+  --components\/background\/primary:   #fffceb;
+  --components\/background\/secondary: #fff4e8;
+  --components\/background\/white:     white;
+
+  /* ── Card ────────────────────────────────────────────────── */
+  --components\/card\/white:  white;
+  --components\/card\/cream:  #fffceb;
+  --components\/card\/blue:   rgba(126, 218, 255, 0.15);
+  --components\/card\/pink:   rgba(255, 178, 218, 0.15);
+  --components\/card\/amber:  #fef3c7;
+
+  /* ── Card-title chips ────────────────────────────────────── */
+  --components\/card-title\/pink:   #ffe6f3;
+  --components\/card-title\/green:  #d2ff9a;
+  --components\/card-title\/orange: #ffa066;
+  --components\/card-title\/blue:   #b4eaff;
+  --components\/card-title\/amber:  #fde68a;
+
+  /* ── Highlight ───────────────────────────────────────────── */
+  --highlight\/blue:   rgba(126, 218, 255, 0.15);
+  --highlight\/green:  rgba(169, 255, 62, 0.15);
+  --highlight\/orange: rgba(255, 145, 77, 0.15);
+  --highlight\/amber:  #fef3c7;
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font\/family\/title:       'Montserrat', sans-serif;
+  --font\/family\/body:        'Montserrat', sans-serif;
+  --font\/family\/title-serif: 'Noto Serif', serif;
+
+  --font\/size\/xs:  12px;
+  --font\/size\/sm:  16px;
+  --font\/size\/md:  18px;
+  --font\/size\/lg:  20px;
+  --font\/size\/xl:  24px;
+  --font\/size\/2xl: 32px;
+  --font\/size\/4xl: 56px;
+  --font\/size\/5xl: 72px;
+
+  --font\/line-height\/xs: 16px;
+  --font\/line-height\/sm: 24px;
+  --font\/line-height\/md: 32px;
+  --font\/line-height\/lg: 40px;
+  --font\/line-height\/xl: 48px;
+}
+
+/* Fixed canvas — required for infographic absolute positioning to work correctly */
+.infographic-canvas {
+  width: 1080px;
+  height: 1350px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
