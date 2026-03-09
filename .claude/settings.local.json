@@ -24,7 +24,10 @@
       "Bash(start \"\" \"http://localhost:5173/#figmacapture=a322a963-70c2-4156-b216-6304f00c607c&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fa322a963-70c2-4156-b216-6304f00c607c%2Fsubmit&figmadelay=1000\")",
       "Bash(start \"\" \"http://localhost:5173/#figmacapture=7c01739f-0bbd-4251-a825-f10f838eb9c8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F7c01739f-0bbd-4251-a825-f10f838eb9c8%2Fsubmit&figmadelay=1000\")",
       "Bash(start \"\" \"http://localhost:5173/#figmacapture=1bab505b-a207-46bb-a4cf-54bb9db710f8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1bab505b-a207-46bb-a4cf-54bb9db710f8%2Fsubmit&figmadelay=1000\")",
-      "Bash(start \"\" \"http://localhost:5173/#figmacapture=329bfe87-d656-4aa1-9f07-df1fc1a43cab&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F329bfe87-d656-4aa1-9f07-df1fc1a43cab%2Fsubmit&figmadelay=1000\")"
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=329bfe87-d656-4aa1-9f07-df1fc1a43cab&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F329bfe87-d656-4aa1-9f07-df1fc1a43cab%2Fsubmit&figmadelay=1000\")",
+      "Bash(powershell -Command \"Remove-Item -Recurse -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\skills\\\\design-content''\")",
+      "Bash(powershell -Command \"Remove-Item -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\design-content.skill''\")",
+      "Bash(powershell -Command \"Remove-Item -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\infographics-designer.skill''\")"
     ]
   }
 }

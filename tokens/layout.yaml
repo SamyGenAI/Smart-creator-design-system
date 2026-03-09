@@ -1,12 +1,20 @@
 # Design Tokens — Layout
 # Source: Figma file GBovqF34FkjgtWPj3wUmO3 (Foundations page)
 
+textures:
+  light-squares:
+    file: "assets/textures/light-squares.png"
+    opacity: 0.05          # Default overlay opacity (5%)
+    usage: background      # Applied as a background-image layer over the canvas fill
+    tile: true             # background-repeat: repeat
+
 canvas:
   infographic:
     width: 1080        # px
     height: 1350       # px
     aspect-ratio: "4/5"
     background: "#fffceb"
+    texture: light-squares # See textures.light-squares above
 
   # Future formats
   carousel-slide:
