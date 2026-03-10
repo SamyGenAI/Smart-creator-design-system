@@ -10,41 +10,41 @@
  */
 const THEME_STYLES = {
   blue: {
-    cardBg: "bg-[var(--components\\/card\\/blue,rgba(126,218,255,0.15))]",
-    headerBg: "bg-[var(--components\\/card-title\\/blue,#b4eaff)]",
-    borderColor: "border-[var(--border\\/blue,#7edaff)]",
+    cardBg: "rgba(126, 218, 255, 0.15)",
+    headerBg: "#b4eaff",
+    borderColor: "#7edaff",
   },
   orange: {
-    cardBg: "bg-[var(--components\\/card\\/orange,rgba(255,145,77,0.15))]",
-    headerBg: "bg-[var(--color\\/orange\\/300,#ff914d)]",
-    borderColor: "border-[var(--border\\/orange,#ff914d)]",
+    cardBg: "rgba(255, 145, 77, 0.15)",
+    headerBg: "#ff914d",
+    borderColor: "#ff914d",
   },
   pink: {
-    cardBg: "bg-[var(--components\\/card\\/pink,rgba(255,178,218,0.15))]",
-    headerBg: "bg-[var(--color\\/pink\\/300,#ffb2da)]",
-    borderColor: "border-[var(--border\\/pink,#ffb2da)]",
+    cardBg: "rgba(255, 178, 218, 0.15)",
+    headerBg: "#ffb2da",
+    borderColor: "#ffb2da",
   },
   green: {
-    cardBg: "bg-[var(--components\\/card\\/green,rgba(169,255,62,0.15))]",
-    headerBg: "bg-[var(--components\\/card-title\\/green,#d2ff9a)]",
-    borderColor: "border-[var(--border\\/green,#a9ff3e)]",
+    cardBg: "rgba(169, 255, 62, 0.15)",
+    headerBg: "#a9ff3e",
+    borderColor: "#a9ff3e",
   },
 }
 
 const VARIANT_STYLES = {
   solid: {
-    outerBorder: "border border-solid",
-    headerBorder: "border-2 border-solid",
-    shadow: "",
-    titleTop: "top-[24.5px]",
-    badgeGroupPosition: "left-[4px] top-[3px]",
+    outerBorderWidth: "1px",
+    headerBorderWidth: "2px",
+    shadow: undefined,
+    titleTopClass: "top-[24px]",
+    badgePositionClass: "left-[4px] top-[3px]",
   },
   white: {
-    outerBorder: "border-3 border-solid border-white",
-    headerBorder: "border-3 border-solid border-white",
-    shadow: "shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]",
-    titleTop: "top-[22.5px]",
-    badgeGroupPosition: "left-[2px] top-px",
+    outerBorderWidth: "3px",
+    headerBorderWidth: "3px",
+    shadow: "0px 4px 4px 0px rgba(0,0,0,0.25)",
+    titleTopClass: "top-[22px]",
+    badgePositionClass: "left-[2px] top-px",
   },
 }
 
@@ -54,6 +54,7 @@ export default function BrandBorderSectionBase({
   title = "xxx",
   number = "1",
   widthClass = "w-[415px]",
+  heightClass = "h-[195px]",
   rootName = "brand-border-section",
   nodeIds = {},
   children = null,
@@ -66,25 +67,41 @@ export default function BrandBorderSectionBase({
     <div
       className={
         className ||
-        `${themeStyles.cardBg} ${variantStyles.outerBorder} ${themeStyles.borderColor} ${variantStyles.shadow} content-stretch flex flex-col gap-[10px] h-[195px] items-start relative rounded-[20px] ${widthClass}`
+        `content-stretch flex flex-col gap-[10px] ${heightClass} items-start relative rounded-[20px] ${widthClass}`
+      }
+      style={
+        className
+          ? undefined
+          : {
+              backgroundColor: themeStyles.cardBg,
+              borderStyle: "solid",
+              borderWidth: variantStyles.outerBorderWidth,
+              borderColor: variant === "white" ? "#ffffff" : themeStyles.borderColor,
+              boxShadow: variantStyles.shadow,
+            }
       }
       data-name={rootName}
       data-node-id={nodeIds.root}
     >
       <div
-        className={`${themeStyles.headerBg} ${variantStyles.headerBorder} ${variant === "solid" ? themeStyles.borderColor : ""} h-[51px] rounded-[10px] shrink-0 w-full`}
+        className="h-[51px] rounded-[10px] shrink-0 w-full border-solid"
+        style={{
+          backgroundColor: themeStyles.headerBg,
+          borderWidth: variantStyles.headerBorderWidth,
+          borderColor: variant === "white" ? "#ffffff" : themeStyles.borderColor,
+        }}
         data-node-id={nodeIds.header}
       />
 
       <div
-        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[39px] justify-center leading-[0] left-1/2 text-[32px] text-[color:var(--text\\/primary,black)] text-center ${variantStyles.titleTop} tracking-[-0.96px] w-[365px]`}
+        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[39px] justify-center leading-[0] left-1/2 text-[24px] text-[color:var(--text\\/primary,black)] text-center ${variantStyles.titleTopClass} tracking-[-0.72px] w-full px-[44px]`}
         data-node-id={nodeIds.title}
       >
         <p className="leading-[normal]">{title}</p>
       </div>
 
       <div
-        className={`absolute h-[42px] w-[44px] ${variantStyles.badgeGroupPosition}`}
+        className={`absolute h-[42px] w-[44px] ${variantStyles.badgePositionClass}`}
         data-name="number-badge-black"
         data-node-id={nodeIds.badgeGroup}
       >
@@ -93,7 +110,7 @@ export default function BrandBorderSectionBase({
           data-node-id={nodeIds.badge}
         />
         <div
-          className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[21px] justify-center leading-[0] left-[27px] text-[32px] text-center text-white top-[24.5px] tracking-[-0.96px] w-[22px]"
+          className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[21px] justify-center leading-[0] left-[27px] text-[24px] text-center text-white top-[24.5px] tracking-[-0.72px] w-[22px]"
           data-node-id={nodeIds.number}
         >
           <p className="leading-[normal]">{number}</p>

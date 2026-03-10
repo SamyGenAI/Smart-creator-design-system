@@ -157,3 +157,45 @@ Hierarchy rule: card body < section label < navy header (32px, fixed) < main tit
 - Escape slashes in Tailwind: `var(--components\/card-title\/green,#d2ff9a)`
 - Figma MCP asset URLs expire in 7 days — never hardcode them
 - For brand border sections, avoid duplication: compose via `BrandBorderSectionBase` wrappers (`*SolidBorderSection`, `*WhiteBorderSection`)
+
+---
+
+## Creating New Templates (Bento Grid Pattern)
+
+Use this pattern when building a new infographic template from scratch with many sections.
+
+### Bento Grid Layout
+
+Use **CSS Grid with `fr` rows** so vertical space is auto-distributed — no dead space at the bottom:
+
+```jsx
+<div
+  className="flex-1 w-full mt-[14px] mb-[14px]"
+  style={{
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gridTemplateRows: '2fr 3fr 3fr 3fr 2fr', // tune row weights to content density
+    gap: '12px',
+  }}
+>
+  {/* Full-width row */}
+  <div style={{ gridColumn: '1 / -1' }}>
+    <GlassNavySection title="..." className={GLASS} />
+  </div>
+
+  {/* Two-column rows */}
+  <BlueSolidBorderSection title="..." number="1" widthClass="w-full" heightClass="h-full" />
+  <OrangeSolidBorderSection title="..." number="2" widthClass="w-full" heightClass="h-full" />
+</div>
+```
+
+The outer column must be `flex flex-col h-full` with `flex-1` on the grid div and `flex-none` on header/footer.
+
+### Bento Design Rules
+
+1. **Only use existing section components** — `GlassNavySection` and `[Color]SolidBorderSection`. Never add placeholder elements, dashed outlines, or wrapper divs inside empty card bodies.
+2. **Alternating colors, no two adjacent cells share a color** — across both columns and rows. Sequence example: blue/orange → green/pink → orange/blue → green/navy.
+3. **Full-width rows for intro/summary sections** — use `gridColumn: '1 / -1'` for the first and last rows. Give them less `fr` weight (e.g. `2fr`) since they need less height than content rows (`3fr`).
+4. **Pass `widthClass="w-full" heightClass="h-full"`** to all `[Color]SolidBorderSection` children so they fill their grid cell. The `GLASS` constant handles this for `GlassNavySection`.
+5. **Section titles use actionable verbs** — e.g. "Create Context Files" not "Context Files", "Install Plugins" not "Plugins", "Schedule Tasks" not "Scheduled Tasks".
+6. **Empty bodies stay empty** — do not render placeholder content, dashed borders, or anything inside an empty card. The colored header bar + clean interior is the correct empty state.

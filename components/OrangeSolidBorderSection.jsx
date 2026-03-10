@@ -4,13 +4,13 @@ import BrandBorderSectionBase from "./BrandBorderSectionBase"
  * OrangeSolidBorderSection
  * Figma node: 66:711 (orange-border-section)
  */
-export default function OrangeSolidBorderSection(props) {
+export default function OrangeSolidBorderSection({ widthClass, ...props }) {
   return (
     <BrandBorderSectionBase
       {...props}
       theme="orange"
       variant="solid"
-      widthClass="w-[415px]"
+      widthClass={widthClass || "w-[415px]"}
       rootName="orange-border-section"
       nodeIds={{
         root: "66:711",

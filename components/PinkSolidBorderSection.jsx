@@ -4,13 +4,13 @@ import BrandBorderSectionBase from "./BrandBorderSectionBase"
  * PinkSolidBorderSection
  * Figma node: 66:739 (pink-border-section)
  */
-export default function PinkSolidBorderSection(props) {
+export default function PinkSolidBorderSection({ widthClass, ...props }) {
   return (
     <BrandBorderSectionBase
       {...props}
       theme="pink"
       variant="solid"
-      widthClass="w-[470px]"
+      widthClass={widthClass || "w-[470px]"}
       rootName="pink-border-section"
       nodeIds={{
         root: "66:739",

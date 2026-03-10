@@ -4,13 +4,13 @@ import BrandBorderSectionBase from "./BrandBorderSectionBase"
  * GreenSolidBorderSection
  * Figma node: 66:753 (green-border-section)
  */
-export default function GreenSolidBorderSection(props) {
+export default function GreenSolidBorderSection({ widthClass, ...props }) {
   return (
     <BrandBorderSectionBase
       {...props}
       theme="green"
       variant="solid"
-      widthClass="w-[470px]"
+      widthClass={widthClass || "w-[470px]"}
       rootName="green-border-section"
       nodeIds={{
         root: "66:753",
