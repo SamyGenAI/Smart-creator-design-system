@@ -21,7 +21,7 @@ export default function PastelShadowBorderCard({ text = "xxx", className }) {
 
       {/* Text content */}
       <div
-        className="absolute flex flex-col font-['Montserrat:Medium',sans-serif] font-medium inset-[31.68%_4.95%_51.82%_4.99%] justify-center leading-[0] text-[16px] text-black tracking-[-0.48px]"
+        className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium inset-[31.68%_4.95%_51.82%_4.99%] justify-center leading-[0] text-[16px] text-black tracking-[-0.48px]"
         data-node-id="66:759"
       >
         <p className="leading-[normal]">{text}</p>

@@ -201,7 +201,7 @@ export default function Infographic({ data = {} }) {
               data-node-id="50:196"
             />
             {row3.card1?.sectionTitle && (
-              <div className="col-1 flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Bold',sans-serif)] font-bold justify-center ml-[18px] mt-[82px] relative row-1 text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] w-[158px]" data-node-id="50:256">
+              <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-bold justify-center ml-[18px] mt-[82px] relative row-1 text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] w-[158px]" data-node-id="50:256">
                 <p className="leading-[normal]">{row3.card1.sectionTitle}</p>
               </div>
             )}
@@ -224,7 +224,7 @@ export default function Infographic({ data = {} }) {
               data-node-id="50:258"
             />
             {row3.card2?.sectionTitle && (
-              <div className="col-1 flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Bold',sans-serif)] font-bold h-[18px] justify-center ml-[18px] mt-[85px] relative row-1 text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] w-[164px]" data-node-id="50:334">
+              <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-bold h-[18px] justify-center ml-[18px] mt-[85px] relative row-1 text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] w-[164px]" data-node-id="50:334">
                 <p className="leading-[normal]">{row3.card2.sectionTitle}</p>
               </div>
             )}
@@ -247,7 +247,7 @@ export default function Infographic({ data = {} }) {
               data-node-id="50:526"
             />
             {row3.card3?.sectionTitle && (
-              <div className="col-1 flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Bold',sans-serif)] font-bold justify-center ml-[12px] mt-[68px] relative row-1 text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] w-[144px]" data-node-id="53:622">
+              <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-bold justify-center ml-[12px] mt-[68px] relative row-1 text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] w-[144px]" data-node-id="53:622">
                 <p className="leading-[normal]">{row3.card3.sectionTitle}</p>
               </div>
             )}
@@ -271,7 +271,7 @@ export default function Infographic({ data = {} }) {
             {row3.card3?.highlightText && (
               <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[113px] mt-[261px] place-items-start relative row-1" data-name="text-highlight" data-node-id="53:543">
                 <div className="col-1 h-[35.197px] ml-0 mt-0 relative row-1 w-[107px] bg-[var(--components\/card-title\/blue,#b4eaff)] rounded-[4px]" data-node-id="5:15873" />
-                <div className="col-1 flex flex-col font-[family-name:var(--font\/family\/title,'Montserrat:Bold',sans-serif)] font-bold justify-center ml-[2.82px] mt-[4.22px] relative row-1 text-[19.711px] text-[color:var(--text\/primary,black)] tracking-[-0.5913px] w-[104.184px]" data-node-id="5:16106">
+                <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-bold justify-center ml-[2.82px] mt-[4.22px] relative row-1 text-[19.711px] text-[color:var(--text\/primary,black)] tracking-[-0.5913px] w-[104.184px]" data-node-id="5:16106">
                   <p className="leading-[normal]">{row3.card3.highlightText}</p>
                 </div>
               </div>
@@ -292,7 +292,7 @@ export default function Infographic({ data = {} }) {
             data-node-id="53:545"
           />
           {row4.sectionTitle && (
-            <div className="col-1 flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-[32px] mt-[65px] relative row-1 text-[14px] text-black tracking-[-0.42px] w-[144px]" data-node-id="5:16137">
+            <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-[32px] mt-[65px] relative row-1 text-[14px] text-black tracking-[-0.42px] w-[144px]" data-node-id="5:16137">
               <p className="leading-[normal]">{row4.sectionTitle}</p>
             </div>
           )}

@@ -9,7 +9,7 @@
  *   children    node     — content rendered inside the card body
  *   className   string   — overrides width/height/positioning (required for layout)
  */
-export default function GlassNavySection({ title = "xxx", iconSrc = null, iconAlt = "", children, className }) {
+export default function GlassNavySection({ title = "xxx", iconSrc = null, iconAlt = "", children, className, titleSize = "32px" }) {
   return (
     <div
       className={className || "bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white content-stretch flex flex-col gap-[10px] h-[225px] items-start relative rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[308px]"}
@@ -24,7 +24,7 @@ export default function GlassNavySection({ title = "xxx", iconSrc = null, iconAl
 
       {/* Title — centered over the header bar */}
       <div
-        className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[39px] justify-center leading-[0] left-[calc(50%-0.5px)] text-[32px] text-center text-white top-[22.5px] tracking-[-0.96px] w-[365px]"
+        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-bold h-[39px] justify-center leading-[0] left-[calc(50%-0.5px)] text-[${titleSize}] text-center text-white top-[22.5px] tracking-[-0.96px] w-[365px]`}
         data-node-id="22:310"
       >
         <p className="leading-[normal]">{title}</p>

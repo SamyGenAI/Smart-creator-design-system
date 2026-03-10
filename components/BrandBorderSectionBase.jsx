@@ -94,7 +94,7 @@ export default function BrandBorderSectionBase({
       />
 
       <div
-        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[39px] justify-center leading-[0] left-1/2 text-[24px] text-[color:var(--text\\/primary,black)] text-center ${variantStyles.titleTopClass} tracking-[-0.72px] w-full px-[44px]`}
+        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-bold h-[39px] justify-center leading-[0] left-1/2 text-[24px] text-[color:var(--text\\/primary,black)] text-center ${variantStyles.titleTopClass} tracking-[-0.72px] w-full px-[44px]`}
         data-node-id={nodeIds.title}
       >
         <p className="leading-[normal]">{title}</p>
@@ -110,7 +110,7 @@ export default function BrandBorderSectionBase({
           data-node-id={nodeIds.badge}
         />
         <div
-          className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold h-[21px] justify-center leading-[0] left-[27px] text-[24px] text-center text-white top-[24.5px] tracking-[-0.72px] w-[22px]"
+          className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-bold h-[21px] justify-center leading-[0] left-[27px] text-[24px] text-center text-white top-[24.5px] tracking-[-0.72px] w-[22px]"
           data-node-id={nodeIds.number}
         >
           <p className="leading-[normal]">{number}</p>

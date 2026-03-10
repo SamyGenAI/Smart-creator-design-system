@@ -203,7 +203,7 @@ When none of the above fits, build inline JSX. These are proven patterns:
 Large KPI with label. Use when you have a single striking number.
 ```jsx
 <div className="absolute ml-[20px] mt-[60px] flex flex-col items-start gap-[4px]">
-  <span className="text-[56px] font-['Montserrat:Bold',sans-serif] font-bold text-[#092c69] tracking-[-1.68px] leading-none">87%</span>
+  <span className="text-[56px] font-['Montserrat',sans-serif] font-bold text-[#092c69] tracking-[-1.68px] leading-none">87%</span>
   <span className="text-[14px] font-medium text-black tracking-[-0.42px]">of users save 2h/day</span>
 </div>
 ```
@@ -215,7 +215,7 @@ Large KPI with label. Use when you have a single striking number.
   {["Prompt", "Process", "Output"].map((step, i, arr) => (
     <React.Fragment key={step}>
       <div className="bg-[var(--components\/card-title\/amber,#fde68a)] rounded-[8px] px-[14px] py-[10px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
-        <span className="text-[13px] font-['Montserrat:SemiBold',sans-serif] font-semibold text-black">{step}</span>
+        <span className="text-[13px] font-['Montserrat',sans-serif] font-semibold text-black">{step}</span>
       </div>
       {i < arr.length - 1 && (
         <span className="text-[#092c69] text-[20px] font-bold">→</span>
@@ -236,7 +236,7 @@ Use for conversion funnels, priority pyramids, filtering flows.
 ].map(({ label, color, clip }) => (
   <div key={label} style={{ clipPath: clip, backgroundColor: `var(${color})` }}
     className="w-full h-[44px] flex items-center justify-center shadow-[0px_2px_4px_0px_rgba(0,0,0,0.15)]">
-    <span className="text-[13px] font-['Montserrat:SemiBold',sans-serif] font-semibold text-black">{label}</span>
+    <span className="text-[13px] font-['Montserrat',sans-serif] font-semibold text-black">{label}</span>
   </div>
 ))}
 ```

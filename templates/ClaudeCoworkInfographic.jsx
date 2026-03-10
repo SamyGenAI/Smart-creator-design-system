@@ -85,6 +85,7 @@ export default function ClaudeCoworkInfographic({ data = {} }) {
             <GlassNavySection
               title={sections.overview || "What is Cowork?"}
               className={GLASS}
+              titleSize="24px"
             />
           </div>
 
@@ -140,6 +141,7 @@ export default function ClaudeCoworkInfographic({ data = {} }) {
           <GlassNavySection
             title={sections.quickStart || "First 30 Minutes"}
             className={GLASS}
+            titleSize="24px"
           />
 
           {/* Row 6 — Limitations (full width, navy glass) */}
@@ -147,6 +149,7 @@ export default function ClaudeCoworkInfographic({ data = {} }) {
             <GlassNavySection
               title={sections.limitations || "Known Limitations"}
               className={GLASS}
+              titleSize="24px"
             />
           </div>
         </div>

@@ -46,7 +46,7 @@ export default function IconBullet({
         <div key={i} className="absolute contents" data-node-id={`37:${1363 - i}`}>
           {/* Text */}
           <div
-            className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Medium',sans-serif)] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px]"
+            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px]"
             style={{ inset: textInsets[i].split('_').join(' ') }}
             data-node-id={`28:${334 + (i === 0 ? 0 : i === 1 ? -1 : i === 2 ? 1 : 2)}`}
           >

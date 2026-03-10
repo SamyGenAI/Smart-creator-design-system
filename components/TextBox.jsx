@@ -22,7 +22,7 @@ export default function TextBox({ text = "", color = "var(--components\\/card-ti
         style={{ background: color }}
       >
         {text && (
-          <p className="font-['Montserrat:Medium',sans-serif] font-medium text-[12px] text-black tracking-[-0.36px] text-center leading-normal px-1">
+          <p className="font-['Montserrat',sans-serif] font-medium text-[12px] text-black tracking-[-0.36px] text-center leading-normal px-1">
             {text}
           </p>
         )}

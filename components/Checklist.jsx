@@ -42,7 +42,7 @@ export default function Checklist({ title = null, items = ["xxx", "xxx", "xxx"],
       {/* Optional title */}
       {title && (
         <div
-          className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Bold',sans-serif)] font-bold inset-[0_0_91.01%_0.85%] justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
+          className="absolute flex flex-col font-['Montserrat',sans-serif] font-bold inset-[0_0_91.01%_0.85%] justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
           data-node-id="28:198"
         >
           <p className="leading-[normal]">{title}</p>
@@ -59,7 +59,7 @@ export default function Checklist({ title = null, items = ["xxx", "xxx", "xxx"],
         >
           <Checkmark className="relative shrink-0 size-[25px]" />
           <div
-            className="flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Medium',sans-serif)] font-medium justify-center leading-[0] relative shrink-0 text-[14px] text-black tracking-[-0.42px] w-[234px]"
+            className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[14px] text-black tracking-[-0.42px] w-[234px]"
             data-node-id={`28:${253 + i * 2}`}
           >
             <p className="leading-[normal]">{item}</p>

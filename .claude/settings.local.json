@@ -27,7 +27,11 @@
       "Bash(start \"\" \"http://localhost:5173/#figmacapture=329bfe87-d656-4aa1-9f07-df1fc1a43cab&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F329bfe87-d656-4aa1-9f07-df1fc1a43cab%2Fsubmit&figmadelay=1000\")",
       "Bash(powershell -Command \"Remove-Item -Recurse -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\skills\\\\design-content''\")",
       "Bash(powershell -Command \"Remove-Item -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\design-content.skill''\")",
-      "Bash(powershell -Command \"Remove-Item -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\infographics-designer.skill''\")"
+      "Bash(powershell -Command \"Remove-Item -Force ''c:\\\\Users\\\\Samy Chouaf\\\\Desktop\\\\Figma-Design-System\\\\infographics-designer.skill''\")",
+      "Bash(pnpm dev)",
+      "Bash(start \"\" \"http://localhost:5175/#figmacapture=dd970ad6-b51d-4266-a532-fa7c79511554&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fdd970ad6-b51d-4266-a532-fa7c79511554%2Fsubmit&figmadelay=3000\")",
+      "Bash(findstr :5175)",
+      "Bash(start \"\" \"http://localhost:5175/#figmacapture=1614de34-d5a5-4902-9bac-60f9d18d84a8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1614de34-d5a5-4902-9bac-60f9d18d84a8%2Fsubmit&figmadelay=3000\")"
     ]
   }
 }

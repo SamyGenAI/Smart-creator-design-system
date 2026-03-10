@@ -70,7 +70,7 @@ export default function Table({
       {headers.map((h, ci) => (
         <div
           key={`h${ci}`}
-          className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:SemiBold',sans-serif)] font-semibold justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
+          className="absolute flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
           style={{ inset: `${headerV.top} ${colTextH[ci].right} ${headerV.bottom} ${colTextH[ci].left}` }}
           data-node-id={`47:${1183 + ci * 2}`}
         >
@@ -83,7 +83,7 @@ export default function Table({
         row.slice(0, 3).map((cell, ci) => (
           <div
             key={`r${ri}c${ci}`}
-            className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Medium',sans-serif)] font-medium justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
+            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
             style={{ inset: `${dataRowV[ri].top} ${colTextH[ci].right} ${dataRowV[ri].bottom} ${colTextH[ci].left}` }}
             data-node-id={`47:${1189 + ri * 3 + ci}`}
           >

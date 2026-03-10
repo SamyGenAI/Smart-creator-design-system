@@ -72,10 +72,10 @@ export default function Onion({
         className="absolute flex flex-col gap-[3px]"
         style={{ top: 18, left: RIGHT_X, width: W - RIGHT_X }}
       >
-        <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
           {layers[0]?.label}
         </p>
-        <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
           {layers[0]?.body}
         </p>
       </div>
@@ -85,10 +85,10 @@ export default function Onion({
         className="absolute flex flex-col gap-[3px] text-right"
         style={{ top: 62, left: 0, width: LEFT_X }}
       >
-        <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
           {layers[1]?.label}
         </p>
-        <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
           {layers[1]?.body}
         </p>
       </div>
@@ -98,10 +98,10 @@ export default function Onion({
         className="absolute flex flex-col gap-[3px]"
         style={{ top: 126, left: RIGHT_X, width: W - RIGHT_X }}
       >
-        <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
           {layers[2]?.label}
         </p>
-        <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
           {layers[2]?.body}
         </p>
       </div>

@@ -22,7 +22,7 @@ export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.
 
       {/* "Follow for more" label */}
       <div
-        className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:SemiBold',sans-serif)] font-semibold inset-[30%_50.27%_21.67%_25.5%] justify-center leading-[0] text-[24px] text-white tracking-[-0.72px]"
+        className="absolute flex flex-col font-['Montserrat',sans-serif] font-semibold inset-[30%_50.27%_21.67%_25.5%] justify-center leading-[0] text-[24px] text-white tracking-[-0.72px]"
         data-node-id="I5:16215;5:15845"
       >
         <p className="leading-[normal]">Follow for more</p>
@@ -30,7 +30,7 @@ export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.
 
       {/* Creator name */}
       <div
-        className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:SemiBold',sans-serif)] font-semibold inset-[28.33%_25.69%_23.33%_50.09%] justify-center leading-[0] text-[24px] text-white tracking-[-0.72px]"
+        className="absolute flex flex-col font-['Montserrat',sans-serif] font-semibold inset-[28.33%_25.69%_23.33%_50.09%] justify-center leading-[0] text-[24px] text-white tracking-[-0.72px]"
         data-node-id="I5:16215;5:15846"
       >
         <p className="leading-[normal]">{name}</p>

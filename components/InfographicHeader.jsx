@@ -55,7 +55,7 @@ export default function InfographicHeader({
     >
       {/* Title — uniform bold style, optional inline highlight */}
       <div
-        className={`flex flex-col font-[family-name:var(--font\/family\/title,'Montserrat:Bold',sans-serif)] font-bold justify-center leading-[0] relative shrink-0 text-[#092c69] text-[72.948px] tracking-[-2.1884px] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${titleClassName}`}
+        className={`flex flex-col font-['Montserrat',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#092c69] text-[72.948px] tracking-[-2.1884px] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${titleClassName}`}
         data-node-id="5:15875"
       >
         <p className="leading-[normal]">{renderTitle()}</p>
@@ -64,7 +64,7 @@ export default function InfographicHeader({
       {/* Subtitle — optional, only rendered when provided */}
       {subtitle && (
         <div
-          className={`flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Medium_Italic',sans-serif)] font-medium italic justify-center leading-[0] relative shrink-0 text-[#092c69] text-[32px] tracking-[-0.96px] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${subtitleClassName}`}
+          className={`flex flex-col font-['Montserrat',sans-serif] font-medium italic justify-center leading-[0] relative shrink-0 text-[#092c69] text-[32px] tracking-[-0.96px] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${subtitleClassName}`}
           data-node-id="5:15876"
         >
           <p className="leading-[normal]">{subtitle}</p>

@@ -57,10 +57,10 @@ export default function Target({
         className="absolute flex flex-col gap-[3px]"
         style={{ top: 9, left: RIGHT_X, width: W - RIGHT_X }}
       >
-        <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
           {rings[0]?.label}
         </p>
-        <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
           {rings[0]?.body}
         </p>
       </div>
@@ -70,10 +70,10 @@ export default function Target({
         className="absolute flex flex-col gap-[3px]"
         style={{ top: 141, left: RIGHT_X, width: W - RIGHT_X }}
       >
-        <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
           {rings[1]?.label}
         </p>
-        <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
           {rings[1]?.body}
         </p>
       </div>
@@ -83,10 +83,10 @@ export default function Target({
         className="absolute flex flex-col gap-[3px] text-right"
         style={{ top: 75, left: 0, width: LEFT_W }}
       >
-        <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
           {rings[2]?.label}
         </p>
-        <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+        <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
           {rings[2]?.body}
         </p>
       </div>

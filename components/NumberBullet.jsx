@@ -29,7 +29,7 @@ export default function NumberBullet({ items = ["xxxxxxx", "xxxxxx", "xxxxxx"], 
             data-node-id={`49:${265 + i * 2}`}
           />
           <div
-            className="absolute flex flex-col font-['Montserrat:Bold',sans-serif] font-bold justify-center leading-[0] text-[16px] text-black text-center tracking-[-0.48px]"
+            className="absolute flex flex-col font-['Montserrat',sans-serif] font-bold justify-center leading-[0] text-[16px] text-black text-center tracking-[-0.48px]"
             style={{ inset: row.numInset.split('_').join(' ') }}
             data-node-id={`49:${266 + i * 2}`}
           >
@@ -38,7 +38,7 @@ export default function NumberBullet({ items = ["xxxxxxx", "xxxxxx", "xxxxxx"], 
 
           {/* Item text */}
           <div
-            className="absolute flex flex-col font-[family-name:var(--font\/family\/body,'Montserrat:Medium',sans-serif)] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px]"
+            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px]"
             style={{ inset: row.textInset.split('_').join(' ') }}
             data-node-id={`49:${262 + i}`}
           >

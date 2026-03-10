@@ -109,10 +109,10 @@ export default function Pyramid({
             width: W - ANNOT_X,
           }}
         >
-          <p className="font-[family-name:var(--font\/family\/body)] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
+          <p className="font-['Montserrat',sans-serif] font-bold text-[8px] leading-[1.2] text-[color:var(--text\/primary,black)]">
             {tier.label}
           </p>
-          <p className="font-[family-name:var(--font\/family\/body)] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
+          <p className="font-['Montserrat',sans-serif] font-normal text-[5px] leading-[1.4] text-[color:var(--text\/primary,black)]">
             {tier.body}
           </p>
         </div>
