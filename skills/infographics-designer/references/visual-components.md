@@ -15,6 +15,7 @@ Every component in the design system, with design intent, when to use it, and wh
 10. [New Component Patterns](#10-new-component-patterns)
 11. [Illustrations — Character art](#11-illustrations--character-art)
 12. [Infographic Shapes — SVG diagram components](#12-infographic-shapes--svg-diagram-components)
+13. [Brand Border Sections — Numbered callout cards](#13-brand-border-sections--numbered-callout-cards)
 
 ---
 
@@ -335,3 +336,27 @@ These shapes are larger than typical card interiors. Scale them down with `class
 - Need to show sequential steps → `Process` or `FrogJumps`
 - Need to show growth over time → `Growth`
 - Need to show overlap between concepts → `VennDiagram`
+
+---
+
+## 13. Brand Border Sections — Numbered callout cards
+
+**What it looks like:** A rounded pastel card with a 51px title bar and a black number badge in the top-left.
+
+**When to use:**
+- Numbered section intros (1, 2, 3, ...)
+- Row-level chapter cards before detailed bullets/tables
+- Strong thematic separators between sections
+
+**Available wrappers:**
+- **Solid border:** `OrangeSolidBorderSection`, `BlueSolidBorderSection`, `PinkSolidBorderSection`, `GreenSolidBorderSection`
+- **White border + shadow:** `OrangeWhiteBorderSection`, `BlueWhiteBorderSection`, `PinkWhiteBorderSection`, `GreenWhiteBorderSection`
+
+**Design notes:**
+- Shared base component: `BrandBorderSectionBase` (do not duplicate layout across colors)
+- Fixed dimensions by Figma family:
+  - Solid orange/blue: `w-[415px] h-[195px]`
+  - Solid pink/green: `w-[470px] h-[195px]`
+  - White-border family: `w-[600px] h-[195px]`
+- Header title style is fixed: Montserrat Bold `32px`, tracking `-0.96px`
+- Badge is fixed: black rounded square, white number

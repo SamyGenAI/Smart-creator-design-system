@@ -60,6 +60,8 @@ Read `references/visual-components.md`. Ask: **"What is the most visual way to s
 | Comparison data, matrix | `Table` |
 | Brand/tool showcase | `Grid8CompanyLogos` |
 | Key quote, insight, CTA | `PastelShadowBorderCard` |
+| Numbered section callout (colored border) | `OrangeSolidBorderSection`, `BlueSolidBorderSection`, `PinkSolidBorderSection`, `GreenSolidBorderSection` |
+| Numbered section callout (white border + shadow) | `OrangeWhiteBorderSection`, `BlueWhiteBorderSection`, `PinkWhiteBorderSection`, `GreenWhiteBorderSection` |
 | Categories, tags, themes | `ColoredTextBoxes` |
 | Large stat or KPI | **Build new: `StatCallout`** |
 | Hierarchy, focus, layers | `Pyramid`, `Target`, `Onion` (from `assets/infographics/`) |
@@ -154,3 +156,4 @@ Hierarchy rule: card body < section label < navy header (32px, fixed) < main tit
 - `highlightWord` must appear verbatim in `title`
 - Escape slashes in Tailwind: `var(--components\/card-title\/green,#d2ff9a)`
 - Figma MCP asset URLs expire in 7 days — never hardcode them
+- For brand border sections, avoid duplication: compose via `BrandBorderSectionBase` wrappers (`*SolidBorderSection`, `*WhiteBorderSection`)

@@ -67,10 +67,13 @@ The canvas uses **absolute positioning throughout**. All sizes are fixed in px, 
 | `--border/blue` | `#7edaff` | `border-blue` |
 | `--border/pink` | `#ffb2da` | `border-pink` |
 | `--border/green` | `#a9ff3e` | `border-green` |
+| `--border/orange` | `#ff914d` | `border-orange` |
 | `--border/amber` | `#fcd34d` | `border-amber` |
 | `--border/grey` | `#e3e4eb` | `border-grey` |
 | `--components/background/primary` | `#fffceb` | `canvas` |
 | `--components/card/blue` | `rgba(126,218,255,0.15)` | `card-blue` |
+| `--components/card/green` | `rgba(169,255,62,0.15)` | `card-green` |
+| `--components/card/orange` | `rgba(255,145,77,0.15)` | `card-orange` |
 | `--components/card/amber` | `#fef3c7` | `card-amber` |
 | `--components/card/pink` | `rgba(255,178,218,0.15)` | `card-pink` |
 | `--components/card-title/blue` | `#b4eaff` | `chip-blue` |
@@ -184,6 +187,21 @@ All components are in `components/`. Each preserves `data-node-id` and `data-nam
 - **Figma node:** `51:372`
 - 2×2 grid of colored squares (172×98px) — default color: chip-green
 
+### Brand border section family — `components/BrandBorderSectionBase.jsx` + wrappers
+- Shared implementation for colored section cards with top title bar + black number badge
+- **Solid border wrappers (Figma nodes):**
+  - `components/OrangeSolidBorderSection.jsx` → `66:711`
+  - `components/BlueSolidBorderSection.jsx` → `66:725`
+  - `components/PinkSolidBorderSection.jsx` → `66:739`
+  - `components/GreenSolidBorderSection.jsx` → `66:753`
+- **White border + shadow wrappers:**
+  - `components/OrangeWhiteBorderSection.jsx` → `66:696`
+  - `components/BlueWhiteBorderSection.jsx`
+  - `components/PinkWhiteBorderSection.jsx`
+  - `components/GreenWhiteBorderSection.jsx`
+- Use `theme` (`blue|orange|pink|green`) and `variant` (`solid|white`) through wrappers to avoid code duplication
+- Geometry is fixed: height `195px`, header `51px`, number badge `44×42px`; widths depend on variant/color (`415px`, `470px`, `600px`)
+
 ---
 
 ## Infographic Layout
@@ -265,3 +283,4 @@ The tool requires:
 12. **Icons on navy headers are white** — `GlassNavySection` applies `filter: brightness(0) invert(1)` to `iconSrc`. Always pass dark/black SVG icons; do not pre-whiten them.
 13. **Logo scripts** — app icons: `node scripts/fetch-app-logo.mjs domain.com` (64px PNG, logo.dev). Wordmarks: `node scripts/fetch-logo.mjs domain.com` (SVG, Brandfetch).
 14. **Text size is adaptive** — body text inside cards can be increased beyond the default (e.g. 13px → 16px) to fill available space and reduce emptiness, as long as visual hierarchy is preserved: card body < card title < section title < header. Never exceed the next tier in the type scale. Row/card dimensions must be adjusted together to avoid overflow.
+15. **Brand border sections must use the shared base** — for colored/white border variants, use `BrandBorderSectionBase` via wrapper components instead of duplicating JSX across colors.
