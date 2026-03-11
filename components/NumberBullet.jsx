@@ -42,7 +42,7 @@ export default function NumberBullet({ items = ["xxxxxxx", "xxxxxx", "xxxxxx"], 
             style={{ inset: row.textInset.split('_').join(' ') }}
             data-node-id={`49:${262 + i}`}
           >
-            <p className="leading-[normal]">{items[i] || ""}</p>
+            <p className="leading-[normal] whitespace-nowrap">{items[i] || ""}</p>
           </div>
         </div>
       ))}

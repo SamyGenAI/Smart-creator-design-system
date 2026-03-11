@@ -1,7 +1,7 @@
 ---
 name: design-agent
 description: Takes a content brief from the Copy Agent and builds the JSX infographic template. Picks components, calculates layout math, writes the design file and App.jsx.
-model: claude-sonnet-4-20250514
+model: sonnet
 ---
 
 # Design Agent — Layout Builder for LinkedIn Infographics
@@ -38,6 +38,19 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
    | `list` | GlassNavySection + child (Checklist, IconBullet, NumberBullet) |
    | `highlight` | PastelShadowBorderCard |
 
+   **Rule: No empty sections.** Every card body must have content. If a section has no items, either add body text, an illustration, or merge it with another section. Never render a card with an empty body.
+
+   **Rule: Vary your component choices.** Do NOT use the same inner component for every section. A premium infographic uses diverse elements. Alternate across:
+   - `NumberBullet` — numbered step lists (max 3 items, 18 chars each)
+   - `Checklist` — checkmark lists for features/benefits
+   - `IconBullet` — icon + label rows (use icons from `assets/icons/`)
+   - `TextBox` — short bold statement or quote
+   - `ColoredTextBoxes` — colored pill labels
+   - `Table` — 2-column comparisons
+   - Illustration — `<img>` from `assets/illustrations/` for visual variety
+
+   Aim to use at least 3 different component types across a 5-section infographic.
+
 4. **Calculate the vertical math** — The canvas is exactly 1350px tall. Before writing code, calculate:
    - Header: ~130px (flex-none)
    - Footer: 60px (flex-none)
@@ -60,20 +73,52 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
 
 ## Layout Patterns
 
-### Bento Grid (for many sections)
-```jsx
-const GLASS = "bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white content-stretch flex flex-col gap-[10px] h-full w-full items-start relative rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+### ⚠️ THE ONLY CORRECT LAYOUT PATTERN
 
-<div
-  className="flex-1 w-full mt-[14px] mb-[14px]"
-  style={{
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gridTemplateRows: '...fr units...',
-    gap: '12px',
-  }}
->
+Components (`Checklist`, `IconBullet`, `NumberBullet`, `TextBox`, etc.) use **percentage-based absolute positioning tied to their default pixel dimensions**. They CANNOT be placed as flex/grid children — they will misalign. They MUST be layered using `inline-grid` with `ml-[]` `mt-[]` pixel offsets on top of fixed-size `GlassNavySection` cards.
+
+```jsx
+{/* CORRECT — inline-grid stacking pattern */}
+<div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0">
+  {/* Card background — fixed pixel size */}
+  <GlassNavySection
+    title="Section Title"
+    className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[257px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[633px]"
+  />
+  {/* Component layered on top via ml/mt offsets */}
+  <div className="col-1 ml-[36px] mt-[66px] relative row-1">
+    <Checklist items={['Item one', 'Item two', 'Item three']} />
+  </div>
+</div>
 ```
+
+Multiple cards in a row use `ml-[Npx]` to place them side by side:
+```jsx
+<div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0">
+  {/* Card 1 at ml-0 */}
+  <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative row-1">
+    <GlassNavySection ... className="... w-[321px] h-[257px] ..." />
+    <div className="col-1 ml-[18px] mt-[66px] relative row-1"><Checklist ... /></div>
+  </div>
+  {/* Card 2 at ml-[344px] (321px card + 23px gap) */}
+  <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[344px] mt-0 place-items-start relative row-1">
+    <GlassNavySection ... className="... w-[633px] h-[257px] ..." />
+    <div className="col-1 ml-[29px] mt-[68px] relative row-1"><IconBullet ... /></div>
+  </div>
+</div>
+```
+
+**Standard card widths (must sum to 981px with gaps):**
+- 1 full-width card: `w-[977px]` or `w-[981px]`
+- 2 equal cards: `w-[477px]` + gap + `w-[477px]`
+- narrow + wide: `w-[321px]` + `ml-[344px]` + `w-[633px]`
+- 3 equal cards: `w-[321px]` + `ml-[344px]` + `w-[308px]` + `ml-[673px]` + `w-[308px]`
+
+**Standard component offsets inside cards:**
+- Content starts at `mt-[66px]` to `mt-[70px]` (clears the 51px navy header + padding)
+- Left padding: `ml-[18px]` to `ml-[36px]`
+
+**Do NOT use CSS Grid `fr` rows or `flex-1` body — these break the absolute positioning of components.**
 
 ### Hero Layout (for one central visual)
 ```jsx
@@ -98,6 +143,28 @@ const GLASS = "bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white con
 - All [Color]SolidBorderSection get `widthClass="w-full" heightClass="h-full"` when inside a grid
 - All GlassNavySection inside a grid get `className={GLASS}` and `titleSize="24px"`
 
+## Asset Inventory — use these proactively
+
+Before finalizing the layout, scan these folders and pick assets that match the topic:
+
+### Illustrations (`assets/illustrations/`)
+Open-source character illustrations. Use as `<img src="/assets/illustrations/[name].svg" className="w-full h-full object-contain" />` inside a flex container. Great for intro or CTA sections to add visual warmth.
+
+Available: `oc-on-the-laptop`, `oc-thinking`, `oc-project-development`, `oc-puzzle`, `oc-lighthouse`, `oc-target`, `oc-sling-shot`, `oc-taking-note`, `oc-growing`, `oc-time-flies`, `oc-work-balance`, `oc-hi-five`, `oc-handshake`, `oc-handing-key`, `oc-money-profits`
+
+Use `.svg` extension. Always wrap in `flex items-center justify-center` container.
+
+### Icons (`assets/icons/`)
+Dark SVG icons organized by category. Pass as `<img>` to `IconBullet` or use directly. GlassNavySection auto-inverts icons to white — always pass dark icons. Categories:
+- `programming-apps-websites/` — code, database, plugins, security, browser
+- `business/` — charts, briefcase, strategy
+- `work-office/` — tools, productivity
+- `internet-networks/` — cloud, wifi, server
+- `data/` — analytics, charts
+- `design/` — shapes, layout
+
+Pick icons whose filename matches the content keyword. e.g. `database--Streamline-Freehand.svg` for "database", `plugin-jigsaw-puzzle--Streamline-Freehand.svg` for "MCP/plugins".
+
 ## Component imports
 
 ```jsx
@@ -117,9 +184,21 @@ import PinkSolidBorderSection from '../components/PinkSolidBorderSection.jsx'
 2. **Never exceed character limits.** If the Copy Agent's text is too long, truncate it yourself and note the change.
 3. **Choose the simplest layout that fits the content.** Bento grid for many sections, hero layout for one visual, stacked rows for equal sections. Don't over-engineer.
 4. **Preserve `data-node-id` and `data-name` attributes** on all elements.
-5. **Empty card bodies stay empty.** Don't add placeholder content or dashed borders.
+5. **No empty card bodies.** Every section must have visible content — text, list, illustration, or icon. If content is missing, add a fitting illustration or merge with a neighboring section.
 6. **Test the math.** Before writing, calculate: header ~130px + footer 60px + padding 56px + grid gaps = fixed overhead. Remaining space goes to `fr` rows. Make sure no row gets less than ~100px.
 7. **Color tokens must use escaped slashes in Tailwind:** `bg-[var(--color\/blue\/500,#092c69)]`
 8. **Icons are dark/black SVGs.** GlassNavySection applies `brightness(0) invert(1)`. Never pass white icons.
 9. **Infographic shapes** (Pyramid, Target, etc.) are in `assets/infographics/`. Import as React components.
 10. **Illustrations** are in `assets/illustrations/`. Use as `<img>` tags with `object-contain`.
+11. **Use component variety.** Across a multi-section infographic, use at least 3 different inner components (NumberBullet, Checklist, IconBullet, TextBox, Table, illustration, etc.). Repetition of the same component in every section looks cheap.
+12. **NumberBullet text must not wrap.** Items render in absolute-positioned rows with fixed height. If text wraps to two lines, it overlaps the next item. Enforce `whitespace-nowrap` by keeping items under 18 chars — the Copy Agent enforces this limit.
+13. **NEVER override component className with different dimensions.** `Checklist`, `IconBullet`, `NumberBullet`, and `TextBox` use percentage-based absolute positioning tied to their default pixel size. Passing a custom `className` with different `h-[]` or `w-[]` breaks internal layout. Always render them at default size and center with a flex wrapper on the parent if needed:
+    ```jsx
+    // CORRECT — default size, centered by parent wrapper in BrandBorderSectionBase
+    <Checklist items={[...]} />
+
+    // WRONG — breaks percentage-based absolute rows
+    <Checklist items={[...]} className="h-[138px] w-[200px]" />
+    ```
+14. **TextBox is a small pill, not a banner.** Default size is `h-[34px] w-[153px]`. Never pass `w-full` or large widths — the text will overflow. Use it for short statements (≤50 chars). For longer body text in GlassNavySection, render a plain `<p>` with Montserrat font instead.
+15. **Grid row height must fit the default component.** Before assigning fr units, calculate: `51px header + component default height + 24px padding = minimum row px`. Use enough fr units so no row is too short. Reference heights: Checklist=189px (needs ≥264px row), IconBullet=173px (needs ≥248px), NumberBullet=138px (needs ≥213px).
