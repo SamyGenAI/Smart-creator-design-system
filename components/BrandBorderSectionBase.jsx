@@ -67,7 +67,7 @@ export default function BrandBorderSectionBase({
     <div
       className={
         className ||
-        `content-stretch flex flex-col gap-[10px] ${heightClass} items-start relative rounded-[20px] ${widthClass}`
+        `content-stretch flex flex-col gap-[10px] ${heightClass} items-start relative rounded-[20px] ${widthClass} overflow-hidden`
       }
       style={
         className
@@ -117,7 +117,11 @@ export default function BrandBorderSectionBase({
         </div>
       </div>
 
-      {children}
+      {children && (
+        <div className="flex flex-col flex-1 w-full px-[14px] py-[6px] overflow-hidden justify-center">
+          {children}
+        </div>
+      )}
     </div>
   )
 }

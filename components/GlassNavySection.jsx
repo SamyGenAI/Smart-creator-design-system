@@ -18,24 +18,24 @@ export default function GlassNavySection({ title = "xxx", iconSrc = null, iconAl
     >
       {/* Navy header bar */}
       <div
-        className="bg-[var(--color\/blue\/500,#092c69)] border-3 border-solid border-white h-[51px] rounded-[10px] shrink-0 w-full"
+        className="bg-[var(--color\/blue\/500,#092c69)] border-3 border-solid border-white h-[51px] rounded-[10px] shrink-0 w-full relative flex items-center justify-center"
         data-node-id="22:309"
-      />
-
-      {/* Title — centered over the header bar */}
-      <div
-        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-bold h-[39px] justify-center leading-[0] left-[calc(50%-0.5px)] text-[${titleSize}] text-center text-white top-[22.5px] tracking-[-0.96px] w-[365px]`}
-        data-node-id="22:310"
       >
-        <p className="leading-[normal]">{title}</p>
-      </div>
-
-      {/* Icon in the top-left of the header */}
-      {iconSrc && (
-        <div className="absolute left-[9px] overflow-clip size-[35px] top-[3px]" data-name="icon">
-          <img alt={iconAlt} className="absolute block max-w-none size-full" style={{ filter: 'brightness(0) invert(1)' }} src={iconSrc} />
+        {/* Title */}
+        <div
+          className={`font-['Montserrat',sans-serif] font-bold leading-[0] text-[${titleSize}] text-center text-white tracking-[-0.96px]`}
+          data-node-id="22:310"
+        >
+          <p className="leading-[normal]">{title}</p>
         </div>
-      )}
+
+        {/* Icon in the top-left of the header */}
+        {iconSrc && (
+          <div className="absolute left-[9px] top-1/2 -translate-y-1/2 overflow-clip size-[35px]" data-name="icon">
+            <img alt={iconAlt} className="absolute block max-w-none size-full" style={{ filter: 'brightness(0) invert(1)' }} src={iconSrc} />
+          </div>
+        )}
+      </div>
 
       {children}
     </div>

@@ -47,11 +47,13 @@ export default function ComparisonInfographic({ data = {} }) {
       >
 
         {/* ── HEADER ─────────────────────────────────────────────── */}
-        <InfographicHeader
-          title={title}
-          highlightWord={highlightWord}
-          subtitle={subtitle}
-        />
+        <div className="max-h-[390px] overflow-hidden shrink-0 w-full">
+          <InfographicHeader
+            title={title}
+            highlightWord={highlightWord}
+            subtitle={subtitle}
+          />
+        </div>
 
         {/* ── COMPARISON AREA ────────────────────────────────────── */}
         <div

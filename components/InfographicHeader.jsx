@@ -10,12 +10,15 @@
  *                              Optional — omit or pass null/empty to hide.
  *   highlightColor {string}  — background color of the highlight rectangle.
  *                              Default: var(--components/card-title/blue, #b4eaff)
+ *   titleStyle     {object}  — inline style overrides for the title (e.g. fontSize, letterSpacing)
+ *   subtitleStyle  {object}  — inline style overrides for the subtitle
  *
  * Example:
  *   <InfographicHeader
  *     title="AI Tools VS AI Systems"
  *     highlightWord="AI Systems"
  *     subtitle="Everything you need to know"
+ *     titleStyle={{ fontSize: '64px', letterSpacing: '-1.92px' }}
  *   />
  */
 export default function InfographicHeader({
@@ -25,6 +28,8 @@ export default function InfographicHeader({
   highlightColor = "#b4eaff",
   titleClassName = "",
   subtitleClassName = "",
+  titleStyle = {},
+  subtitleStyle = {},
   allowWrap = false,
   className = "",
 }) {
@@ -53,18 +58,20 @@ export default function InfographicHeader({
       data-name="Header"
       data-node-id="48:490"
     >
-      {/* Title — uniform bold style, optional inline highlight */}
+      {/* Title */}
       <div
-        className={`flex flex-col font-['Montserrat',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#092c69] text-[72.948px] tracking-[-2.1884px] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${titleClassName}`}
+        className={`flex flex-col font-['Montserrat',sans-serif] font-bold justify-center relative shrink-0 text-[#092c69] overflow-hidden ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${titleClassName}`}
+        style={{ lineHeight: 0, fontSize: '72.948px', letterSpacing: '-2.1884px', ...titleStyle }}
         data-node-id="5:15875"
       >
         <p className="leading-[normal]">{renderTitle()}</p>
       </div>
 
-      {/* Subtitle — optional, only rendered when provided */}
+      {/* Subtitle — optional */}
       {subtitle && (
         <div
-          className={`flex flex-col font-['Montserrat',sans-serif] font-medium italic justify-center leading-[0] relative shrink-0 text-[#092c69] text-[32px] tracking-[-0.96px] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${subtitleClassName}`}
+          className={`flex flex-col font-['Montserrat',sans-serif] font-medium italic justify-center relative shrink-0 text-[#092c69] ${allowWrap ? "text-center whitespace-normal break-words w-full" : "whitespace-nowrap"} ${subtitleClassName}`}
+          style={{ lineHeight: 0, fontSize: '32px', letterSpacing: '-0.96px', ...subtitleStyle }}
           data-node-id="5:15876"
         >
           <p className="leading-[normal]">{subtitle}</p>

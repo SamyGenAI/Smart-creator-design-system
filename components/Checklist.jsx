@@ -59,7 +59,7 @@ export default function Checklist({ title = null, items = ["xxx", "xxx", "xxx"],
         >
           <Checkmark className="relative shrink-0 size-[25px]" />
           <div
-            className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[14px] text-black tracking-[-0.42px] w-[234px]"
+            className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[14px] text-black tracking-[-0.42px] w-[234px] overflow-hidden"
             data-node-id={`28:${253 + i * 2}`}
           >
             <p className="leading-[normal]">{item}</p>

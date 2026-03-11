@@ -43,6 +43,15 @@ When a card has spare horizontal space, add a screenshot or image (`imageSrc`). 
 
 ## Design Workflow
 
+### Step 0 — Start from a template
+When using an existing template as a design starting point, **duplicate it into the `design/` folder** before making any changes. This keeps the original template clean and gives you an isolated copy to iterate on.
+
+```
+cp templates/MyTemplate.jsx design/MyTemplate.jsx
+```
+
+All content iteration happens in `design/`. The `templates/` folder stays read-only.
+
 ### Step 1 — Understand the content structure
 From the user's topic, identify:
 - How many distinct ideas? (maps to rows/cards)
@@ -98,7 +107,19 @@ Ready to generate?
 
 Wait for the user to confirm, request changes, or approve. **Only proceed to Step 4 after explicit user approval.**
 
-### Step 4 — Build the data object and any new components
+### Step 4 — Validate against space budgets, then build the data object
+
+**MANDATORY: Read `references/space-budgets.md` for the chosen template before writing any content.**
+
+For each text value in your data object, verify it fits within the documented character limits:
+- Infographic title ≤ 18 chars, subtitle ≤ 40 chars
+- Card headers ≤ 20 chars (32px) or ≤ 25 chars (24px)
+- Checklist items ≤ 25 chars, IconBullet items ≤ 30 chars, NumberBullet items ≤ 18 chars
+- Table cells ≤ 10 chars
+- See `references/space-budgets.md` for the full limits table
+
+If content exceeds a limit, **shorten the text** — do not increase component dimensions.
+
 Use the template in `references/example-data.md`.
 For infographic shapes, import from `assets/infographics/` — e.g. `import Pyramid from '../assets/infographics/Pyramid.jsx'`.
 For illustrations, reference `assets/illustrations/oc-*.svg` (or `.jpg`) via `<img>` tags.
@@ -148,18 +169,6 @@ Hierarchy rule: card body < section label < navy header (32px, fixed) < main tit
 
 ---
 
-## Hard Rules
-
-- `iconSrc: null` always — user adds icons manually to `assets/icons/`
-- Never modify header height (51px), card border-radius, or shadow values
-- Never make the canvas responsive — fixed 1080×1350px
-- `highlightWord` must appear verbatim in `title`
-- Escape slashes in Tailwind: `var(--components\/card-title\/green,#d2ff9a)`
-- Figma MCP asset URLs expire in 7 days — never hardcode them
-- For brand border sections, avoid duplication: compose via `BrandBorderSectionBase` wrappers (`*SolidBorderSection`, `*WhiteBorderSection`)
-
----
-
 ## Creating New Templates (Bento Grid Pattern)
 
 Use this pattern when building a new infographic template from scratch with many sections.
@@ -199,3 +208,4 @@ The outer column must be `flex flex-col h-full` with `flex-1` on the grid div an
 4. **Pass `widthClass="w-full" heightClass="h-full"`** to all `[Color]SolidBorderSection` children so they fill their grid cell. The `GLASS` constant handles this for `GlassNavySection`.
 5. **Section titles use actionable verbs** — e.g. "Create Context Files" not "Context Files", "Install Plugins" not "Plugins", "Schedule Tasks" not "Scheduled Tasks".
 6. **Empty bodies stay empty** — do not render placeholder content, dashed borders, or anything inside an empty card. The colored header bar + clean interior is the correct empty state.
+7. **All new templates MUST use the bento grid pattern.** The `Infographic.jsx` inline-grid pattern is legacy and must not be copied. The bento pattern with `flex-none` header/footer and `flex-1` grid body **structurally prevents** the footer from being pushed off-canvas.

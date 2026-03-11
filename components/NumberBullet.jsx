@@ -38,7 +38,7 @@ export default function NumberBullet({ items = ["xxxxxxx", "xxxxxx", "xxxxxx"], 
 
           {/* Item text */}
           <div
-            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px]"
+            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] overflow-hidden"
             style={{ inset: row.textInset.split('_').join(' ') }}
             data-node-id={`49:${262 + i}`}
           >

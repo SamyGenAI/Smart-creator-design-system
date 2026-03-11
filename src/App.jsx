@@ -1,7 +1,7 @@
-import ClaudeCoworkInfographic from '../templates/ClaudeCoworkInfographic.jsx'
+import ClaudeCoworkInfographic from '../design/ClaudeCoworkInfographic.jsx'
 
 const demoData = {
-  title: "The Claude Cowork Setup Guide",
+  title: "Claude Cowork Setup Guide",
   highlightWord: "Cowork",
   subtitle: "Set up your AI workspace in 30 minutes",
   sections: {
@@ -14,7 +14,6 @@ const demoData = {
     s6: "Schedule Tasks",
     s7: "Go Cross-App",
     quickStart: "First 30 Minutes",
-    limitations: "Known Limitations",
   },
   footer: {
     avatarSrc: "/assets/avatar/avatar-profile.png",

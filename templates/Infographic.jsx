@@ -77,11 +77,13 @@ export default function Infographic({ data = {} }) {
       >
 
         {/* ── HEADER ─────────────────────────────────────────────────────── */}
-        <InfographicHeader
-          title={title}
-          highlightWord={highlightWord}
-          subtitle={subtitle}
-        />
+        <div className="max-h-[208px] overflow-hidden shrink-0 w-full">
+          <InfographicHeader
+            title={title}
+            highlightWord={highlightWord}
+            subtitle={subtitle}
+          />
+        </div>
 
         {/* ── ROW 1 ──────────────────────────────────────────────────────── */}
         <div
