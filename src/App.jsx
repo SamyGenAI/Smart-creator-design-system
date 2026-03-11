@@ -1,20 +1,27 @@
-import ClaudeCoworkInfographic from '../design/ClaudeCoworkInfographic.jsx'
+import AIAutonomyInfographic from '../design/AIAutonomyInfographic.jsx'
 
 const demoData = {
-  title: "Claude Cowork Setup Guide",
-  highlightWord: "Cowork",
-  subtitle: "Set up your AI workspace in 30 minutes",
+  title: "AI Autonomy",
+  highlightWord: "Autonomy",
+  subtitle: "The 5 levels every business must know",
   sections: {
-    overview: "What is Cowork?",
-    s1: "Create Context Files",
-    s2: "Set Up Instructions",
-    s3: "Ask Before Starting",
-    s4: "Install Plugins",
-    s5: "Connect Your Tools",
-    s6: "Schedule Tasks",
-    s7: "Go Cross-App",
-    quickStart: "First 30 Minutes",
+    intro: "What is AI Autonomy?",
+    level1: "Assist the Human",
+    level2: "Augment Decisions",
+    pyramidTitle: "The 5 Levels",
+    level3: "Automate Tasks",
+    level4: "Act Autonomously",
+    level5: "Self-Evolve",
+    cta: "Start Your AI Journey",
   },
+  pyramid: {
+    tiers: [
+      { value: "Level 5", label: "Self-Evolving AI", body: "AI improves its own models and processes without human input." },
+      { value: "Level 3-4", label: "Automated & Autonomous", body: "AI executes full workflows. Humans monitor outcomes, not steps." },
+      { value: "Level 1-2", label: "Assisted & Augmented", body: "Humans lead. AI suggests, drafts, and accelerates decisions." },
+    ],
+  },
+  illustrationTitle: "The Growth Path",
   footer: {
     avatarSrc: "/assets/avatar/avatar-profile.png",
     name: "Samy Chouaf",
@@ -24,7 +31,7 @@ const demoData = {
 export default function App() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '40px', background: '#e5e7eb', minHeight: '100vh' }}>
-      <ClaudeCoworkInfographic data={demoData} />
+      <AIAutonomyInfographic data={demoData} />
     </div>
   )
 }

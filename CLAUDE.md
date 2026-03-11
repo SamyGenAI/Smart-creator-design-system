@@ -37,14 +37,24 @@ The canvas uses **absolute positioning**. All sizes are fixed in px, not respons
 
 ---
 
-## Workflow — generating an infographic
+## Workflow — generating an infographic (Copy-First, 3 Agents)
 
-1. User describes the infographic content (topic, key points, data)
-2. Claude reads `references/space-budgets.md` for the target template
-3. Claude builds the `data` object respecting documented character limits
-4. Claude writes or updates `src/App.jsx` (or `design/` working copy) with the new data
-5. Claude calls `mcp__figma__generate_figma_design` with the full template render
-6. Design appears in Figma for manual editing
+Uses three specialized subagents in `.claude/agents/`:
+
+```
+User topic → copy-agent → design-agent → qc-agent → Done
+```
+
+| Step | Agent | Job | Output |
+|------|-------|-----|--------|
+| 1 | `copy-agent` | Write content, count chars, assign hierarchy | JSON content brief |
+| 2 | *(user approval)* | Review copy brief | Approved brief |
+| 3 | `design-agent` | Pick components, calculate layout, write JSX | `design/*.jsx` + `src/App.jsx` |
+| 4 | `qc-agent` | Verify footer/overflow/chars/colors/structure | PASS or FAIL report |
+| 5 | *(if QC fails)* | Fix issues, re-run QC | Repeat until PASS |
+| 6 | *(optional)* | Push to Figma via `mcp__figma__generate_figma_design` | Design in Figma |
+
+See `skills/infographics-designer/SKILL.md` for the full workflow details.
 
 **NEVER modify the visual layout, component sizes, or token values — only the content data.**
 
