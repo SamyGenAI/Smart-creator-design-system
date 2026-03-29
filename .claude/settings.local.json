@@ -31,7 +31,25 @@
       "Bash(pnpm dev)",
       "Bash(start \"\" \"http://localhost:5175/#figmacapture=dd970ad6-b51d-4266-a532-fa7c79511554&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fdd970ad6-b51d-4266-a532-fa7c79511554%2Fsubmit&figmadelay=3000\")",
       "Bash(findstr :5175)",
-      "Bash(start \"\" \"http://localhost:5175/#figmacapture=1614de34-d5a5-4902-9bac-60f9d18d84a8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1614de34-d5a5-4902-9bac-60f9d18d84a8%2Fsubmit&figmadelay=3000\")"
+      "Bash(start \"\" \"http://localhost:5175/#figmacapture=1614de34-d5a5-4902-9bac-60f9d18d84a8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1614de34-d5a5-4902-9bac-60f9d18d84a8%2Fsubmit&figmadelay=3000\")",
+      "Bash(node scripts/fetch-app-logo.mjs canva.com)",
+      "Bash(node scripts/fetch-app-logo.mjs adobe.com)",
+      "Bash(node scripts/fetch-app-logo.mjs midjourney.com)",
+      "Bash(node scripts/fetch-app-logo.mjs cursor.com)",
+      "Bash(node scripts/fetch-app-logo.mjs lovable.dev)",
+      "Bash(node scripts/fetch-app-logo.mjs framer.com)",
+      "Bash(npx playwright:*)",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=e0a0bb98-f070-4695-912f-ef497a3310b7&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fe0a0bb98-f070-4695-912f-ef497a3310b7%2Fsubmit&figmadelay=3000\")",
+      "Bash(start \"\" \"http://localhost:5173/#figmacapture=e7d0c931-c81e-4b2b-a929-cf70d701512d&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fe7d0c931-c81e-4b2b-a929-cf70d701512d%2Fsubmit&figmadelay=3000\")",
+      "Bash(start \"\" \"https://www.figma.com/design/GBovqF34FkjgtWPj3wUmO3?node-id=249-417\")",
+      "Bash(python \"/c/Users/Samy Chouaf/.claude/skills/skill-creator/scripts/init_skill.py\" carousel-designer --path \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/\")",
+      "Bash(PYTHONUTF8=1 python \"/c/Users/Samy Chouaf/.claude/skills/skill-creator/scripts/init_skill.py\" carousel-designer --path \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/\")",
+      "Bash(rm \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/scripts/example.py\")",
+      "Bash(rm \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/references/api_reference.md\")",
+      "Bash(rm \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/assets/example_asset.txt\")",
+      "Bash(rmdir \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/scripts\")",
+      "Bash(rmdir \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/assets\")",
+      "Bash(PYTHONUTF8=1 python \"/c/Users/Samy Chouaf/.claude/skills/skill-creator/scripts/package_skill.py\" \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer\")"
     ]
   }
 }

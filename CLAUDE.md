@@ -7,7 +7,7 @@ Generate LinkedIn infographics (1080×1350px) by:
 3. User edits in Figma manually
 
 **Figma file:** `GBovqF34FkjgtWPj3wUmO3`
-**Pages:** Foundations (0:1) · Components (5:15493) · Infographics (5:15851)
+**Pages:** Foundations (0:1) · Components (5:15493) · Infographics (5:15851) · Carousels (181:417)
 
 ---
 
