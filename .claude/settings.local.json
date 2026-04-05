@@ -49,7 +49,8 @@
       "Bash(rm \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/assets/example_asset.txt\")",
       "Bash(rmdir \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/scripts\")",
       "Bash(rmdir \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer/assets\")",
-      "Bash(PYTHONUTF8=1 python \"/c/Users/Samy Chouaf/.claude/skills/skill-creator/scripts/package_skill.py\" \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer\")"
+      "Bash(PYTHONUTF8=1 python \"/c/Users/Samy Chouaf/.claude/skills/skill-creator/scripts/package_skill.py\" \"/c/Users/Samy Chouaf/Desktop/Figma-Design-System/skills/carousel-designer\")",
+      "Bash(pnpm build:*)"
     ]
   }
 }

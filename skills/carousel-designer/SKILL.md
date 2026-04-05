@@ -20,12 +20,15 @@ Every carousel follows this fixed narrative arc:
 | # | Slide type | Purpose |
 |---|-----------|---------|
 | 1 | **Cover** | Bold title + subtitle + illustration. Hook the reader. |
-| 2–3 | **Context** (1–2 slides) | State the problem and why it matters to the audience. |
-| 4–N | **Step-by-step** (3–6 slides) | Numbered steps. One key action per slide. |
+| 2–3 | **Story** (2–3 slides) | Tell a story. Short punchy text + illustration. Spark curiosity BEFORE the how-to. |
+| 4–5 | **Context** (1–2 slides) | State the problem and why it matters to the audience. |
+| 6–N | **Step-by-step** (3–6 slides) | Numbered steps. One key action per slide. |
 | N+1 | **Wrap-up / Bonus** (1 slide) | Summary insight, tips, or a bonus list. |
 | Last | **CTA** | Profile photo + "Follow for more" + name. |
 
 Minimum: 7 slides. Maximum: 20 slides.
+
+> **Story slides rule:** A carousel must tell a story. Always insert 2–3 story slides between the Cover and the Context/Steps. Each story slide has very short text (1 sentence max) + a relevant illustration. The goal is to create tension and spark curiosity before the practical content. Never jump straight from cover to step-by-step.
 
 ---
 
@@ -68,7 +71,7 @@ Delegate to the `carousel-qc-agent` subagent to verify the output.
 1. Slide count (7–20 slides)
 2. Slide order matches structure (Cover → Context → Steps → Wrap-up → CTA)
 3. Every slide is exactly 1080×1350px
-4. Navbar on every non-CTA slide (name left, "Follow" right, divider at y=83)
+4. Navbar on every non-CTA, non-Cover slide (name left, "Follow" right, divider at y=83)
 5. Cover has: illustration, bold title (≤50 chars), subtitle, accent pill
 6. Step slides numbered sequentially from 1
 7. CTA slide has: circular avatar, "Follow for more", author name
@@ -103,9 +106,16 @@ See `references/slide-types.md` for per-slide layout specs and character limits.
 ## Core Design Laws
 
 1. **One idea per slide.** Each slide communicates exactly one thought.
-2. **Step slides are numbered.** Large `1.` prefix (64px, 500 weight) top-left — not a bullet list.
+2. **Step slides are numbered.** Large `1.` prefix (64px, 500 weight) top-left - not a bullet list.
 3. **Context slides center the copy.** No step number. Set the scene.
 4. **CTA slide is always last.** Circular avatar + "Follow for more" + name.
 5. **Illustrations anchor the cover and CTA.** Step slides use screenshots or minimal decoration.
-6. **AccentPill highlights the key phrase.** One per slide, behind the most important 2–5 words.
+6. **AccentPill highlights the key phrase.** One per slide, behind the most important 2-5 words.
 7. **Screen placeholders are valid.** Use `ScreenPlaceholder` for step slides where a screenshot will go.
+8. **NEVER use em dashes (—).** Replace with a comma instead. Em dashes are banned from all slide copy and code strings.
+9. **Navbar uses flexbox, not pixels.** The Navbar must be a full-width flex container (`justify-content: space-between`) with padding, so "Samy Chouaf" and "Follow" always sit at the extremities and stay inside the slide.
+10. **Cover slide has no Navbar.** Only context, step, wrap-up slides get the navbar. CTA and Cover both skip it.
+11. **Screenshot assets live in `screenshots/carousels/{post-slug}/`.** Reference them as `/screenshots/carousels/{post-slug}/step-1.png`. The `screenshots/` folder is git-ignored. Never use relative paths like `../`.
+12. **`vite.config.js` uses `publicDir: '.'`** so both `/assets/` and `/screenshots/` are served from the project root. Note: Vite may use port 5174 if 5173 is taken, always check the terminal output for the actual URL.
+13. **Figma push — never auto-open the browser.** Generate the capture ID, then give the user the URL and say "Please open this URL in your browser." Never use shell commands (`cmd start`, `open`, `xdg-open`) to open a browser. Just share the URL.
+14. **NEVER crop images.** Images must never be forced inside a fixed-size container with `objectFit: cover` or `overflow: hidden`. Always compute the display height from the image's natural aspect ratio (`displayHeight = displayWidth * naturalHeight / naturalWidth`) and size the container to fit the image. The component adapts to the image, not the other way around.

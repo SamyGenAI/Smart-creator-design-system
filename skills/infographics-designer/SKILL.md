@@ -95,3 +95,5 @@ Delegate to the `qc-agent` subagent to verify the output.
 4. **Section headers use action verbs.** "Create Files" not "Files".
 5. **Empty bodies stay empty.** No placeholder content or dashed borders.
 6. **All templates use the bento grid pattern.** Legacy inline-grid is deprecated.
+7. **Figma push — never auto-open the browser.** Generate the capture ID, then give the user the URL and say "Please open this URL in your browser." Never use shell commands (`cmd start`, `open`, `xdg-open`) to open a browser. Just share the URL.
+8. **NEVER crop images.** Images must never be forced inside a fixed-size container with `objectFit: cover` or `overflow: hidden`. Always compute the display height from the image's natural aspect ratio (`displayHeight = displayWidth * naturalHeight / naturalWidth`) and size the container to fit the image. The component adapts to the image, not the other way around.

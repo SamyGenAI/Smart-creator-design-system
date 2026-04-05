@@ -15,6 +15,7 @@ All token values are **immutable** — never modify colors, sizes, font weights,
 | `--color/blue/500` | `#092c69` |
 | `--color/cream/100` | `#fffceb` |
 | `--color/cream/200` | `#fff4e8` |
+| `--color/cream/300` | `#EBDBBC` — Slide canvas background |
 | `--color/neutral/0–1000` | white → #f9fafc → #f4f4f8 → #e3e4eb → #cacbd4 → #a8a9b2 → #717188 → #323241 → black |
 | `--color/pink/100–300` | rgba(255,178,218,0.15) → #ffe6f3 → #ffb2da |
 | `--color/amber/100–300` | #fef3c7 → #fde68a → #fcd34d |

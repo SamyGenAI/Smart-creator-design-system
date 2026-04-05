@@ -19,6 +19,8 @@ Generate LinkedIn infographics (1080×1350px) by:
 | `references/components.md` | Component API reference + max text lengths | When mapping content to components |
 | `references/tokens.md` | Color/typography/shadow token values | When looking up a specific token value |
 | `skills/infographics-designer/SKILL.md` | Infographic generation workflow | When user asks to create an infographic |
+| `skills/slides/SKILL.md` | Slide deck generation workflow | When user asks to create slides or a presentation |
+| `skills/slides/references/slide-layouts.md` | Slide layout pixel specs + character limits | Before writing any slide JSX |
 
 ---
 
@@ -100,3 +102,36 @@ assets/
 14. **Text size is adaptive** — body text can increase to fill space (min 12px, max 18px for body), preserving hierarchy: card body < card title < section title < header.
 15. **Brand border sections use shared base** — always use wrapper components (`*SolidBorderSection`, `*WhiteBorderSection`), never duplicate JSX.
 16. **New templates must use bento grid pattern** — CSS Grid with `fr` rows, `flex-none` header/footer, `flex-1` grid body. See `ClaudeCoworkInfographic.jsx` as reference. The `Infographic.jsx` inline-grid pattern is legacy.
+17. **Figma push — never auto-open the browser.** When pushing to Figma, generate the capture ID then immediately give the user the URL and say "Please open this URL in your browser to trigger the capture." Do not use `cmd start`, `open`, or any shell command to open a browser. Just share the URL.
+
+---
+
+## Slides (16:9 YouTube/Keynote presentations)
+
+| Property | Value |
+|---|---|
+| Canvas | 1280×720px |
+| Background | `#EBDBBC` (`--color/cream/300`) |
+| Texture | `SquareGridTexture` at 18% opacity |
+| Font | Montserrat only |
+| Skill | `skills/slides/SKILL.md` |
+| Agent | `.claude/agents/slide-agent.md` (single agent, no QC step) |
+
+**Workflow:**
+```
+User topic → slide-agent → pnpm dev (preview) → pnpm export-slides [Name] → output/[Name]Slides.pptx
+```
+
+**Data sidecar pattern** — agent always creates two files:
+- `design/[Name]Slides.data.js` — pure JS, exports `SLIDE_DATA`, no JSX
+- `design/[Name]Slides.jsx` — React component, imports from `.data.js`
+
+The export script (`scripts/export-slides.mjs`) reads from `.data.js` directly (no Vite needed).
+
+**Export command:** `pnpm export-slides [DeckName]`
+Output: `output/[DeckName]Slides.pptx`
+
+**App.jsx MODES entry** (added by agent):
+```js
+[topicSlug]: { label: '...', component: [...], type: 'slides', slideCount: N }
+```

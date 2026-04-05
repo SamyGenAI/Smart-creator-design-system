@@ -21,6 +21,7 @@
   /* ── Primitive: Cream ────────────────────────────────────── */
   --color\/cream\/100: #fffceb;
   --color\/cream\/200: #fff4e8;
+  --color\/cream\/300: #EBDBBC;
 
   /* ── Primitive: Neutral ──────────────────────────────────── */
   --color\/neutral\/0:    white;
@@ -120,6 +121,15 @@
 .infographic-canvas {
   width: 1080px;
   height: 1350px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Slide canvas — 1280×720px, 16:9 ratio */
+.slide-canvas {
+  width: 1280px;
+  height: 720px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
