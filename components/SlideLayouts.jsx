@@ -6,7 +6,7 @@
  * file's siblings; layouts are assembled here for agent-generated decks to
  * import from one place.
  *
- * Canvas: 1280×720, background #EBDBBC, font Montserrat.
+ * Canvas: 1280×720, background #FFFCEB, font Montserrat.
  * SquareGridTexture is always the first child at opacity 0.18.
  *
  * Layout types: cover | content | two-column | statement | bullets | quote | end
@@ -19,7 +19,7 @@ import SquareGridTexture from './SquareGridTexture.jsx'
 
 const CANVAS_W = 1280
 const CANVAS_H = 720
-const SLIDE_BG = '#EBDBBC'
+const SLIDE_BG = '#FFFCEB'
 const NAVY = '#092c69'
 const ACCENT = '#b4eaff'
 const FONT = "'Montserrat', sans-serif"

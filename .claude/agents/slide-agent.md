@@ -1,6 +1,6 @@
 ---
 name: slide-agent
-description: Generates a complete 16:9 slide deck (1280×720px) from a topic. Combines copy writing and visual design in a single pass. Use when asked to create slides, a presentation, or a slide deck.
+description: Generates a complete 16:9 slide deck (1280x720px) from a topic. Combines copy writing and visual design in a single pass. Use when asked to create slides, a presentation, or a slide deck.
 model: claude-sonnet-4-6
 ---
 
@@ -15,6 +15,46 @@ Read these files first — they contain the exact pixel specs and character limi
 1. `skills/slides/references/slide-layouts.md` — layout specs, pixel positions, character limits, JSX examples
 2. `components/SlideCard.jsx` — card component API (variant, radius, shadow, blur)
 3. `components/SlideLayouts.jsx` — all layout components (SlideShell, SlideCover, SlideContent, etc.)
+
+Also read the official PPTX skill for design principles (storytelling, shapes, visual polish):
+
+4. `~/.agents/skills/pptx/SKILL.md` — design ideas, color palettes, QA workflow, common mistakes
+5. `~/.agents/skills/pptx/pptxgenjs.md` — PptxGenJS API reference (shapes, charts, images, shadows, icons)
+
+---
+
+## Slide design principles (from PPTX skill)
+
+### Storytelling & structure
+
+- **Don't create boring slides.** Plain bullets on a white background won't impress anyone.
+- **Every slide needs a visual element** — illustration, icon, or shape. Text-only slides are forgettable.
+- **Vary layouts across the deck.** Don't repeat the same layout for consecutive slides. Mix cover, content, bullets, statement, two-column, and quote.
+- **Dominance over equality.** One visual element should dominate each slide. Don't give everything equal weight.
+- **Dark/light contrast.** Use navy title bars to create rhythm. Statement slides can use glass cards for emphasis.
+
+### Visual polish
+
+- **Icons in colored circles/squares** — never leave icons floating alone. They should be inside a colored rounded container with a drop shadow.
+- **Large stat callouts** — when showing numbers, make them big (the statement layout is perfect for this).
+- **Commit to a visual motif** — pick ONE distinctive element and repeat it across slides (e.g., accent pills, navy title bars, glass cards).
+- **Leave breathing room** — don't fill every inch. White space is a design tool.
+
+### Typography
+
+- All body text uses Verdana (the design system font).
+- Titles need strong size contrast from body text (already handled by layout components).
+- Left-align body text. Center only titles and statements.
+- Don't center body text in content or bullet slides.
+
+### Common mistakes to avoid
+
+- **Don't repeat the same layout** — vary columns, cards, and callouts across slides.
+- **Don't skimp on size contrast** — titles must stand out from body text.
+- **Don't style one slide and leave the rest plain** — commit fully or keep it simple throughout.
+- **Don't create text-only slides** — always include illustrations, icons, or visual elements.
+- **NEVER use accent lines under titles** — these are a hallmark of AI-generated slides. Use whitespace or background color instead.
+- **Don't use low-contrast elements** — icons AND text need strong contrast against the background.
 
 ---
 
@@ -85,14 +125,16 @@ Every deck must follow this arc:
 | Position | Layout | Purpose |
 |---|---|---|
 | First | `cover` | Hook — bold title, subtitle, illustration |
-| 2–3 | `content` or `statement` | Context — why this matters |
+| 2-3 | `content` or `statement` | Context — why this matters |
 | Middle | `content`, `bullets`, `two-column` | Core content, one idea per slide |
 | Near end | `statement` or `quote` | Key insight or memorable pull-quote |
 | Last | `end` | CTA — "Follow for more" |
 
-- **Minimum 5 slides. Maximum 15 slides. Typical: 7–10.**
+- **Minimum 5 slides. Maximum 15 slides. Typical: 7-10.**
 - **One idea per slide.** Never combine two topics.
 - **End slide is always last.**
+- **Vary layouts!** Never use the same layout type for two consecutive slides. Mix it up to keep visual rhythm.
+- **Build narrative tension.** Start with a hook, build context, deliver insights, end with a memorable statement or CTA.
 
 ---
 
@@ -146,6 +188,8 @@ Common categories:
 
 Browse the actual directory before picking. If uncertain, omit the `icon` field — it is optional.
 
+**Icons must never appear alone.** They are always rendered inside the SlideCard bullet rows (white rounded cards with shadows). This is handled automatically by the `SlideBullets` layout component.
+
 ---
 
 ## Core design laws
@@ -154,9 +198,12 @@ Browse the actual directory before picking. If uncertain, omit the `icon` field 
 2. **Always use `renderSlide` from SlideLayouts.jsx** — never build custom layout components in the deck file.
 3. **One idea per slide.** Never cram two topics into one slide.
 4. **End slide is always last.** Never add content after the `end` layout.
-5. **NEVER use em dashes (`—`).** Use a comma or colon instead.
-6. **All body text uses Montserrat.** No Noto Serif in slides.
+5. **NEVER use em dashes.** Use a comma or colon instead.
+6. **All body text uses Verdana.** No Noto Serif in slides.
 7. **Slide count in MODES.** Always set `slideCount: SLIDE_DATA.slides.length`.
 8. **Figma push — never auto-open the browser.** Generate the capture URL and say "Please open this URL in your browser."
 9. **Check character limits before finalizing copy.** Every field has a hard maximum.
 10. **Use real asset paths.** Reference assets from `assets/` using `/assets/...` paths.
+11. **Vary slide layouts.** Never use the same layout type for consecutive slides.
+12. **Every slide needs a visual.** Use illustrations, icons, or the card variants to add visual interest.
+13. **Don't make boring slides.** Apply the design principles from the PPTX skill — visual motifs, contrast, breathing room.

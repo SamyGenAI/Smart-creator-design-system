@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import McKinseyCarousel from '../design/McKinseyCarousel.jsx'
+import IgentivVSLSlides from '../design/IgentivVSLSlides.jsx'
+import { SLIDE_DATA as igentivVSLData } from '../design/IgentivVSLSlides.data.js'
+import ClaudeCoworkSetupChecklist from '../design/ClaudeCoworkSetupChecklist.jsx'
 
 // ── MODES registry ────────────────────────────────────────────────────────────
 // When the slide-agent generates a new deck it adds an entry here.
@@ -15,6 +18,17 @@ import McKinseyCarousel from '../design/McKinseyCarousel.jsx'
 //   },
 
 const MODES = {
+  'claude-cowork-setup': {
+    label: 'Claude Cowork Setup',
+    component: ClaudeCoworkSetupChecklist,
+    type: 'infographic',
+  },
+  igentivVSL: {
+    label: 'Igentiv VSL',
+    component: IgentivVSLSlides,
+    type: 'slides',
+    slideCount: igentivVSLData.slides.length,
+  },
   mckinsey: {
     label: 'McKinsey Carousel',
     component: McKinseyCarousel,

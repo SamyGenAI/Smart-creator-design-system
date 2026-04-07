@@ -1,6 +1,6 @@
 # Slide Layouts — Pixel Specs & Character Limits
 
-Canvas: **1280×720px**. All coordinates are in px. Background: `#EBDBBC`.
+Canvas: **1280×720px**. All coordinates are in px. Background: `#FFFCEB`.
 All layouts import from `components/SlideLayouts.jsx`. All content areas use `SlideCard`.
 
 ---
@@ -18,7 +18,7 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 ```
 
 - Size: 1280×720, `position: relative`, `overflow: hidden`
-- Background: `#EBDBBC`
+- Background: `#FFFCEB`
 - First child: `SquareGridTexture width={1280} height={720} opacity={0.18}` (handled internally)
 
 ---

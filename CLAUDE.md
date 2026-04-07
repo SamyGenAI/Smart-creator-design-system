@@ -111,8 +111,8 @@ assets/
 | Property | Value |
 |---|---|
 | Canvas | 1280×720px |
-| Background | `#EBDBBC` (`--color/cream/300`) |
-| Texture | `SquareGridTexture` at 18% opacity |
+| Background | `#FFFCEB` (`--color/cream/300`) |
+| Texture | `SquareGridTexture` at 60% opacity |
 | Font | Montserrat only |
 | Skill | `skills/slides/SKILL.md` |
 | Agent | `.claude/agents/slide-agent.md` (single agent, no QC step) |

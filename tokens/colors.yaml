@@ -16,7 +16,7 @@ color:
 
     100: "#fffceb"                    # --color/cream/100 — Canvas background
     200: "#fff4e8"                    # --color/cream/200 — Warm background
-    300: "#EBDBBC"                    # --color/cream/300 — Slide canvas background
+    300: "#FFFCEB"                    # --color/cream/300 — Slide canvas background
 
   neutral:
     0:    "white"                     # --color/neutral/0
