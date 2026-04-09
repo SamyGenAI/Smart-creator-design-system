@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import McKinseyCarousel from '../design/McKinseyCarousel.jsx'
+import ScheduleTasksCarousel from '../design/ScheduleTasksCarousel.jsx'
 import IgentivVSLSlides from '../design/IgentivVSLSlides.jsx'
 import { SLIDE_DATA as igentivVSLData } from '../design/IgentivVSLSlides.data.js'
 import ClaudeCoworkSetupChecklist from '../design/ClaudeCoworkSetupChecklist.jsx'
@@ -32,6 +33,11 @@ const MODES = {
   mckinsey: {
     label: 'McKinsey Carousel',
     component: McKinseyCarousel,
+    type: 'carousel',
+  },
+  scheduleTasks: {
+    label: 'Schedule Tasks Carousel',
+    component: ScheduleTasksCarousel,
     type: 'carousel',
   },
 }
