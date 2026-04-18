@@ -9,7 +9,7 @@ export default {
   ],
   theme: {
     extend: {
-      // Design tokens — mirrors tokens/colors.yaml
+      // Design tokens — single source of truth.
       // Use as Tailwind utilities: bg-navy, text-navy, border-border-blue, etc.
       colors: {
         // ── Brand ────────────────────────────────────────────

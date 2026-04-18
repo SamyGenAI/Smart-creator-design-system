@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import McKinseyCarousel from '../design/McKinseyCarousel.jsx'
 import ScheduleTasksCarousel from '../design/ScheduleTasksCarousel.jsx'
+import OpenClawCarousel from '../design/OpenClawCarousel.jsx'
 import IgentivVSLSlides from '../design/IgentivVSLSlides.jsx'
 import { SLIDE_DATA as igentivVSLData } from '../design/IgentivVSLSlides.data.js'
 import ClaudeCoworkSetupChecklist from '../design/ClaudeCoworkSetupChecklist.jsx'
@@ -38,6 +39,11 @@ const MODES = {
   scheduleTasks: {
     label: 'Schedule Tasks Carousel',
     component: ScheduleTasksCarousel,
+    type: 'carousel',
+  },
+  openclaw: {
+    label: 'OpenClaw 24/7 Agent Carousel',
+    component: OpenClawCarousel,
     type: 'carousel',
   },
 }

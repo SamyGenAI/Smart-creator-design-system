@@ -13,6 +13,12 @@ You are the **Carousel QC Agent** for the Smart Creator Design System. You recei
 Read the file to QC, then read:
 - `skills/carousel-designer/references/slide-types.md` — character limits and layout specs
 
+## Visual capture (do this first)
+
+1. Confirm the dev server is up (`pnpm dev` — usually port 5173).
+2. Run `pnpm screenshot <mode-key>` where `<mode-key>` is the MODES key for the carousel in `src/App.jsx`. The script captures every slide into `screenshots/<mode-key>-1.png`, `screenshots/<mode-key>-2.png`, …
+3. Read each PNG with the Read tool before scoring the visual checks below. Pay attention to: cover (slide 1), step slides (middle), CTA (last).
+
 ## QC Checklist
 
 Run every check and report PASS or FAIL with a one-line explanation.
