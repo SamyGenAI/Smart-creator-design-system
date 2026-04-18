@@ -60,7 +60,7 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
 
 5. **Color alternation** — Never place two adjacent cells with the same color. Cycle through: blue → orange → green → pink. Navy glass sections break the pattern.
 
-6. **Write the JSX file** — Create `design/[Name]Infographic.jsx`. The outer structure is always:
+6. **Write the JSX file** — Create `design/infographics/[Name]Infographic.jsx`. The outer structure is always:
    ```
    Canvas 1080×1350px, overflow-hidden
    └── Inner column 981px, flex-col, h-full
@@ -167,15 +167,17 @@ Pick icons whose filename matches the content keyword. e.g. `database--Streamlin
 
 ## Component imports
 
+Files in `design/infographics/` are two levels below the project root, so component imports use `../../components/`:
+
 ```jsx
-import InfographicHeader from '../components/InfographicHeader.jsx'
-import SquareGridTexture from '../components/SquareGridTexture.jsx'
-import InfographicFooter from '../components/InfographicFooter.jsx'
-import GlassNavySection from '../components/GlassNavySection.jsx'
-import BlueSolidBorderSection from '../components/BlueSolidBorderSection.jsx'
-import OrangeSolidBorderSection from '../components/OrangeSolidBorderSection.jsx'
-import GreenSolidBorderSection from '../components/GreenSolidBorderSection.jsx'
-import PinkSolidBorderSection from '../components/PinkSolidBorderSection.jsx'
+import InfographicHeader from '../../components/InfographicHeader.jsx'
+import SquareGridTexture from '../../components/SquareGridTexture.jsx'
+import InfographicFooter from '../../components/InfographicFooter.jsx'
+import GlassNavySection from '../../components/GlassNavySection.jsx'
+import BlueSolidBorderSection from '../../components/BlueSolidBorderSection.jsx'
+import OrangeSolidBorderSection from '../../components/OrangeSolidBorderSection.jsx'
+import GreenSolidBorderSection from '../../components/GreenSolidBorderSection.jsx'
+import PinkSolidBorderSection from '../../components/PinkSolidBorderSection.jsx'
 ```
 
 ## Rules

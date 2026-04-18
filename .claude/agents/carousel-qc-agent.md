@@ -16,7 +16,7 @@ Read the file to QC, then read:
 ## Visual capture (do this first)
 
 1. Confirm the dev server is up (`pnpm dev` — usually port 5173).
-2. Run `pnpm screenshot <mode-key>` where `<mode-key>` is the MODES key for the carousel in `src/App.jsx`. The script captures every slide into `screenshots/<mode-key>-1.png`, `screenshots/<mode-key>-2.png`, …
+2. Run `pnpm screenshot <mode-key>` where `<mode-key>` is the MODES key for the carousel in `src/App.jsx`. The script captures every slide into `qc-screenshots/<mode-key>-1.png`, `qc-screenshots/<mode-key>-2.png`, … (git-ignored — separate from user-authored content in `public/screenshots/`).
 3. Read each PNG with the Read tool before scoring the visual checks below. Pay attention to: cover (slide 1), step slides (middle), CTA (last).
 
 ## QC Checklist

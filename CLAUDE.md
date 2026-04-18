@@ -51,7 +51,7 @@ User topic → copy-agent → design-agent → qc-agent → Done
 |------|-------|-----|--------|
 | 1 | `copy-agent` | Write content, count chars, assign hierarchy | JSON content brief |
 | 2 | *(user approval)* | Review copy brief | Approved brief |
-| 3 | `design-agent` | Pick components, calculate layout, write JSX | `design/*.jsx` + `src/App.jsx` |
+| 3 | `design-agent` | Pick components, calculate layout, write JSX | `design/infographics/*.jsx` + `src/App.jsx` |
 | 4 | `qc-agent` | Verify footer/overflow/chars/colors/structure | PASS or FAIL report |
 | 5 | *(if QC fails)* | Fix issues, re-run QC | Repeat until PASS |
 | 6 | *(optional)* | Push to Figma via `mcp__figma__generate_figma_design` | Design in Figma |
@@ -101,8 +101,14 @@ assets/
 13. **Logo scripts** — app icons: `node scripts/fetch-app-logo.mjs domain.com`. Wordmarks: `node scripts/fetch-logo.mjs domain.com`.
 14. **Text size is adaptive** — body text can increase to fill space (min 12px, max 18px for body), preserving hierarchy: card body < card title < section title < header.
 15. **Brand border sections use shared base** — always use wrapper components (`*SolidBorderSection`, `*WhiteBorderSection`), never duplicate JSX.
-16. **New templates must use bento grid pattern** — CSS Grid with `fr` rows, `flex-none` header/footer, `flex-1` grid body. See `ClaudeCoworkInfographic.jsx` as reference. The `Infographic.jsx` inline-grid pattern is legacy.
+16. **New templates must use bento grid pattern** — CSS Grid with `fr` rows, `flex-none` header/footer, `flex-1` grid body. See `design/infographics/ClaudeCoworkInfographic.jsx` as reference. The `Infographic.jsx` inline-grid pattern is legacy.
 17. **Figma push — never auto-open the browser.** When pushing to Figma, generate the capture ID then immediately give the user the URL and say "Please open this URL in your browser to trigger the capture." Do not use `cmd start`, `open`, or any shell command to open a browser. Just share the URL.
+18. **`design/` folder layout** — generated files live in typed subfolders:
+    - `design/infographics/[Name]Infographic.jsx` — 1080×1350 single-canvas pieces
+    - `design/carousels/[Name]Carousel.jsx` — 1080×1350 multi-slide carousels
+    - `design/pptx-slides/[Name]Slides.jsx` + `[Name]Slides.data.js` — 1280×720 slide decks
+    - `design/pptx-slides/output/[Name]Slides.pptx` — exported PPTX files
+    Files inside these subfolders import components with `'../../components/...'` (two levels up).
 
 ---
 
@@ -119,17 +125,17 @@ assets/
 
 **Workflow:**
 ```
-User topic → slide-agent → pnpm dev (preview) → pnpm export-slides [Name] → output/[Name]Slides.pptx
+User topic → slide-agent → pnpm dev (preview) → pnpm export-slides [Name] → design/pptx-slides/output/[Name]Slides.pptx
 ```
 
 **Data sidecar pattern** — agent always creates two files:
-- `design/[Name]Slides.data.js` — pure JS, exports `SLIDE_DATA`, no JSX
-- `design/[Name]Slides.jsx` — React component, imports from `.data.js`
+- `design/pptx-slides/[Name]Slides.data.js` — pure JS, exports `SLIDE_DATA`, no JSX
+- `design/pptx-slides/[Name]Slides.jsx` — React component, imports from `.data.js`
 
 The export script (`scripts/export-slides.mjs`) reads from `.data.js` directly (no Vite needed).
 
 **Export command:** `pnpm export-slides [DeckName]`
-Output: `output/[DeckName]Slides.pptx`
+Output: `design/pptx-slides/output/[DeckName]Slides.pptx`
 
 **App.jsx MODES entry** (added by agent):
 ```js

@@ -4,6 +4,8 @@ A Claude-Code-driven workflow for generating **on-brand LinkedIn infographics, c
 
 Instead of designing in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and a team of Claude subagents write the copy, lay out the design using fixed tokens/components, QC the result, and hand you a pixel-perfect React preview you can push to Figma with one MCP call.
 
+![Smart Creator Design System demo](public/smart-creator-design-system-GIF.gif)
+
 ---
 
 ## What you can generate
@@ -101,13 +103,13 @@ Inside Claude Code, just describe what you want:
 - **Carousel:** `/carousel` then describe the topic
 - **Slide deck:** `/slides` then describe the deck
 
-Claude will run the copy → design → QC pipeline, drop a JSX file in `design/`, and register it in `src/App.jsx`. Refresh the browser to see it.
+Claude will run the copy → design → QC pipeline, drop a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`), and register it in `src/App.jsx`. Refresh the browser to see it.
 
 ### Export a deck to `.pptx`
 
 ```bash
 pnpm export-slides MyDeckName
-# → output/MyDeckNameSlides.pptx
+# → design/pptx-slides/output/MyDeckNameSlides.pptx
 ```
 
 ### Push an infographic/carousel to Figma
@@ -147,7 +149,7 @@ If you want new layouts, add a component here and document its API in `reference
 
 ### D. Templates → `templates/`
 
-`Infographic.jsx` and `ClaudeCoworkInfographic.jsx` are reference layouts (bento grid pattern with CSS Grid `fr` rows). Claude copies these into `design/` and swaps the `data` object — it never touches structure.
+`Infographic.jsx` and `ClaudeCoworkInfographic.jsx` are reference layouts (bento grid pattern with CSS Grid `fr` rows). Claude copies these into `design/infographics/` and swaps the `data` object — it never touches structure.
 
 ### E. Character budgets → `references/space-budgets.md`
 
@@ -186,7 +188,11 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 ├── tailwind.config.js        ← all design tokens
 ├── components/               ← reusable JSX components
 ├── templates/                ← layout templates (Infographic, ClaudeCowork)
-├── design/                   ← generated work (one file per piece)
+├── design/                   ← generated work, grouped by type
+│   ├── infographics/         ←   1080×1350 single-canvas pieces
+│   ├── carousels/            ←   1080×1350 multi-slide carousels
+│   └── pptx-slides/          ←   1280×720 slide decks (.data.js + .jsx)
+│       └── output/           ←     exported .pptx files
 ├── src/App.jsx               ← preview app + MODES registry
 ├── scripts/
 │   ├── fetch-logo.mjs        ← Brandfetch wordmarks
@@ -194,8 +200,7 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 │   ├── export-slides.mjs     ← PPTX export
 │   └── screenshot.mjs        ← Playwright QC screenshots
 ├── assets/                   ← avatar, icons, logos, textures, illustrations
-├── figma/code-connect.json   ← Figma node ↔ component mappings
-└── output/                   ← exported .pptx files
+└── figma/code-connect.json   ← Figma node ↔ component mappings
 ```
 
 ---
@@ -218,7 +223,7 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 |---|---|
 | `pnpm dev` | Start Vite preview server |
 | `pnpm build` | Production build |
-| `pnpm export-slides [Name]` | Export a slide deck to `output/[Name]Slides.pptx` |
+| `pnpm export-slides [Name]` | Export a slide deck to `design/pptx-slides/output/[Name]Slides.pptx` |
 | `pnpm screenshot <mode-key>` | Take a QC screenshot of a generated piece |
 | `node scripts/fetch-logo.mjs domain.com` | Download wordmark SVG from Brandfetch |
 | `node scripts/fetch-app-logo.mjs domain.com` | Download square app icon from logo.dev |

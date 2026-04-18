@@ -31,7 +31,7 @@ if (!deckName) {
   process.exit(1)
 }
 
-const dataPath = path.join(ROOT, 'design', `${deckName}Slides.data.js`)
+const dataPath = path.join(ROOT, 'design', 'pptx-slides', `${deckName}Slides.data.js`)
 if (!fs.existsSync(dataPath)) {
   console.error(`Data file not found: ${dataPath}`)
   process.exit(1)
@@ -510,7 +510,7 @@ for (const slide of SLIDE_DATA.slides) {
 
 // ── Write output ──────────────────────────────────────────────────────────────
 
-const outputDir = path.join(ROOT, 'output')
+const outputDir = path.join(ROOT, 'design', 'pptx-slides', 'output')
 if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
 
 let outputPath = path.join(outputDir, `${deckName}Slides.pptx`)

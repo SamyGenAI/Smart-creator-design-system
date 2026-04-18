@@ -9,10 +9,14 @@
  * "claude-cowork-setup", "igentivVSL"). For slide decks every slide is
  * captured into a numbered file (out-1.png, out-2.png, ...).
  *
+ * Output defaults to qc-screenshots/<mode-key>.png — that folder is
+ * git-ignored and reserved for QC output. User-authored content screenshots
+ * live under public/screenshots/ and are served by Vite at /screenshots/...
+ *
  * Examples:
  *   node scripts/screenshot.mjs claude-cowork-setup
- *   node scripts/screenshot.mjs openclaw screenshots/openclaw.png
- *   node scripts/screenshot.mjs igentivVSL screenshots/vsl.png
+ *   node scripts/screenshot.mjs openclaw qc-screenshots/openclaw.png
+ *   node scripts/screenshot.mjs igentivVSL qc-screenshots/vsl.png
  *
  * Requires the dev server to be running (pnpm dev). Reads the actual port
  * from the Vite output if not 5173.
@@ -75,7 +79,7 @@ async function main() {
   }
 
   const port = await detectPort()
-  const out = outArg || `screenshots/${modeKey}.png`
+  const out = outArg || `qc-screenshots/${modeKey}.png`
   const outAbs = resolve(ROOT, out)
   mkdirSync(dirname(outAbs), { recursive: true })
 

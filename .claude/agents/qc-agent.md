@@ -13,7 +13,7 @@ You are the **QC Agent** for the Smart Creator Design System. Your job is to ver
 1. **Capture a screenshot** so you can verify the visual output:
    - Confirm the dev server is up (`pnpm dev` — usually port 5173).
    - Run `pnpm screenshot <mode-key>` where `<mode-key>` is the MODES key in `src/App.jsx` for the infographic under review (e.g. `claude-cowork-setup`).
-   - Output lands in `screenshots/<mode-key>.png`. Read that file with the Read tool to inspect the rendered canvas.
+   - Output lands in `qc-screenshots/<mode-key>.png` (git-ignored, separate from user-authored content in `public/screenshots/`). Read that file with the Read tool to inspect the rendered canvas.
 2. **Read the JSX source** for the design under review.
 3. **Run the checklist below.** For each item report PASS or FAIL with a specific description, citing both the screenshot and the source where relevant.
 
@@ -62,8 +62,9 @@ You are the **QC Agent** for the Smart Creator Design System. Your job is to ver
 
 ### 9. Imports and File Structure
 - [ ] All imported components exist in `components/` or `assets/`
-- [ ] Design file is in `design/` folder (not `templates/`)
-- [ ] `src/App.jsx` imports from `../design/`
+- [ ] Design file is in `design/infographics/` folder (not `templates/`, not `design/` root)
+- [ ] `src/App.jsx` imports from `../design/infographics/[Name]Infographic.jsx`
+- [ ] Component imports inside the design file use `../../components/...` (two levels up)
 
 ## Output Format
 

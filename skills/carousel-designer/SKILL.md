@@ -54,10 +54,10 @@ Delegate to the `carousel-design-agent` subagent with the approved brief.
 **Input:** The approved JSON content brief from Step 1
 
 **Output:**
-- `design/[Name]Carousel.jsx` — complete carousel with all slides as JSX
+- `design/carousels/[Name]Carousel.jsx` — complete carousel with all slides as JSX
 - Updated `src/App.jsx` — imports the new carousel
 
-**Each slide is an independent 1080×1350px panel.** The root component renders them side by side with `gap: 88px` (matching `LinkedInCarousel.jsx` pattern).
+**Each slide is an independent 1080×1350px panel.** The root component renders them side by side with `gap: 88px` (matching `design/carousels/LinkedInCarousel.jsx` pattern).
 
 ---
 
@@ -115,7 +115,8 @@ See `references/slide-types.md` for per-slide layout specs and character limits.
 8. **NEVER use em dashes (—).** Replace with a comma instead. Em dashes are banned from all slide copy and code strings.
 9. **Navbar uses flexbox, not pixels.** The Navbar must be a full-width flex container (`justify-content: space-between`) with padding, so "Samy Chouaf" and "Follow" always sit at the extremities and stay inside the slide.
 10. **Cover slide has no Navbar.** Only context, step, wrap-up slides get the navbar. CTA and Cover both skip it.
-11. **Screenshot assets live in `screenshots/carousels/{post-slug}/`.** Reference them as `/screenshots/carousels/{post-slug}/step-1.png`. The `screenshots/` folder is git-ignored. Never use relative paths like `../`.
-12. **`vite.config.js` uses `publicDir: '.'`** so both `/assets/` and `/screenshots/` are served from the project root. Note: Vite may use port 5174 if 5173 is taken, always check the terminal output for the actual URL.
+11. **Content screenshots live in `public/screenshots/carousels/{post-slug}/`.** Reference them in JSX as `/screenshots/carousels/{post-slug}/step-1.png`. Vite serves `public/` at the site root. Never use relative paths like `../`.
+12. **QC screenshots are separate.** `pnpm screenshot <mode-key>` writes to `qc-screenshots/` (git-ignored). Never reference QC output from JSX — it's for visual QC only.
+13. **Vite port** — defaults to 5173 but falls back to 5174 if taken. Always check the terminal output for the actual URL.
 13. **Figma push — never auto-open the browser.** Generate the capture ID, then give the user the URL and say "Please open this URL in your browser." Never use shell commands (`cmd start`, `open`, `xdg-open`) to open a browser. Just share the URL.
 14. **NEVER crop images.** Images must never be forced inside a fixed-size container with `objectFit: cover` or `overflow: hidden`. Always compute the display height from the image's natural aspect ratio (`displayHeight = displayWidth * naturalHeight / naturalWidth`) and size the container to fit the image. The component adapts to the image, not the other way around.

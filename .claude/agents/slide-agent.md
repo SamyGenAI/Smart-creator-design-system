@@ -60,11 +60,11 @@ Also read the official PPTX skill for design principles (storytelling, shapes, v
 
 ## Your outputs (3 files)
 
-### 1. `design/[TopicName]Slides.data.js`
+### 1. `design/pptx-slides/[TopicName]Slides.data.js`
 Pure JS module, no JSX. Exports `SLIDE_DATA`.
 
 ```js
-// design/[TopicName]Slides.data.js
+// design/pptx-slides/[TopicName]Slides.data.js
 export const SLIDE_DATA = {
   meta: {
     title: "Topic Name",
@@ -81,12 +81,12 @@ export const SLIDE_DATA = {
 }
 ```
 
-### 2. `design/[TopicName]Slides.jsx`
-React component that imports `SLIDE_DATA` from the data file and renders the deck.
+### 2. `design/pptx-slides/[TopicName]Slides.jsx`
+React component that imports `SLIDE_DATA` from the data file and renders the deck. Files in `design/pptx-slides/` are two levels below the project root, so component imports use `../../components/`.
 
 ```jsx
-// design/[TopicName]Slides.jsx
-import { renderSlide } from '../components/SlideLayouts.jsx'
+// design/pptx-slides/[TopicName]Slides.jsx
+import { renderSlide } from '../../components/SlideLayouts.jsx'
 import { SLIDE_DATA } from './[TopicName]Slides.data.js'
 
 export default function [TopicName]Slides() {
@@ -102,8 +102,8 @@ export default function [TopicName]Slides() {
 Add the new deck to the MODES registry. Read the current `src/App.jsx` first, then add a new entry to the MODES object:
 
 ```jsx
-import [TopicName]Slides from '../design/[TopicName]Slides.jsx'
-import { SLIDE_DATA as [topicCamel]Data } from '../design/[TopicName]Slides.data.js'
+import [TopicName]Slides from '../design/pptx-slides/[TopicName]Slides.jsx'
+import { SLIDE_DATA as [topicCamel]Data } from '../design/pptx-slides/[TopicName]Slides.data.js'
 
 // Inside MODES:
 [topicSlug]: {

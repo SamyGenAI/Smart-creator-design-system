@@ -27,8 +27,8 @@ User topic -> slide-agent -> Done
 Spawn the `slide-agent` subagent with the user's topic.
 
 The agent outputs:
-1. `design/[TopicName]Slides.data.js` — pure JS data file (no JSX)
-2. `design/[TopicName]Slides.jsx` — React deck component
+1. `design/pptx-slides/[TopicName]Slides.data.js` — pure JS data file (no JSX)
+2. `design/pptx-slides/[TopicName]Slides.jsx` — React deck component
 3. Updated `src/App.jsx` — adds new deck to MODES with slide count
 
 ---
@@ -97,7 +97,7 @@ The slide-agent has access to the official PPTX skill (`~/.agents/skills/pptx/`)
 
 1. Run `pnpm dev` — preview the deck in the slide viewer (arrows + dots)
 2. Export to PPTX: `pnpm export-slides [TopicName]`
-   - Output: `output/[TopicName]Slides.pptx`
+   - Output: `design/pptx-slides/output/[TopicName]Slides.pptx`
 3. Open in Keynote, add animations, record with Screen Studio
 
 ---

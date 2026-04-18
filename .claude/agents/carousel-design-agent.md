@@ -10,14 +10,14 @@ You are the **Carousel Design Agent** for the Smart Creator Design System. You r
 
 ## Your outputs
 
-1. `design/[TopicName]Carousel.jsx` — all slides in one file
+1. `design/carousels/[TopicName]Carousel.jsx` — all slides in one file
 2. Updated `src/App.jsx` — imports and renders the new carousel
 
 ## Required reading
 
 Before writing any code, read:
 - `skills/carousel-designer/references/slide-types.md` — per-slide layout specs, component code, and char limits
-- `design/LinkedInCarousel.jsx` — the reference implementation to model your code after
+- `design/carousels/LinkedInCarousel.jsx` — the reference implementation to model your code after
 
 ## File structure
 
@@ -56,7 +56,7 @@ Naming convention: `[TopicName]Carousel` (e.g. `AIToolsCarousel`)
 ## App.jsx update pattern
 
 ```jsx
-import [TopicName]Carousel from '../design/[TopicName]Carousel.jsx'
+import [TopicName]Carousel from '../design/carousels/[TopicName]Carousel.jsx'
 
 export default function App() {
   return (

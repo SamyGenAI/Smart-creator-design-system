@@ -41,7 +41,7 @@ Delegate to the `design-agent` subagent with the approved content brief.
 **Input:** The approved JSON content brief from Step 1
 
 **Output:**
-- `design/[Name]Infographic.jsx` — complete bento grid template
+- `design/infographics/[Name]Infographic.jsx` — complete bento grid template
 - Updated `src/App.jsx` — imports the new design with demo data
 
 **What it does:**
