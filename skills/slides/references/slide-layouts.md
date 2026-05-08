@@ -1,6 +1,6 @@
 # Slide Layouts — Pixel Specs & Character Limits
 
-Canvas: **1280×720px**. All coordinates are in px. Background: `#FFFCEB`.
+Canvas: **1280×720px**. All coordinates are in px. Background: `var(--theme-surface-canvas)`.
 All layouts import from `components/SlideLayouts.jsx`. All content areas use `SlideCard`.
 
 ---
@@ -18,7 +18,7 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 ```
 
 - Size: 1280×720, `position: relative`, `overflow: hidden`
-- Background: `#FFFCEB`
+- Background: `var(--theme-surface-canvas)`
 - First child: `SquareGridTexture width={1280} height={720} opacity={0.18}` (handled internally)
 
 ---
@@ -59,8 +59,8 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 | `image` | string (asset path) | — | no |
 
 **Pixel zones:**
-- Navy title bar: `SlideCard variant="navy"`, `top: 56, left: 60, width: 1160, height: 80`, `fontSize: 26, fontWeight: 700`
-- Body card: `SlideCard variant="white"`, `top: 160, left: 60, width: 1160 (no image) / 640 (with image), height: 496`
+- Primary title bar: `SlideCard variant="primary"`, `top: 56, left: 60, width: 1160, height: 80`, `fontSize: 26, fontWeight: 700`
+- Body card: `SlideCard variant="surface"`, `top: 160, left: 60, width: 1160 (no image) / 640 (with image), height: 496`
 - Image card: `SlideCard variant="glass"`, `top: 160, right: 60, width: 488, height: 496`
 
 **Example data:**
@@ -84,7 +84,7 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 
 **Pixel zones (55/45 split):**
 - Title bar: same as `content`
-- Left panel: `SlideCard variant="white"`, `top: 160, left: 60, width: 628, height: 468`
+- Left panel: `SlideCard variant="surface"`, `top: 160, left: 60, width: 628, height: 468`
 - Right panel: `SlideCard variant="glass"`, `top: 160, right: 60, width: 492, height: 468`
 
 **Example data:**
@@ -134,7 +134,7 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 - Bullet rows start at `top: 160`, each row `height: 80`, `gap: 14` between rows
 - Icon: `40×40px`, left-aligned inside row
 - Label: `fontSize: 18, fontWeight: 700`
-- Desc: `fontSize: 16, fontWeight: 500, color: #717188`
+- Desc: `fontSize: 16, fontWeight: 500, color: var(--theme-color-text-secondary)`
 
 **Max 5 bullets.** Total height budget: 160 + 5×(80+14) − 14 = 616px (fits within 720px canvas).
 
@@ -163,8 +163,8 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 
 **Card:** `SlideCard variant="glass"`, centered both axes, `width: 960, padding: 48px 56px, borderRadius: 28`
 - Quote: `fontSize: 26, fontStyle: italic, lineHeight: 40px`
-- Attribution: `fontSize: 18, fontWeight: 700, color: #092c69`
-- Decorative `"` glyph: `fontSize: 280, color: #092c69, opacity: 0.07`
+- Attribution: `fontSize: 18, fontWeight: 700, color: var(--theme-color-text-primary)`
+- Decorative `"` glyph: `fontSize: 280, color: var(--theme-color-text-primary), opacity: 0.07`
 
 **Example data:**
 ```js
@@ -188,8 +188,8 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 **Pixel zones:**
 - Avatar: `160×160px, borderRadius: 50%`, centered at `top: 100`
 - "Follow for more": `fontSize: 52, fontWeight: 700`, centered at `top: 300`
-- Author name: `fontSize: 26, fontWeight: 600, color: #092c69`, centered at `top: 400`
-- Handle: `fontSize: 20, fontWeight: 400, color: #717188`, centered at `top: 444`
+- Author name: `fontSize: 26, fontWeight: 600, color: var(--theme-color-text-primary)`, centered at `top: 400`
+- Handle: `fontSize: 20, fontWeight: 400, color: var(--theme-color-text-secondary)`, centered at `top: 444`
 - Illustration: `right: 80, bottom: 40, width: 220, height: 280`
 
 **Example data:**

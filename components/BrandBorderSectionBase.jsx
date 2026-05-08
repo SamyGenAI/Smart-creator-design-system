@@ -5,51 +5,60 @@
  *   - solid: colored border (no shadow)
  *   - white: white border + drop shadow
  *
- * Themes:
- *   - blue, orange, pink, green
+ * Themes (semantic IDs):
+ *   - primary, accent, support, success
+ *
+ *
+ * All color values are read from DESIGN.md-driven CSS variables.
+ * Edit DESIGN.md and run `pnpm tokens:gen` to change theme colors.
  */
-const THEME_STYLES = {
-  blue: {
-    cardBg: "rgba(126, 218, 255, 0.15)",
-    headerBg: "#b4eaff",
-    borderColor: "#7edaff",
+const BORDER_SECTION_THEME_STYLES = {
+  primary: {
+    cardBg: 'var(--theme-surface-layer-4)',
+    headerBg: 'var(--theme-accent-1)',
+    borderColor: 'var(--theme-border-1)',
   },
-  orange: {
-    cardBg: "rgba(255, 145, 77, 0.15)",
-    headerBg: "#ff914d",
-    borderColor: "#ff914d",
+  accent: {
+    cardBg: 'var(--theme-surface-layer-6)',
+    headerBg: 'var(--theme-border-5)',
+    borderColor: 'var(--theme-border-5)',
   },
-  pink: {
-    cardBg: "rgba(255, 178, 218, 0.15)",
-    headerBg: "#ffb2da",
-    borderColor: "#ffb2da",
+  support: {
+    cardBg: 'var(--theme-surface-layer-2)',
+    headerBg: 'var(--theme-border-4)',
+    borderColor: 'var(--theme-border-4)',
   },
-  green: {
-    cardBg: "rgba(169, 255, 62, 0.15)",
-    headerBg: "#a9ff3e",
-    borderColor: "#a9ff3e",
+  success: {
+    cardBg: 'var(--theme-surface-layer-5)',
+    headerBg: 'var(--theme-border-2)',
+    borderColor: 'var(--theme-border-2)',
   },
 }
 
-const VARIANT_STYLES = {
+const BORDER_SECTION_VARIANT_STYLES = {
   solid: {
-    outerBorderWidth: "1px",
-    headerBorderWidth: "2px",
+    outerBorderWidth: '1px',
+    headerBorderWidth: '2px',
     shadow: undefined,
-    titleTopClass: "top-[24px]",
-    badgePositionClass: "left-[4px] top-[3px]",
+    titleTopClass: 'top-[24px]',
+    badgePositionClass: 'left-[4px] top-[3px]',
   },
   white: {
-    outerBorderWidth: "3px",
-    headerBorderWidth: "3px",
-    shadow: "0px 4px 4px 0px rgba(0,0,0,0.25)",
-    titleTopClass: "top-[22px]",
-    badgePositionClass: "left-[2px] top-px",
+    outerBorderWidth: '3px',
+    headerBorderWidth: '3px',
+    shadow: 'var(--theme-shadow-card)',
+    titleTopClass: 'top-[22px]',
+    badgePositionClass: 'left-[2px] top-px',
   },
 }
 
+const COLOR_ON_PRIMARY = 'var(--theme-color-on-primary)'
+const COLOR_NEUTRAL_STRONG = 'var(--color\\/neutral\\/1000)'
+const COLOR_TEXT_PRIMARY = 'var(--theme-color-text-primary)'
+const FONT_TITLE = 'var(--font\\/family\\/title)'
+
 export default function BrandBorderSectionBase({
-  theme = "blue",
+  theme = "primary",
   variant = "solid",
   title = "xxx",
   number = "1",
@@ -60,14 +69,14 @@ export default function BrandBorderSectionBase({
   children = null,
   className,
 }) {
-  const themeStyles = THEME_STYLES[theme] || THEME_STYLES.blue
-  const variantStyles = VARIANT_STYLES[variant] || VARIANT_STYLES.solid
+  const themeStyles = BORDER_SECTION_THEME_STYLES[theme] || BORDER_SECTION_THEME_STYLES.primary
+  const variantStyles = BORDER_SECTION_VARIANT_STYLES[variant] || BORDER_SECTION_VARIANT_STYLES.solid
 
   return (
     <div
       className={
         className ||
-        `content-stretch flex flex-col gap-[10px] ${heightClass} items-start relative rounded-[20px] ${widthClass} overflow-hidden`
+        `content-stretch flex flex-col gap-[10px] ${heightClass} items-start relative rounded-glass ${widthClass} overflow-hidden`
       }
       style={
         className
@@ -76,7 +85,7 @@ export default function BrandBorderSectionBase({
               backgroundColor: themeStyles.cardBg,
               borderStyle: "solid",
               borderWidth: variantStyles.outerBorderWidth,
-              borderColor: variant === "white" ? "#ffffff" : themeStyles.borderColor,
+              borderColor: variant === "white" ? COLOR_ON_PRIMARY : themeStyles.borderColor,
               boxShadow: variantStyles.shadow,
             }
       }
@@ -84,17 +93,18 @@ export default function BrandBorderSectionBase({
       data-node-id={nodeIds.root}
     >
       <div
-        className="h-[51px] rounded-[10px] shrink-0 w-full border-solid"
+        className="h-[51px] rounded-glass-header shrink-0 w-full border-solid"
         style={{
           backgroundColor: themeStyles.headerBg,
           borderWidth: variantStyles.headerBorderWidth,
-          borderColor: variant === "white" ? "#ffffff" : themeStyles.borderColor,
+          borderColor: variant === "white" ? COLOR_ON_PRIMARY : themeStyles.borderColor,
         }}
         data-node-id={nodeIds.header}
       />
 
       <div
-        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-bold h-[39px] justify-center leading-[0] left-1/2 text-[24px] text-[color:var(--text\\/primary,black)] text-center ${variantStyles.titleTopClass} tracking-[-0.72px] w-full px-[44px]`}
+        className={`-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-bold h-[39px] justify-center leading-[0] left-1/2 text-[24px] text-center ${variantStyles.titleTopClass} tracking-[-0.72px] w-full px-[44px]`}
+        style={{ color: COLOR_TEXT_PRIMARY, fontFamily: FONT_TITLE }}
         data-node-id={nodeIds.title}
       >
         <p className="leading-[normal]">{title}</p>
@@ -106,11 +116,13 @@ export default function BrandBorderSectionBase({
         data-node-id={nodeIds.badgeGroup}
       >
         <div
-          className="absolute bg-[var(--color\/neutral\/1000,black)] h-[42px] left-[5px] rounded-[5px] top-[4px] w-[44px]"
+          className="absolute h-[42px] left-[5px] rounded-[5px] top-[4px] w-[44px]"
+          style={{ backgroundColor: COLOR_NEUTRAL_STRONG }}
           data-node-id={nodeIds.badge}
         />
         <div
-          className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-bold h-[21px] justify-center leading-[0] left-[27px] text-[24px] text-center text-white top-[24.5px] tracking-[-0.72px] w-[22px]"
+          className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-bold h-[21px] justify-center leading-[0] left-[27px] text-[24px] text-center top-[24.5px] tracking-[-0.72px] w-[22px]"
+          style={{ color: COLOR_ON_PRIMARY, fontFamily: FONT_TITLE }}
           data-node-id={nodeIds.number}
         >
           <p className="leading-[normal]">{number}</p>

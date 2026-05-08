@@ -18,7 +18,7 @@
 
 import InfographicHeader from '../../components/InfographicHeader.jsx'
 import SquareGridTexture from '../../components/SquareGridTexture.jsx'
-import GlassNavySection from '../../components/GlassNavySection.jsx'
+import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
 import InfographicFooter from '../../components/InfographicFooter.jsx'
 import NumberBullet from '../../components/NumberBullet.jsx'
 import Checklist from '../../components/Checklist.jsx'
@@ -26,10 +26,12 @@ import IconBullet from '../../components/IconBullet.jsx'
 import TextBox from '../../components/TextBox.jsx'
 import ColoredTextBoxes from '../../components/ColoredTextBoxes.jsx'
 
+const GLASS_CARD = "col-1 ml-0 mt-0 row-1"
+
 export default function ClaudeCodeSetupInfographic() {
   return (
     <div
-      className="bg-[#fffceb] content-stretch flex gap-[10px] items-center justify-center relative"
+      className="bg-canvas content-stretch flex gap-[10px] items-center justify-center relative"
       style={{ width: '1080px', height: '1350px', flexShrink: 0, overflow: 'hidden' }}
       data-name="ClaudeCodeSetupInfographic"
       data-node-id="5:15851"
@@ -62,21 +64,21 @@ export default function ClaudeCodeSetupInfographic() {
             className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative row-1"
             data-name="Intro"
           >
-            <GlassNavySection
+            <PrimaryGlassSection
               title="What is Claude Code?"
-              className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[257px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[321px]"
+              className={`${GLASS_CARD} h-[257px] w-[321px]`}
               titleSize="20px"
             />
             {/* Tagline pill */}
             <div className="col-1 ml-[18px] mt-[80px] relative row-1">
               <TextBox
                 text="The AI coding CLI"
-                color="var(--components\/card-title\/green,#d2ff9a)"
+                color="var(--theme-accent-2)"
               />
             </div>
             {/* Body text */}
             <div className="col-1 ml-[18px] mt-[126px] relative row-1 w-[284px]">
-              <p className="font-['Montserrat',sans-serif] font-medium text-[12px] text-black tracking-[-0.36px] leading-[1.5]">
+              <p className="font-montserrat font-medium text-[12px] text-black tracking-[-0.36px] leading-[1.5]">
                 A terminal AI agent that reads your codebase, writes code, and runs tools — right in your project.
               </p>
             </div>
@@ -87,10 +89,10 @@ export default function ClaudeCodeSetupInfographic() {
             className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[344px] mt-0 place-items-start relative row-1"
             data-name="Layer 1"
           >
-            <GlassNavySection
+            <PrimaryGlassSection
               title="Layer 1 — Basic Install"
               iconSrc="/assets/icons/programming-apps-websites/programming-keyboard-type--Streamline-Freehand.svg"
-              className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[257px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[633px]"
+              className={`${GLASS_CARD} h-[257px] w-[633px]`}
               titleSize="20px"
             />
             {/* Checklist */}
@@ -102,15 +104,15 @@ export default function ClaudeCodeSetupInfographic() {
             </div>
             {/* Tip box */}
             <div className="col-1 ml-[340px] mt-[70px] relative row-1 w-[262px]">
-              <p className="font-['Montserrat',sans-serif] font-bold text-[12px] text-black tracking-[-0.36px] leading-[1.5] mb-[6px]">
+              <p className="font-montserrat font-bold text-[12px] text-black tracking-[-0.36px] leading-[1.5] mb-[6px]">
                 Quick start:
               </p>
               <TextBox
                 text="npm i -g @anthropic-ai/claude-code"
-                color="var(--components\/card-title\/blue,#b4eaff)"
+                color="var(--theme-accent-1)"
                 className="h-[34px] relative w-[260px]"
               />
-              <p className="font-['Montserrat',sans-serif] font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.5] mt-[10px]">
+              <p className="font-montserrat font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.5] mt-[10px]">
                 Then run <strong>claude</strong> in any git repo. No config needed.
               </p>
             </div>
@@ -122,10 +124,10 @@ export default function ClaudeCodeSetupInfographic() {
           className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0"
           data-name="Row 2"
         >
-          <GlassNavySection
+          <PrimaryGlassSection
             title="Layer 2 — CLAUDE.md"
             iconSrc="/assets/icons/programming-apps-websites/file-code-share-1--Streamline-Freehand.svg"
-            className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[225px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[977px]"
+            className={`${GLASS_CARD} h-[225px] w-[977px]`}
             titleSize="20px"
           />
           {/* IconBullet — what goes in CLAUDE.md */}
@@ -137,16 +139,16 @@ export default function ClaudeCodeSetupInfographic() {
                 { iconSrc: '/assets/icons/programming-apps-websites/module-three-boxes--Streamline-Freehand.svg', iconAlt: 'context', text: 'Key file paths & architecture' },
                 { iconSrc: '/assets/icons/programming-apps-websites/programming-hold-code--Streamline-Freehand.svg', iconAlt: 'session', text: 'Read at every session start' },
               ]}
-              accentColor="var(--components\/card-title\/amber,#fde68a)"
+              accentColor="var(--theme-accent-3)"
               className="col-1 h-[173px] ml-0 mt-0 relative row-1 w-[319px]"
             />
           </div>
           {/* Tip callout */}
           <div className="col-1 ml-[390px] mt-[72px] relative row-1 w-[560px]">
-            <p className="font-['Montserrat',sans-serif] font-bold text-[13px] text-black tracking-[-0.39px] leading-[1.5] mb-[8px]">
+            <p className="font-montserrat font-bold text-[13px] text-black tracking-[-0.39px] leading-[1.5] mb-[8px]">
               Pro tip — keep it under 200 lines
             </p>
-            <p className="font-['Montserrat',sans-serif] font-medium text-[12px] text-black tracking-[-0.36px] leading-[1.6]">
+            <p className="font-montserrat font-medium text-[12px] text-black tracking-[-0.36px] leading-[1.6]">
               Claude reads CLAUDE.md at the start of every session. If it's too long, instructions get truncated. Be concise: stack, conventions, what to avoid, and key file paths.
             </p>
           </div>
@@ -162,14 +164,14 @@ export default function ClaudeCodeSetupInfographic() {
             className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative row-1"
             data-name="Layer 3"
           >
-            <GlassNavySection
+            <PrimaryGlassSection
               title="Layer 3 — MCP"
               iconSrc="/assets/icons/programming-apps-websites/plugin-jigsaw-puzzle--Streamline-Freehand.svg"
-              className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[314px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[321px]"
+              className={`${GLASS_CARD} h-[314px] w-[321px]`}
               titleSize="20px"
             />
             <div className="col-1 ml-[18px] mt-[68px] relative row-1">
-              <p className="font-['Montserrat',sans-serif] font-bold text-[12px] text-black tracking-[-0.36px] leading-[1.5] w-[280px] mb-[8px]">
+              <p className="font-montserrat font-bold text-[12px] text-black tracking-[-0.36px] leading-[1.5] w-[280px] mb-[8px]">
                 Connect external tools via MCP:
               </p>
             </div>
@@ -182,7 +184,7 @@ export default function ClaudeCodeSetupInfographic() {
             <div className="col-1 ml-[18px] mt-[238px] relative row-1">
               <TextBox
                 text="Figma · GitHub · Postgres"
-                color="var(--components\/card-title\/green,#d2ff9a)"
+                color="var(--theme-accent-2)"
                 className="h-[34px] relative w-[280px]"
               />
             </div>
@@ -193,14 +195,14 @@ export default function ClaudeCodeSetupInfographic() {
             className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[344px] mt-0 place-items-start relative row-1"
             data-name="Layer 4"
           >
-            <GlassNavySection
+            <PrimaryGlassSection
               title="Layer 4 — Agents"
               iconSrc="/assets/icons/programming-apps-websites/programming-user-code--Streamline-Freehand.svg"
-              className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[314px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[308px]"
+              className={`${GLASS_CARD} h-[314px] w-[308px]`}
               titleSize="20px"
             />
             <div className="col-1 ml-[12px] mt-[68px] relative row-1 w-[280px]">
-              <p className="font-['Montserrat',sans-serif] font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.5] mb-[10px]">
+              <p className="font-montserrat font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.5] mb-[10px]">
                 Define specialized subagents in <strong>.claude/agents/</strong>. Each has a name, model, and system prompt.
               </p>
             </div>
@@ -217,25 +219,25 @@ export default function ClaudeCodeSetupInfographic() {
             className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[673px] mt-0 place-items-start relative row-1"
             data-name="Layer 5"
           >
-            <GlassNavySection
+            <PrimaryGlassSection
               title="Layer 5 — Hooks"
               iconSrc="/assets/icons/programming-apps-websites/android-settings--Streamline-Freehand.svg"
-              className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[314px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[308px]"
+              className={`${GLASS_CARD} h-[314px] w-[308px]`}
               titleSize="20px"
             />
             <div className="col-1 ml-[12px] mt-[68px] relative row-1 w-[280px]">
-              <p className="font-['Montserrat',sans-serif] font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.5] mb-[10px]">
+              <p className="font-montserrat font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.5] mb-[10px]">
                 Shell commands triggered by Claude events. Exit non-zero to block Claude.
               </p>
             </div>
             <div className="col-1 ml-[12px] mt-[115px] relative row-1">
               <ColoredTextBoxes
-                color="var(--components\/card-title\/blue,#b4eaff)"
+                color="var(--theme-accent-1)"
                 className="col-1 h-[98px] ml-0 mt-0 relative row-1 w-[172px]"
               />
             </div>
             <div className="col-1 ml-[12px] mt-[222px] relative row-1 w-[280px]">
-              <p className="font-['Montserrat',sans-serif] font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.4]">
+              <p className="font-montserrat font-medium text-[11px] text-black tracking-[-0.33px] leading-[1.4]">
                 PreToolUse · PostToolUse · Stop
               </p>
             </div>
@@ -247,13 +249,13 @@ export default function ClaudeCodeSetupInfographic() {
           className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0"
           data-name="Row 4"
         >
-          <GlassNavySection
+          <PrimaryGlassSection
             title="Which layer are you on?"
-            className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[176px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[981px]"
+            className={`${GLASS_CARD} h-[176px] w-[981px]`}
             titleSize="24px"
           />
           <div className="col-1 ml-[32px] mt-[68px] relative row-1 w-[900px]">
-            <p className="font-['Montserrat',sans-serif] font-medium text-[14px] text-black tracking-[-0.42px] leading-[1.6]">
+            <p className="font-montserrat font-medium text-[14px] text-black tracking-[-0.42px] leading-[1.6]">
               Drop your number in the comments — 1 (just installed) to 5 (full hooks pipeline). Let's compare setups.
             </p>
           </div>

@@ -38,14 +38,9 @@
 import InfographicHeader from '../../components/InfographicHeader.jsx'
 import SquareGridTexture from '../../components/SquareGridTexture.jsx'
 import InfographicFooter from '../../components/InfographicFooter.jsx'
-import GlassNavySection from '../../components/GlassNavySection.jsx'
-import BlueSolidBorderSection from '../../components/BlueSolidBorderSection.jsx'
-import OrangeSolidBorderSection from '../../components/OrangeSolidBorderSection.jsx'
-import GreenSolidBorderSection from '../../components/GreenSolidBorderSection.jsx'
-import PinkSolidBorderSection from '../../components/PinkSolidBorderSection.jsx'
+import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
+import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
 import Pyramid from '../../assets/infographics/Pyramid.jsx'
-
-const GLASS = "bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white content-stretch flex flex-col gap-[10px] h-full w-full items-start relative rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
 
 export default function AIAutonomyInfographic({ data = {} }) {
   const {
@@ -66,7 +61,7 @@ export default function AIAutonomyInfographic({ data = {} }) {
 
   return (
     <div
-      className="bg-[#fffceb] flex items-center justify-center relative"
+      className="bg-canvas flex items-center justify-center relative"
       style={{ width: '1080px', height: '1350px', flexShrink: 0, overflow: 'hidden' }}
       data-name="AIAutonomyInfographic"
     >
@@ -96,34 +91,38 @@ export default function AIAutonomyInfographic({ data = {} }) {
             gap: '12px',
           }}
         >
-          {/* Row 1 — Intro (full width, navy glass) */}
+          {/* Row 1 — Intro (full width, primary glass) */}
           <div style={{ gridColumn: '1 / -1' }}>
-            <GlassNavySection
+            <PrimaryGlassSection
               title={sections.intro || "What is AI Autonomy?"}
-              className={GLASS}
+              className="h-full w-full"
               titleSize="24px"
             />
           </div>
 
           {/* Row 2 — Level 1 blue + Level 2 orange */}
-          <BlueSolidBorderSection
+          <BrandBorderSectionBase
+            theme="primary"
             title={sections.level1 || "Assist the Human"}
             number="1"
             widthClass="w-full"
             heightClass="h-full"
+            rootName="section-primary"
           />
-          <OrangeSolidBorderSection
+          <BrandBorderSectionBase
+            theme="accent"
             title={sections.level2 || "Augment Decisions"}
             number="2"
             widthClass="w-full"
             heightClass="h-full"
+            rootName="section-accent"
           />
 
-          {/* Row 3 — Pyramid visual (full width, navy glass with Pyramid child) */}
+          {/* Row 3 — Pyramid visual (full width, primary glass with Pyramid child) */}
           <div style={{ gridColumn: '1 / -1' }}>
-            <GlassNavySection
+            <PrimaryGlassSection
               title={sections.pyramidTitle || "The 5 Levels"}
-              className={GLASS}
+              className="h-full w-full"
               titleSize="24px"
             >
               <div className="flex-1 w-full flex items-center justify-center px-[20px] pb-[10px]">
@@ -132,33 +131,39 @@ export default function AIAutonomyInfographic({ data = {} }) {
                   className="relative w-[410px] h-[172.5px]"
                 />
               </div>
-            </GlassNavySection>
+            </PrimaryGlassSection>
           </div>
 
           {/* Row 4 — Level 3 green + Level 4 pink */}
-          <GreenSolidBorderSection
+          <BrandBorderSectionBase
+            theme="success"
             title={sections.level3 || "Automate Tasks"}
             number="3"
             widthClass="w-full"
             heightClass="h-full"
+            rootName="section-success"
           />
-          <PinkSolidBorderSection
+          <BrandBorderSectionBase
+            theme="support"
             title={sections.level4 || "Act Autonomously"}
             number="4"
             widthClass="w-full"
             heightClass="h-full"
+            rootName="section-support"
           />
 
-          {/* Row 5 — Level 5 orange + Illustration navy glass */}
-          <OrangeSolidBorderSection
+          {/* Row 5 — Level 5 accent + Illustration primary glass */}
+          <BrandBorderSectionBase
+            theme="accent"
             title={sections.level5 || "Self-Evolve"}
             number="5"
             widthClass="w-full"
             heightClass="h-full"
+            rootName="section-accent"
           />
-          <GlassNavySection
+          <PrimaryGlassSection
             title={illustrationTitle}
-            className={GLASS}
+            className="h-full w-full"
             titleSize="24px"
           >
             <div className="flex-1 w-full flex items-center justify-center pb-[10px]">
@@ -168,13 +173,13 @@ export default function AIAutonomyInfographic({ data = {} }) {
                 className="w-auto h-full max-h-[120px] object-contain"
               />
             </div>
-          </GlassNavySection>
+          </PrimaryGlassSection>
 
-          {/* Row 6 — CTA (full width, navy glass) */}
+          {/* Row 6 — CTA (full width, primary glass) */}
           <div style={{ gridColumn: '1 / -1' }}>
-            <GlassNavySection
+            <PrimaryGlassSection
               title={sections.cta || "Start Your AI Journey"}
-              className={GLASS}
+              className="h-full w-full"
               titleSize="24px"
             />
           </div>

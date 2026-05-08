@@ -45,9 +45,9 @@ Delegate to the `design-agent` subagent with the approved content brief.
 - Updated `src/App.jsx` — imports the new design with demo data
 
 **What it does:**
-- Maps section types to components (GlassNavySection, [Color]SolidBorderSection, etc.)
+- Maps section types to components (PrimaryGlassSection, BrandBorderSectionBase, etc.)
 - Calculates grid rows and `fr` weights based on content density
-- Alternates colors (blue → orange → green → pink)
+- Alternates semantic accent variants (theme-defined sequence)
 - Writes the JSX using the mandatory bento grid pattern (flex-none header/footer, flex-1 grid)
 
 ---
@@ -83,17 +83,16 @@ Delegate to the `qc-agent` subagent to verify the output.
 ## After QC Passes
 
 1. Run `pnpm dev` and verify visually in the browser
-2. If the user wants to push to Figma, call `mcp__figma__generate_figma_design`
+2. If the user wants to push to Figma, call `mcp__figma__generate_figma_design` (push-to-edit flow)
 
 ---
 
-## Core Design Laws
+## Core Design Laws (Skill-Specific)
 
 1. **Never use plain bullets or dashes.** Every list item needs a visual anchor.
 2. **Every card must feel full.** ≤15% empty space target.
-3. **Color signals meaning.** Blue = features, Amber = process, Green = actions, Pink = ranked items.
+3. **Color signals meaning.** Use semantic accent tiers from theme tokens (e.g. primary/accent/support/success) based on section intent.
 4. **Section headers use action verbs.** "Create Files" not "Files".
 5. **Empty bodies stay empty.** No placeholder content or dashed borders.
 6. **All templates use the bento grid pattern.** Legacy inline-grid is deprecated.
-7. **Figma push — never auto-open the browser.** Generate the capture ID, then give the user the URL and say "Please open this URL in your browser." Never use shell commands (`cmd start`, `open`, `xdg-open`) to open a browser. Just share the URL.
-8. **NEVER crop images.** Images must never be forced inside a fixed-size container with `objectFit: cover` or `overflow: hidden`. Always compute the display height from the image's natural aspect ratio (`displayHeight = displayWidth * naturalHeight / naturalWidth`) and size the container to fit the image. The component adapts to the image, not the other way around.
+7. **Follow global operational rules from `CLAUDE.md`.** This includes Figma push behavior/account scope and image containment rules.

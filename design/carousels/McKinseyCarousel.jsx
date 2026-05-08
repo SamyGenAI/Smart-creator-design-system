@@ -1,61 +1,34 @@
+import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+
 /**
  * LinkedIn Carousel — "How to make McKinsey level slides with AI"
  * 13 slides: Cover + 2 Story + Rules + 6 Steps + Result + Comparison + CTA
- * 1080x1350px · #fffceb bg · Montserrat
+ * 1080x1350px · tokenized background · Montserrat
  */
 
-const CARD_SHADOW = '0px 4px 4px 0px rgba(0,0,0,0.25)'
-const ACCENT = '#b4eaff'
-const CREAM = '#fffceb'
-const BLACK = '#000'
-const FONT = "'Montserrat', sans-serif"
+const CARD_SHADOW = 'var(--theme-shadow-card)'
+const BACKGROUND_ACCENT = 'var(--theme-accent-1)'
+const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
+const SURFACE_ELEVATED = 'var(--theme-color-on-primary)'
+const TEXT_PRIMARY = 'var(--theme-color-text-primary)'
+const TEXT_SECONDARY = 'var(--theme-color-text-secondary)'
+const BORDER_PRIMARY = `3px solid ${TEXT_PRIMARY}`
+const FONT = "var(--font\/family\/title, 'Montserrat', sans-serif)"
 
-// ─── Navbar ───────────────────────────────────────────────────────────────────
-
-function Navbar() {
-  return (
-    <div style={{ position: 'absolute', top: 0, left: 0, width: 1080 }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 83,
-        paddingLeft: 56,
-        paddingRight: 56,
-        boxSizing: 'border-box',
-      }}>
-        <span style={{ fontSize: 24, fontWeight: 500, color: BLACK, fontFamily: FONT, whiteSpace: 'nowrap' }}>
-          Samy Chouaf
-        </span>
-        <span style={{ fontSize: 24, fontWeight: 500, color: BLACK, fontFamily: FONT, whiteSpace: 'nowrap' }}>
-          Follow
-        </span>
-      </div>
-      <div style={{ marginLeft: 56, marginRight: 56, height: 3, background: BLACK }} />
-    </div>
-  )
-}
-
-// ─── Slide shell ──────────────────────────────────────────────────────────────
+const NAVBAR = <CarouselNavbarEdge textColor={TEXT_PRIMARY} fontFamily={FONT} />
 
 function Slide({ children, nodeId, name, withNavbar = true }) {
   return (
-    <div
-      data-node-id={nodeId}
-      data-name={name}
-      style={{
-        position: 'relative',
-        width: 1080,
-        height: 1350,
-        background: CREAM,
-        flexShrink: 0,
-        overflow: 'hidden',
-        fontFamily: FONT,
-      }}
+    <CarouselSlideShell
+      nodeId={nodeId}
+      name={name}
+      withNavbar={withNavbar}
+      navbar={NAVBAR}
+      background={BACKGROUND_PRIMARY}
+      fontFamily={FONT}
     >
-      {withNavbar && <Navbar />}
       {children}
-    </div>
+    </CarouselSlideShell>
   )
 }
 
@@ -65,7 +38,7 @@ function AccentPill({ left, top, width, height = 76, radius = 20 }) {
   return (
     <div style={{
       position: 'absolute', left, top, width, height,
-      background: ACCENT, borderRadius: radius,
+      background: BACKGROUND_ACCENT, borderRadius: radius,
     }} />
   )
 }
@@ -80,11 +53,11 @@ function StepLabel({ number, text }) {
     }}>
       <span style={{
         fontSize: 64, fontWeight: 500, lineHeight: '70px',
-        color: BLACK, minWidth: 96, flexShrink: 0,
+        color: TEXT_PRIMARY, minWidth: 96, flexShrink: 0,
       }}>
         {number}.
       </span>
-      <p style={{ margin: 0, fontSize: 64, fontWeight: 500, lineHeight: '70px', color: BLACK }}>
+      <p style={{ margin: 0, fontSize: 64, fontWeight: 500, lineHeight: '70px', color: TEXT_PRIMARY }}>
         {text}
       </p>
     </div>
@@ -118,11 +91,11 @@ function BottomNote({ text, top }) {
     <div style={{
       position: 'absolute', left: 39, top,
       width: 1001, minHeight: 152,
-      background: '#fff', borderRadius: 40,
+      background: SURFACE_ELEVATED, borderRadius: 40,
       padding: '28px 40px', boxShadow: CARD_SHADOW,
       boxSizing: 'border-box', display: 'flex', alignItems: 'center',
     }}>
-      <p style={{ margin: 0, fontSize: 32, fontWeight: 500, lineHeight: '48px', color: BLACK }}>
+      <p style={{ margin: 0, fontSize: 32, fontWeight: 500, lineHeight: '48px', color: TEXT_PRIMARY }}>
         {text}
       </p>
     </div>
@@ -143,10 +116,10 @@ function SlideCover() {
         position: 'absolute',
         left: 230, top: 110,
         width: 620, height: 76,
-        border: '3px solid #000', borderRadius: 30,
+        border: BORDER_PRIMARY, borderRadius: 30,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <p style={{ margin: 0, fontSize: 40, fontWeight: 500, color: BLACK, lineHeight: '50px', whiteSpace: 'nowrap' }}>
+        <p style={{ margin: 0, fontSize: 40, fontWeight: 500, color: TEXT_PRIMARY, lineHeight: '50px', whiteSpace: 'nowrap' }}>
           Consulting-quality slides
         </p>
       </div>
@@ -158,7 +131,7 @@ function SlideCover() {
       <div style={{ position: 'absolute', left: 60, top: 230, width: 960 }}>
         <p style={{
           margin: 0, fontSize: 128, fontWeight: 700,
-          lineHeight: '130px', textAlign: 'center', color: BLACK,
+          lineHeight: '130px', textAlign: 'center', color: TEXT_PRIMARY,
         }}>
           How to make<br />McKinsey level<br />slides with AI
         </p>
@@ -186,7 +159,7 @@ function SlideStory1() {
         width: 860,
         fontSize: 96, fontWeight: 700,
         lineHeight: '110px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         Most slides confuse instead of convince.
       </p>
@@ -214,7 +187,7 @@ function SlideStory2() {
         width: 860,
         fontSize: 80, fontWeight: 700,
         lineHeight: '96px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         McKinsey consultants cracked the code decades ago.
       </p>
@@ -228,7 +201,7 @@ function SlideStory2() {
         width: 820,
         fontSize: 48, fontWeight: 500,
         lineHeight: '68px', textAlign: 'center',
-        color: 'rgba(0,0,0,0.6)', margin: 0,
+        color: TEXT_SECONDARY, margin: 0,
       }}>
         Now you can teach their exact rules to Claude, in minutes.
       </p>
@@ -274,7 +247,7 @@ function SlideRules() {
         width: 900,
         fontSize: 64, fontWeight: 700,
         lineHeight: '76px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         The 3 rules of great consulting slides
       </p>
@@ -286,24 +259,24 @@ function SlideRules() {
       }}>
         {rules.map(({ number, title, body, bodyWidth }) => (
           <div key={number} style={{
-            background: '#fff', borderRadius: 20,
+            background: SURFACE_ELEVATED, borderRadius: 20,
             padding: '28px 36px',
             boxShadow: CARD_SHADOW,
             display: 'flex', alignItems: 'flex-start', gap: 28,
           }}>
             <div style={{
               width: 72, height: 72, borderRadius: 36,
-              background: ACCENT,
+              background: BACKGROUND_ACCENT,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
-              <span style={{ fontSize: 28, fontWeight: 700, color: BLACK }}>{number}</span>
+              <span style={{ fontSize: 28, fontWeight: 700, color: TEXT_PRIMARY }}>{number}</span>
             </div>
             <div>
-              <p style={{ margin: 0, marginBottom: 10, fontSize: 38, fontWeight: 700, lineHeight: '50px', color: BLACK, whiteSpace: 'nowrap' }}>
+              <p style={{ margin: 0, marginBottom: 10, fontSize: 38, fontWeight: 700, lineHeight: '50px', color: TEXT_PRIMARY, whiteSpace: 'nowrap' }}>
                 {title}
               </p>
-              <p style={{ margin: 0, fontSize: 30, fontWeight: 500, lineHeight: '44px', color: 'rgba(0,0,0,0.6)', width: bodyWidth }}>
+              <p style={{ margin: 0, fontSize: 30, fontWeight: 500, lineHeight: '44px', color: TEXT_SECONDARY, width: bodyWidth }}>
                 {body}
               </p>
             </div>
@@ -443,7 +416,7 @@ function SlideResult() {
       <p style={{
         position: 'absolute', left: 90, top: 130, width: 900,
         fontSize: 64, fontWeight: 700, lineHeight: '80px',
-        textAlign: 'center', color: BLACK, margin: 0,
+        textAlign: 'center', color: TEXT_PRIMARY, margin: 0,
       }}>
         Claude reproduces any graph, fully editable in your brand
       </p>
@@ -464,7 +437,7 @@ function SlideResult() {
       <p style={{
         position: 'absolute', left: 110, top: 990, width: 860,
         fontSize: 36, fontWeight: 500, lineHeight: '52px',
-        textAlign: 'center', color: 'rgba(0,0,0,0.6)', margin: 0,
+        textAlign: 'center', color: TEXT_SECONDARY, margin: 0,
       }}>
         The output matches your colors, fonts, and layout. Every element is editable.
       </p>
@@ -482,14 +455,14 @@ function SlideComparison() {
       <p style={{
         position: 'absolute', left: 90, top: 130, width: 900,
         fontSize: 64, fontWeight: 700, lineHeight: '80px',
-        textAlign: 'center', color: BLACK, margin: 0,
+        textAlign: 'center', color: TEXT_PRIMARY, margin: 0,
       }}>
         Screenshot vs AI, spot the difference
       </p>
 
       {/* Left: Original — 834x525 -> 474x298 */}
       <div style={{ position: 'absolute', left: 42, top: 406, width: 474 }}>
-        <p style={{ margin: 0, marginBottom: 20, fontSize: 32, fontWeight: 600, lineHeight: '40px', color: BLACK, textAlign: 'center' }}>
+        <p style={{ margin: 0, marginBottom: 20, fontSize: 32, fontWeight: 600, lineHeight: '40px', color: TEXT_PRIMARY, textAlign: 'center' }}>
           Original screenshot
         </p>
         <img
@@ -501,7 +474,7 @@ function SlideComparison() {
 
       {/* Right: AI recreation — 1023x576 -> 474x267 */}
       <div style={{ position: 'absolute', left: 562, top: 406, width: 474 }}>
-        <p style={{ margin: 0, marginBottom: 20, fontSize: 32, fontWeight: 600, lineHeight: '40px', color: BLACK, textAlign: 'center' }}>
+        <p style={{ margin: 0, marginBottom: 20, fontSize: 32, fontWeight: 600, lineHeight: '40px', color: TEXT_PRIMARY, textAlign: 'center' }}>
           Claude recreation
         </p>
         <img
@@ -514,7 +487,7 @@ function SlideComparison() {
       <p style={{
         position: 'absolute', left: 90, top: 880, width: 900,
         fontSize: 32, fontWeight: 500, lineHeight: '48px',
-        textAlign: 'center', color: 'rgba(0,0,0,0.6)', margin: 0,
+        textAlign: 'center', color: TEXT_SECONDARY, margin: 0,
       }}>
         Works with your own branding and data. Claude takes the template as inspiration and adapts it.
       </p>
@@ -547,7 +520,7 @@ function SlideCTA() {
         width: 700,
         fontSize: 96, fontWeight: 700,
         lineHeight: '110px', textAlign: 'center',
-        color: BLACK, margin: 0, whiteSpace: 'nowrap',
+        color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap',
       }}>
         Follow for more
       </p>
@@ -558,7 +531,7 @@ function SlideCTA() {
         width: 600,
         fontSize: 48, fontWeight: 500,
         lineHeight: '70px', textAlign: 'center',
-        color: BLACK, margin: 0, whiteSpace: 'nowrap',
+        color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap',
       }}>
         Samy Chouaf
       </p>

@@ -27,22 +27,22 @@ Also read the official PPTX skill for design principles (storytelling, shapes, v
 
 ### Storytelling & structure
 
-- **Don't create boring slides.** Plain bullets on a white background won't impress anyone.
+- **Don't create boring slides.** Plain bullets on a flat background won't impress anyone.
 - **Every slide needs a visual element** — illustration, icon, or shape. Text-only slides are forgettable.
 - **Vary layouts across the deck.** Don't repeat the same layout for consecutive slides. Mix cover, content, bullets, statement, two-column, and quote.
 - **Dominance over equality.** One visual element should dominate each slide. Don't give everything equal weight.
-- **Dark/light contrast.** Use navy title bars to create rhythm. Statement slides can use glass cards for emphasis.
+- **Contrast rhythm.** Use primary token title bars to create rhythm. Statement slides can use glass cards for emphasis.
 
 ### Visual polish
 
 - **Icons in colored circles/squares** — never leave icons floating alone. They should be inside a colored rounded container with a drop shadow.
 - **Large stat callouts** — when showing numbers, make them big (the statement layout is perfect for this).
-- **Commit to a visual motif** — pick ONE distinctive element and repeat it across slides (e.g., accent pills, navy title bars, glass cards).
+- **Commit to a visual motif** — pick ONE distinctive element and repeat it across slides (e.g., accent pills, primary title bars, glass cards).
 - **Leave breathing room** — don't fill every inch. White space is a design tool.
 
 ### Typography
 
-- All body text uses Verdana (the design system font).
+- Use the design-system title font token (`var(--font/family/title)`).
 - Titles need strong size contrast from body text (already handled by layout components).
 - Left-align body text. Center only titles and statements.
 - Don't center body text in content or bullet slides.
@@ -188,7 +188,7 @@ Common categories:
 
 Browse the actual directory before picking. If uncertain, omit the `icon` field — it is optional.
 
-**Icons must never appear alone.** They are always rendered inside the SlideCard bullet rows (white rounded cards with shadows). This is handled automatically by the `SlideBullets` layout component.
+**Icons must never appear alone.** They are always rendered inside SlideCard bullet rows (elevated surface cards). This is handled automatically by the `SlideBullets` layout component.
 
 ---
 
@@ -199,7 +199,7 @@ Browse the actual directory before picking. If uncertain, omit the `icon` field 
 3. **One idea per slide.** Never cram two topics into one slide.
 4. **End slide is always last.** Never add content after the `end` layout.
 5. **NEVER use em dashes.** Use a comma or colon instead.
-6. **All body text uses Verdana.** No Noto Serif in slides.
+6. **All slide text uses design-system title font.** Use tokenized font family (`var(--font/family/title)`), with no hardcoded fallback font names.
 7. **Slide count in MODES.** Always set `slideCount: SLIDE_DATA.slides.length`.
 8. **Figma push — never auto-open the browser.** Generate the capture URL and say "Please open this URL in your browser."
 9. **Check character limits before finalizing copy.** Every field has a hard maximum.

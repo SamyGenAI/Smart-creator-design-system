@@ -1,61 +1,31 @@
+import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+
 /**
  * LinkedIn Carousel — "How to schedule tasks with Claude"
  * 10 slides: Cover + 2 Context + 4 Steps + Result + Wrapup + CTA
  * 1080x1350px · #fffceb bg · Montserrat
  */
 
-const CARD_SHADOW = '0px 4px 4px 0px rgba(0,0,0,0.25)'
-const ACCENT = '#b4eaff'
-const CREAM = '#fffceb'
-const BLACK = '#000'
-const FONT = "'Montserrat', sans-serif"
+const CARD_SHADOW = 'var(--theme-shadow-card)'
+const ACCENT = 'var(--theme-accent-1)'
+const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
+const BLACK = 'var(--theme-color-text-primary)'
+const FONT = "var(--font\/family\/title, 'Montserrat', sans-serif)"
 
-// ─── Navbar ───────────────────────────────────────────────────────────────────
-
-function Navbar() {
-  return (
-    <div style={{ position: 'absolute', top: 0, left: 0, width: 1080 }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 83,
-        paddingLeft: 56,
-        paddingRight: 56,
-        boxSizing: 'border-box',
-      }}>
-        <span style={{ fontSize: 24, fontWeight: 500, color: BLACK, fontFamily: FONT, whiteSpace: 'nowrap' }}>
-          Samy Chouaf
-        </span>
-        <span style={{ fontSize: 24, fontWeight: 500, color: BLACK, fontFamily: FONT, whiteSpace: 'nowrap' }}>
-          Follow
-        </span>
-      </div>
-      <div style={{ marginLeft: 56, marginRight: 56, height: 3, background: BLACK }} />
-    </div>
-  )
-}
-
-// ─── Slide shell ──────────────────────────────────────────────────────────────
+const NAVBAR = <CarouselNavbarEdge textColor={BLACK} fontFamily={FONT} />
 
 function Slide({ children, nodeId, name, withNavbar = true }) {
   return (
-    <div
-      data-node-id={nodeId}
-      data-name={name}
-      style={{
-        position: 'relative',
-        width: 1080,
-        height: 1350,
-        background: CREAM,
-        flexShrink: 0,
-        overflow: 'hidden',
-        fontFamily: FONT,
-      }}
+    <CarouselSlideShell
+      nodeId={nodeId}
+      name={name}
+      withNavbar={withNavbar}
+      navbar={NAVBAR}
+      background={BACKGROUND_PRIMARY}
+      fontFamily={FONT}
     >
-      {withNavbar && <Navbar />}
       {children}
-    </div>
+    </CarouselSlideShell>
   )
 }
 
@@ -142,7 +112,7 @@ function SlideCover() {
         position: 'absolute',
         left: 250, top: 110,
         width: 580, height: 76,
-        border: '3px solid #000', borderRadius: 30,
+        border: `3px solid ${BLACK}`, borderRadius: 30,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <p style={{ margin: 0, fontSize: 40, fontWeight: 500, color: BLACK, lineHeight: '50px', whiteSpace: 'nowrap' }}>
@@ -354,7 +324,7 @@ function SlideWrapup() {
   const useCases = [
     {
       icon: '/assets/icons/data/analytics-graph-bar-horizontal--Streamline-Freehand.svg',
-      bg: '#b4eaff',
+      bg: 'var(--theme-accent-1)',
       label: 'Content ideas',
       desc: 'Weekly ideas based on your data and trends',
     },

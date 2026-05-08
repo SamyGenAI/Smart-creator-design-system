@@ -3,7 +3,7 @@
 Every component in the design system, with design intent, when to use it, and what it looks like.
 
 ## Table of Contents
-1. [GlassNavySection — The card container](#1-glassnavysection--the-card-container)
+1. [PrimaryGlassSection — The card container](#1-primaryglasssection--the-card-container)
 2. [IconBullet — Feature lists](#2-iconbullet--feature-lists)
 3. [Checklist — Action items](#3-checklist--action-items)
 4. [NumberBullet — Ranked lists](#4-numberbullet--ranked-lists)
@@ -19,17 +19,17 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ---
 
-## 1. GlassNavySection — The card container
+## 1. PrimaryGlassSection — The card container
 
-**What it looks like:** Semi-transparent white glass card with a navy header bar (51px tall). The header has a bold white title centered, and a freehand icon top-left.
+**What it looks like:** Semi-transparent glass card with a primary header bar (51px tall). The header has high-contrast title text centered, and a freehand icon top-left.
 
 **This is always the outer container.** Content components are positioned absolutely *over* it, starting below the 51px header.
 
-**When to use:** Every section in every row. You never have content floating without a GlassNavySection behind it.
+**When to use:** Every section in every row. You never have content floating without a PrimaryGlassSection behind it.
 
 **Design notes:**
 - Header title: 1–4 words, title-case or ALL CAPS
-- Icon top-left: 35×35px, comes from `assets/icons/`, applied with white filter automatically
+- Icon top-left: 35×35px, comes from `assets/icons/`, auto-inverted for on-primary contrast
 - Size is set via `className` — always pass explicit `w-[Xpx] h-[Ypx]`
 - Content starts at approximately `mt-[58px]` from top of card (below header)
 
@@ -47,7 +47,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 2. IconBullet — Feature lists
 
-**What it looks like:** A vertical list of 4 rows (32px chip + icon + text). Each row has a small colored square chip with a Streamline Freehand icon inside, then text to the right.
+**What it looks like:** A vertical list of 4 rows (32px chip + icon + text). Each row has a small tokenized square chip with a Streamline Freehand icon inside, then text to the right.
 
 **When to use:**
 - Feature lists ("4 things Claude can do")
@@ -57,7 +57,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 **Design notes:**
 - Exactly 4 items (the component is fixed at 4 rows × 173px total)
-- Chip color: `chip-blue #b4eaff` (Row 1 primary) or `chip-amber #fde68a` (Row 2, process)
+- Accent color: semantic accent token (e.g., `accent-1` / `accent-3`)
 - Text: 14px medium, 5–10 words per item
 - Icons: user provides to `assets/icons/` — pass `iconSrc` per item
 
@@ -67,7 +67,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 3. Checklist — Action items
 
-**What it looks like:** A list of 2–3 items, each with a custom green checkmark icon on the left.
+**What it looks like:** A list of 2–3 items, each with a themed checkmark icon on the left.
 
 **When to use:**
 - Prerequisites, requirements
@@ -79,7 +79,7 @@ Every component in the design system, with design intent, when to use it, and wh
 - 2 or 3 items (2 items for Row 4 checklists, 3 items for Row 1 Card 1)
 - Optional bold `title` label above the list
 - Text: 14px medium, 4–8 words per item
-- Checkmark is a visual 3D-style green box — not a flat emoji
+- Checkmark is a visual 3D-style tokenized box, not a flat emoji
 
 **Fits inside:** Row 1 Card 1 (236×189px), Row 4 two side-by-side checklists (236×136px each)
 
@@ -87,7 +87,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 4. NumberBullet — Ranked lists
 
-**What it looks like:** 3 rows, each with a pink rounded badge showing a bold number (1, 2, 3) and text to the right.
+**What it looks like:** 3 rows, each with a rounded badge showing a bold number (1, 2, 3) and text to the right.
 
 **When to use:**
 - Steps in a process (Step 1, Step 2, Step 3)
@@ -97,7 +97,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 **Design notes:**
 - Exactly 3 items (fixed component)
-- Badge: pink `rgba(255,178,218,0.7)` rounded pill with shadow
+- Badge: semantic accent badge (`var(--theme-accent-4)`) rounded pill with tokenized shadow
 - Text: 14px medium, 4–8 words per item
 - Do NOT use for unordered lists — use `Checklist` or `IconBullet` instead
 
@@ -107,7 +107,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 5. Table — Comparison grids
 
-**What it looks like:** A 3-column × 4-row amber table (1 header row + 3 data rows). Amber header background, alternating cream rows, black borders.
+**What it looks like:** A 3-column × 4-row table (1 header row + 3 data rows). Tokenized header background, alternating surface rows, semantic borders.
 
 **When to use:**
 - Side-by-side comparisons (Model A vs B vs C)
@@ -117,7 +117,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 **Design notes:**
 - Fixed: 3 columns, 3 data rows (never more or fewer in the existing component)
-- Column headers: 1 word each (bold, amber background)
+- Column headers: 1 word each (bold, tokenized accent header)
 - Cell data: numbers, short strings (≤12 chars per cell)
 - Sits beside `IconBullet` in Row 2, so keep it concise
 
@@ -127,7 +127,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 6. Grid8CompanyLogos — Brand showcase
 
-**What it looks like:** A 4-column × 2-row grid of white rounded cards, each containing a logo. Drop shadow on each cell.
+**What it looks like:** A 4-column × 2-row grid of elevated surface rounded cards, each containing a logo. Drop shadow on each cell.
 
 **When to use:**
 - "Works with these tools"
@@ -139,7 +139,7 @@ Every component in the design system, with design intent, when to use it, and wh
 - Up to 8 logos (4×2 grid)
 - App icons → `assets/logos/app/{domain}.png` (fetch: `node scripts/fetch-app-logo.mjs domain.com`)
 - Wordmarks → `assets/logos/text/{domain}.svg` (fetch: `node scripts/fetch-logo.mjs domain.com`)
-- Each cell: white background, `rounded-[5px]`, shadow
+- Each cell: surface background token, `rounded-[5px]`, tokenized shadow
 
 **Fits inside:** Row 3 Card 2 (272×112px area at ml-[18px] mt-[185px])
 
@@ -147,7 +147,7 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 7. PastelShadowBorderCard — Key insight
 
-**What it looks like:** A blue-tinted glass card with a light blue border and drop shadow. Contains a single block of text.
+**What it looks like:** A softly tinted glass card with semantic border and drop shadow. Contains a single block of text.
 
 **When to use:**
 - Hero insight or key takeaway
@@ -157,8 +157,8 @@ Every component in the design system, with design intent, when to use it, and wh
 
 **Design notes:**
 - Single `text` prop — one strong sentence, ≤100 characters
-- Background: `rgba(126,218,255,0.15)` (card-blue), border: `#7edaff`
-- Text: 16px medium black
+- Background: `var(--theme-surface-layer-1)`, border: `var(--theme-color-border-accent)`
+- Text: 16px medium `var(--theme-color-text-primary)`
 - If text is short (≤50 chars), increase to 20px
 
 **Fits inside:** Row 4 (381×161px, positioned at ml-[258px])
@@ -175,7 +175,7 @@ Every component in the design system, with design intent, when to use it, and wh
 - Abstract decoration alongside a highlight label
 
 **Design notes:**
-- Color via `colorBoxColor` prop — use any chip token
+- Color via `colorBoxColor` prop — use any accent token
 - Pairs visually with `TextBox` components and a `highlightText` label
 - The boxes themselves have no text — they're color indicators
 
@@ -185,11 +185,11 @@ Every component in the design system, with design intent, when to use it, and wh
 
 ## 9. InfographicHeader — Title block
 
-**What it looks like:** Large bold navy title (72px) with one word or phrase highlighted in a colored chip, plus an italic subtitle below.
+**What it looks like:** Large bold primary-title text (72px) with one word or phrase highlighted in a tokenized chip, plus an italic subtitle below.
 
 **Design notes:**
 - `highlightWord`: pick the most important word in the title — the one that carries the concept
-- `highlightColor`: default `chip-blue #b4eaff`, can use any chip color
+- `highlightColor`: default semantic accent token, can use any accent token
 - Subtitle: italic, 32px — completes the thought or adds context
 - Title: ≤30 chars for single line. Longer titles wrap and compress.
 
@@ -203,8 +203,8 @@ When none of the above fits, build inline JSX. These are proven patterns:
 Large KPI with label. Use when you have a single striking number.
 ```jsx
 <div className="absolute ml-[20px] mt-[60px] flex flex-col items-start gap-[4px]">
-  <span className="text-[56px] font-['Montserrat',sans-serif] font-bold text-[#092c69] tracking-[-1.68px] leading-none">87%</span>
-  <span className="text-[14px] font-medium text-black tracking-[-0.42px]">of users save 2h/day</span>
+  <span className="text-[56px] font-['var(--font\\/family\\/title)'] font-bold text-[var(--theme-color-text-primary)] tracking-[-1.68px] leading-none">87%</span>
+  <span className="text-[14px] font-medium text-[var(--theme-color-text-primary)] tracking-[-0.42px]">of users save 2h/day</span>
 </div>
 ```
 
@@ -214,11 +214,11 @@ Large KPI with label. Use when you have a single striking number.
 <div className="absolute ml-[20px] mt-[65px] flex items-center gap-[8px]">
   {["Prompt", "Process", "Output"].map((step, i, arr) => (
     <React.Fragment key={step}>
-      <div className="bg-[var(--components\/card-title\/amber,#fde68a)] rounded-[8px] px-[14px] py-[10px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
-        <span className="text-[13px] font-['Montserrat',sans-serif] font-semibold text-black">{step}</span>
+      <div className="bg-[var(--theme-accent-2)] rounded-[8px] px-[14px] py-[10px] shadow-[var(--theme-shadow-card)]">
+        <span className="text-[13px] font-['var(--font\\/family\\/title)'] font-semibold text-[var(--theme-color-text-primary)]">{step}</span>
       </div>
       {i < arr.length - 1 && (
-        <span className="text-[#092c69] text-[20px] font-bold">→</span>
+        <span className="text-[var(--theme-color-text-primary)] text-[20px] font-bold">→</span>
       )}
     </React.Fragment>
   ))}
@@ -229,14 +229,14 @@ Large KPI with label. Use when you have a single striking number.
 Use for conversion funnels, priority pyramids, filtering flows.
 ```jsx
 {[
-  { label: "Awareness", color: "var(--components\/card-title\/blue,#b4eaff)", clip: "polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%)" },
-  { label: "Interest",  color: "var(--components\/card-title\/amber,#fde68a)", clip: "polygon(10% 0%, 90% 0%, 80% 100%, 20% 100%)" },
-  { label: "Decision",  color: "var(--components\/card-title\/green,#d2ff9a)", clip: "polygon(20% 0%, 80% 0%, 70% 100%, 30% 100%)" },
-  { label: "Action",    color: "var(--components\/card-title\/pink,#ffe6f3)",  clip: "polygon(30% 0%, 70% 0%, 60% 100%, 40% 100%)" },
+  { label: "Awareness", color: "var(--theme-accent-1)", clip: "polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%)" },
+  { label: "Interest",  color: "var(--theme-accent-2)", clip: "polygon(10% 0%, 90% 0%, 80% 100%, 20% 100%)" },
+  { label: "Decision",  color: "var(--theme-accent-3)", clip: "polygon(20% 0%, 80% 0%, 70% 100%, 30% 100%)" },
+  { label: "Action",    color: "var(--theme-accent-4)",  clip: "polygon(30% 0%, 70% 0%, 60% 100%, 40% 100%)" },
 ].map(({ label, color, clip }) => (
-  <div key={label} style={{ clipPath: clip, backgroundColor: `var(${color})` }}
-    className="w-full h-[44px] flex items-center justify-center shadow-[0px_2px_4px_0px_rgba(0,0,0,0.15)]">
-    <span className="text-[13px] font-['Montserrat',sans-serif] font-semibold text-black">{label}</span>
+  <div key={label} style={{ clipPath: clip, backgroundColor: color }}
+    className="w-full h-[44px] flex items-center justify-center shadow-[var(--theme-shadow-card)]">
+    <span className="text-[13px] font-['var(--font\\/family\\/title)'] font-semibold text-[var(--theme-color-text-primary)]">{label}</span>
   </div>
 ))}
 ```
@@ -341,22 +341,23 @@ These shapes are larger than typical card interiors. Scale them down with `class
 
 ## 13. Brand Border Sections — Numbered callout cards
 
-**What it looks like:** A rounded pastel card with a 51px title bar and a black number badge in the top-left.
+**What it looks like:** A rounded accent card with a 51px title bar and a high-contrast number badge in the top-left.
 
 **When to use:**
 - Numbered section intros (1, 2, 3, ...)
 - Row-level chapter cards before detailed bullets/tables
 - Strong thematic separators between sections
 
-**Available wrappers:**
-- **Solid border:** `OrangeSolidBorderSection`, `BlueSolidBorderSection`, `PinkSolidBorderSection`, `GreenSolidBorderSection`
-- **White border + shadow:** `OrangeWhiteBorderSection`, `BlueWhiteBorderSection`, `PinkWhiteBorderSection`, `GreenWhiteBorderSection`
+**Component API:**
+- Single component: `BrandBorderSectionBase`
+- Theme variants: `theme="primary" | "accent" | "support" | "success"`
+- Border style: `variant="solid" | "white"`
 
 **Design notes:**
 - Shared base component: `BrandBorderSectionBase` (do not duplicate layout across colors)
 - Fixed dimensions by Figma family:
-  - Solid orange/blue: `w-[415px] h-[195px]`
-  - Solid pink/green: `w-[470px] h-[195px]`
+  - Solid accent tiers 1/2: `w-[415px] h-[195px]`
+  - Solid accent tiers 3/4: `w-[470px] h-[195px]`
   - White-border family: `w-[600px] h-[195px]`
-- Header title style is fixed: Montserrat Bold `32px`, tracking `-0.96px`
-- Badge is fixed: black rounded square, white number
+- Header title style is fixed: title-font bold tier `32px`, tracking `-0.96px`
+- Badge is fixed: high-contrast rounded square with on-badge number

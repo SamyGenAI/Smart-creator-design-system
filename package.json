@@ -7,6 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "design:validate": "node scripts/validate-design.mjs",
+    "tokens:gen": "node scripts/generate-tokens.mjs",
+    "templates:check": "node scripts/check-template-boundaries.mjs",
+    "brand:apply": "node scripts/apply-brand-answers.mjs",
+    "generate:design": "node scripts/generate-design-output.mjs",
+    "preflight": "pnpm design:validate && pnpm tokens:gen && pnpm templates:check",
     "export-slides": "node scripts/export-slides.mjs",
     "screenshot": "node scripts/screenshot.mjs"
   },
@@ -19,6 +25,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "js-yaml": "^4.1.1",
     "jszip": "^3.10.1",
     "postcss": "^8.4.47",
     "sharp": "^0.34.5",

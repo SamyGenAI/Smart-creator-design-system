@@ -1,25 +1,26 @@
 /**
- * ColoredTextBoxes — 2×2 grid of colored square chips.
+ * ColoredTextBoxes — 2×2 grid of accent square chips.
  * Figma node: 51:372  (4-colored-text-boxes)
- *
- * In Figma all 4 boxes share the same color (--components/card-title/green).
- * Pass different colors per box if needed.
  *
  * Props:
  *   color       string    — CSS color value applied to all 4 boxes
- *                           default: var(--components/card-title/green, #d2ff9a)
+ *                           default: accent token 2 from DESIGN.md
  *   colors      string[4] — individual colors per box (overrides `color`)
  *   className   string    — overrides dimensions/positioning
+ *
+ * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
  */
+const ACCENT_2 = "var(--theme-accent-2)"
+
 export default function ColoredTextBoxes({
-  color = "var(--components\\/card-title\\/green,#d2ff9a)",
+  color = ACCENT_2,
   colors = null,
   className,
 }) {
   const boxInsets = [
     "0_57.56%_65.31%_0",      // top-left
     "0_0_65.31%_57.56%",      // top-right
-    "65.31%_57.56%_0_0",      // bottom-left (note: Figma had bottom-right here, kept as-is)
+    "65.31%_57.56%_0_0",      // bottom-left
     "65.31%_0_0_57.56%",      // bottom-right
   ]
 
@@ -32,7 +33,7 @@ export default function ColoredTextBoxes({
       {boxInsets.map((inset, i) => (
         <div
           key={i}
-          className="absolute rounded-[5px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+          className="absolute rounded-[5px] shadow-card"
           style={{
             inset: inset.split('_').join(' '),
             background: colors?.[i] || color,

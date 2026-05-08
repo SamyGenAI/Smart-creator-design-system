@@ -1,5 +1,5 @@
 /**
- * Table — 3-column data table with amber header and alternating amber rows.
+ * Table — 3-column data table with accent header and neutral rows.
  * Figma node: 47:1203  (Table)
  * Layout: 3 columns × 4 rows (1 header + 3 data rows).
  *
@@ -7,7 +7,16 @@
  *   headers     string[3]    — column header labels
  *   rows        string[3][3] — 3 data rows × 3 columns
  *   className   string       — overrides dimensions/positioning
+ *
+ * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
  */
+const COLOR_STROKE = "var(--color\\/neutral\\/1000)"
+const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
+const ACCENT_3 = "var(--theme-accent-3)"
+const SURFACE_LAYER_3 = "var(--theme-surface-layer-3)"
+const FONT_TITLE = "var(--font\\/family\\/title)"
+const FONT_BODY = "var(--font\\/family\\/body)"
+
 export default function Table({
   headers = ["xxxxxxx", "xxxxxxx", "xxxxxxx"],
   rows = [
@@ -48,21 +57,21 @@ export default function Table({
       data-name="Table"
       data-node-id="47:1203"
     >
-      {/* Row backgrounds */}
-      <div className="absolute bg-[var(--components\/card-title\/amber,#fde68a)] border border-black border-solid" style={{ inset: rowBgInsets[0].split('_').join(' ') }} data-node-id="47:1151" />
+      {/* Row backgrounds — semantic accent header + semantic surface rows */}
+      <div className="absolute border border-solid" style={{ inset: rowBgInsets[0].split('_').join(' '), backgroundColor: ACCENT_3, borderColor: COLOR_STROKE }} data-node-id="47:1151" />
       {[1, 2, 3].map(i => (
-        <div key={i} className="absolute bg-[var(--components\/card\/amber,#fef3c7)] border border-black border-solid" style={{ inset: rowBgInsets[i].split('_').join(' ') }} data-node-id={`47:${1151 + i * 2}`} />
+        <div key={i} className="absolute border border-solid" style={{ inset: rowBgInsets[i].split('_').join(' '), backgroundColor: SURFACE_LAYER_3, borderColor: COLOR_STROKE }} data-node-id={`47:${1151 + i * 2}`} />
       ))}
 
       {/* Vertical column dividers */}
       <div className="absolute flex inset-[0_32.05%_0_67.95%] items-center justify-center">
         <div className="flex-none h-px rotate-90 w-[133px]">
-          <div className="relative size-full border-t border-black" data-node-id="47:1174" />
+          <div className="relative size-full border-t" style={{ borderColor: COLOR_STROKE }} data-node-id="47:1174" />
         </div>
       </div>
       <div className="absolute flex inset-[0_64.74%_0_35.26%] items-center justify-center">
         <div className="flex-none h-px rotate-90 w-[133px]">
-          <div className="relative size-full border-t border-black" data-node-id="47:1173" />
+          <div className="relative size-full border-t" style={{ borderColor: COLOR_STROKE }} data-node-id="47:1173" />
         </div>
       </div>
 
@@ -70,8 +79,8 @@ export default function Table({
       {headers.map((h, ci) => (
         <div
           key={`h${ci}`}
-          className="absolute flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] text-[14px] text-black tracking-[-0.42px] overflow-hidden"
-          style={{ inset: `${headerV.top} ${colTextH[ci].right} ${headerV.bottom} ${colTextH[ci].left}` }}
+          className="absolute flex flex-col font-semibold justify-center leading-[0] text-[14px] tracking-[-0.42px] overflow-hidden"
+          style={{ inset: `${headerV.top} ${colTextH[ci].right} ${headerV.bottom} ${colTextH[ci].left}`, color: COLOR_TEXT_PRIMARY, fontFamily: FONT_TITLE }}
           data-node-id={`47:${1183 + ci * 2}`}
         >
           <p className="leading-[normal]">{h}</p>
@@ -83,8 +92,8 @@ export default function Table({
         row.slice(0, 3).map((cell, ci) => (
           <div
             key={`r${ri}c${ci}`}
-            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-black tracking-[-0.42px] overflow-hidden break-words"
-            style={{ inset: `${dataRowV[ri].top} ${colTextH[ci].right} ${dataRowV[ri].bottom} ${colTextH[ci].left}` }}
+            className="absolute flex flex-col font-medium justify-center leading-[0] text-[14px] tracking-[-0.42px] overflow-hidden break-words"
+            style={{ inset: `${dataRowV[ri].top} ${colTextH[ci].right} ${dataRowV[ri].bottom} ${colTextH[ci].left}`, color: COLOR_TEXT_PRIMARY, fontFamily: FONT_BODY }}
             data-node-id={`47:${1189 + ri * 3 + ci}`}
           >
             <p className="leading-[normal]">{cell}</p>

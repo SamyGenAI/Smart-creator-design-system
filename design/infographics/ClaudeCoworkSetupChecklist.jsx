@@ -7,6 +7,15 @@ import { useState, useEffect } from 'react'
 import InfographicHeader from '../../components/InfographicHeader.jsx'
 import InfographicFooter from '../../components/InfographicFooter.jsx'
 
+const COLOR_PRIMARY = 'var(--theme-color-primary)'
+const TEXT_PRIMARY = 'var(--theme-color-primary)'
+const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
+const SURFACE_ELEVATED = 'var(--theme-color-on-primary)'
+const SURFACE_GLASS = 'var(--theme-surface-glass-soft)'
+const SURFACE_GLASS_STRONG = 'var(--theme-surface-glass-strong)'
+const SHADOW_SOFT = 'var(--theme-shadow-card-soft)'
+const SHADOW_CARD = 'var(--theme-shadow-card)'
+
 // ── WhiteIcon — fetches SVG and replaces all fills/strokes with white ─────────
 // This ensures Figma export sees actual white paths instead of relying on
 // CSS filter (brightness/invert) which Figma's capture ignores.
@@ -47,17 +56,17 @@ function CheckItem({ text, small = false }) {
           height: 13,
           marginTop: 3,
           flexShrink: 0,
-          border: '2.5px solid #092c69',
+          border: `2.5px solid ${COLOR_PRIMARY}`,
           borderRadius: 2,
           background: 'transparent',
         }}
       />
       <span
         style={{
-          fontFamily: "'Montserrat', sans-serif",
+          fontFamily: "var(--font\/family\/title, 'Montserrat', sans-serif)",
           fontWeight: 600,
           fontSize,
-          color: '#0f1730',
+          color: TEXT_PRIMARY,
           lineHeight: 1.35,
         }}
       >
@@ -80,9 +89,9 @@ function AppLogos({ logos }) {
           key={i}
           style={{
             width: SIZE, height: SIZE,
-            background: 'white',
+            background: SURFACE_ELEVATED,
             borderRadius: 12,
-            boxShadow: '0px 2px 4px rgba(0,0,0,0.18)',
+            boxShadow: SHADOW_SOFT,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 6,
           }}
@@ -100,10 +109,10 @@ function PhaseCard({ title, time, iconSrc, items, small = false, logos, illustra
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.78)',
-        border: '4px solid white',
+        background: SURFACE_GLASS,
+        border: `4px solid ${SURFACE_ELEVATED}`,
         borderRadius: 20,
-        boxShadow: '0px 4px 4px 0px rgba(0,0,0,0.25)',
+        boxShadow: SHADOW_CARD,
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
@@ -114,10 +123,10 @@ function PhaseCard({ title, time, iconSrc, items, small = false, logos, illustra
       data-name="phase-card"
       data-node-id="22:324"
     >
-      {/* Navy header bar */}
+      {/* Primary header bar */}
       <div
         style={{
-          background: '#092c69',
+          background: COLOR_PRIMARY,
           borderRadius: '17px 17px 0 0',
           height: 54,
           flexShrink: 0,
@@ -131,7 +140,7 @@ function PhaseCard({ title, time, iconSrc, items, small = false, logos, illustra
         <WhiteIcon src={iconSrc} size={30} />
         <span
           style={{
-            fontFamily: "'Montserrat', sans-serif",
+            fontFamily: "var(--font\/family\/title, 'Montserrat', sans-serif)",
             fontWeight: 700,
             fontSize: 20,
             color: 'white',
@@ -144,16 +153,16 @@ function PhaseCard({ title, time, iconSrc, items, small = false, logos, illustra
         >
           {title}
         </span>
-        {/* White/navy time pill */}
+        {/* White/primary time pill */}
         <div
           style={{
-            background: 'rgba(255,255,255,0.95)',
+            background: SURFACE_GLASS_STRONG,
             borderRadius: 5,
             padding: '3px 8px',
             flexShrink: 0,
           }}
         >
-          <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 13, color: '#092c69', whiteSpace: 'nowrap' }}>
+          <span style={{ fontFamily: "var(--font\/family\/title, 'Montserrat', sans-serif)", fontWeight: 700, fontSize: 13, color: TEXT_PRIMARY, whiteSpace: 'nowrap' }}>
             {time}
           </span>
         </div>
@@ -313,7 +322,7 @@ export default function ClaudeCoworkSetupChecklist() {
   return (
     <div
       className="flex items-center justify-center relative"
-      style={{ width: '1080px', height: '1350px', flexShrink: 0, overflow: 'hidden', background: '#fffceb' }}
+      style={{ width: '1080px', height: '1350px', flexShrink: 0, overflow: 'hidden', background: BACKGROUND_PRIMARY }}
       data-name="ClaudeCoworkSetupChecklist"
     >
       {/* Background texture — full opacity image, visible on cream bg */}

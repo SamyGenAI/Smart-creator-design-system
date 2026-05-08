@@ -36,7 +36,7 @@ Read this file **before** building any data object. Every text value must fit wi
 
 | Component | Location | Width | Font | Max chars per item |
 |-----------|----------|-------|------|--------------------|
-| GlassNavySection title | All cards | varies | 32px Bold | ~20 chars |
+| PrimaryGlassSection title | All cards | varies | 32px Bold | ~20 chars |
 | Checklist items | Row 1 Card 1, Row 4 | 234px | 14px Medium | **25 chars** |
 | IconBullet items | Row 1 Card 2, Row 2 | ~275px text area | 14px Medium | **30 chars** |
 | NumberBullet items | Row 3 Card 1 | ~137px text area | 14px Medium | **18 chars** |
@@ -121,7 +121,7 @@ With ~1130px available for the grid (after header ~130px + footer 60px + padding
 
 | Component | Font | Max chars |
 |-----------|------|-----------|
-| GlassNavySection title | 24px Bold | **25 chars** |
+| PrimaryGlassSection title | 24px Bold | **25 chars** |
 | BrandBorderSection title | 24px Bold | **20 chars** |
 
 **Section bodies are currently empty** (header-only cards). When adding body content, respect the `fr`-allocated height (~212px for 3fr rows, minus 51px header = ~161px body).

@@ -2,15 +2,18 @@
  * TextBox — small highlighted text box (colored pill/badge).
  * Figma node: 51:375  (text-box)
  *
- * In Figma this was an image asset. We re-implement it as a styled div
- * with the same green accent background. Used in pairs in Row 3, Card 3.
- *
  * Props:
  *   text        string   — text to display inside the box
- *   color       string   — background color (default: chip-green)
+ *   color       string   — background color (default: accent token 2 from DESIGN.md)
  *   className   string   — overrides dimensions/positioning
+ *
+ * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
  */
-export default function TextBox({ text = "", color = "var(--components\\/card-title\\/green,#d2ff9a)", className }) {
+const ACCENT_2 = "var(--theme-accent-2)"
+const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
+const FONT_BODY = "var(--font\\/family\\/body)"
+
+export default function TextBox({ text = "", color = ACCENT_2, className }) {
   return (
     <div
       className={className || "h-[34px] relative w-[153px]"}
@@ -18,11 +21,11 @@ export default function TextBox({ text = "", color = "var(--components\\/card-ti
       data-node-id="51:375"
     >
       <div
-        className="absolute inset-0 rounded-[5px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] flex items-center justify-center"
+        className="absolute inset-0 rounded-[5px] shadow-card flex items-center justify-center"
         style={{ background: color }}
       >
         {text && (
-          <p className="font-['Montserrat',sans-serif] font-medium text-[12px] text-black tracking-[-0.36px] text-center leading-normal px-1">
+          <p className="font-medium text-[12px] tracking-[-0.36px] text-center leading-normal px-1" style={{ color: COLOR_TEXT_PRIMARY, fontFamily: FONT_BODY }}>
             {text}
           </p>
         )}

@@ -5,27 +5,27 @@
  * LAYOUT:
  *   Header       — title + subtitle
  *   Body         — 2-column grid: "Graphic Design" + "Product Design"
- *                  Each column: navy header + 3 GlassNavySection cards
+ *                  Each column: primary header + 3 PrimaryGlassSection cards
  *   Footer       — branded "Follow for more" bar
  *
- * Cards use the GlassNavySection component (glass white bg, navy header).
+ * Cards use the PrimaryGlassSection component (glass surface + primary header).
  * Workflow pills use rotating colors with soft shadows.
- * "Workflow:" and "Tools:" labels are navy bg with white text.
+ * "Workflow:" and "Tools:" labels use primary bg with white text.
  */
 
 import InfographicHeader from '../../components/InfographicHeader.jsx'
 import SquareGridTexture from '../../components/SquareGridTexture.jsx'
 import InfographicFooter from '../../components/InfographicFooter.jsx'
-import GlassNavySection from '../../components/GlassNavySection.jsx'
+import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
 
-/* ── Color palette for workflow pills ──────────────────────────── */
+/* ── Semantic palette for workflow pills ───────────────────────── */
 const PILL_COLORS = [
-  '#b4eaff',  // blue
-  '#fde68a',  // amber
-  '#d2ff9a',  // green
-  '#ffe6f3',  // pink
-  '#ffa066',  // orange
-  '#c7efff',  // light blue
+  'var(--theme-accent-1)',
+  'var(--theme-accent-3)',
+  'var(--theme-accent-2)',
+  'var(--theme-accent-4)',
+  'var(--theme-accent-5)',
+  'var(--theme-surface-layer-4)',
 ]
 
 /* ── Workflow Line ─────────────────────────────────────────────── */
@@ -35,15 +35,15 @@ function WorkflowLine({ steps }) {
       {steps.map((step, i) => (
         <div key={i} className="flex items-center gap-[5px]">
           <div
-            className="flex items-center justify-center rounded-[8px] px-[8px] py-[3px] shrink-0 shadow-[0px_2px_4px_0px_rgba(0,0,0,0.10)]"
+            className="flex items-center justify-center rounded-[8px] px-[8px] py-[3px] shrink-0 shadow-[var(--theme-shadow-card-soft)]"
             style={{ backgroundColor: PILL_COLORS[i % PILL_COLORS.length] }}
           >
-            <p className="font-['Montserrat',sans-serif] font-medium text-[11px] text-black leading-[1.3] whitespace-nowrap tracking-[-0.33px]">
+            <p className="font-montserrat font-medium text-[11px] text-black leading-[1.3] whitespace-nowrap tracking-[-0.33px]">
               {step}
             </p>
           </div>
           {i < steps.length - 1 && (
-            <span className="font-['Montserrat',sans-serif] font-black text-[18px] text-[#092c69] leading-none shrink-0">→</span>
+            <span className="font-montserrat font-black text-[18px] text-[var(--theme-color-primary)] leading-none shrink-0">→</span>
           )}
         </div>
       ))}
@@ -55,11 +55,11 @@ function WorkflowLine({ steps }) {
 function OrSeparator() {
   return (
     <div className="flex items-center gap-[8px] w-full py-[2px]">
-      <div className="flex-1 h-[1px] bg-[#092c69] opacity-15" />
-      <p className="font-['Montserrat',sans-serif] font-bold text-[10px] text-[#092c69] opacity-50 leading-normal tracking-[-0.3px]">
+      <div className="flex-1 h-[1px] bg-[var(--theme-color-primary)] opacity-15" />
+      <p className="font-montserrat font-bold text-[10px] text-[var(--theme-color-primary)] opacity-50 leading-normal tracking-[-0.3px]">
         Or
       </p>
-      <div className="flex-1 h-[1px] bg-[#092c69] opacity-15" />
+      <div className="flex-1 h-[1px] bg-[var(--theme-color-primary)] opacity-15" />
     </div>
   )
 }
@@ -69,36 +69,36 @@ function ToolLogo({ src, alt, name }) {
   return (
     <div className="flex items-center gap-[5px]">
       <div
-        className="bg-white rounded-[7px] shadow-[0px_2px_5px_0px_rgba(0,0,0,0.18)] flex items-center justify-center overflow-hidden shrink-0"
+        className="bg-[var(--theme-color-on-primary)] rounded-[7px] shadow-[var(--theme-shadow-card-soft)] flex items-center justify-center overflow-hidden shrink-0"
         style={{ width: '28px', height: '28px', padding: '3px' }}
       >
         {src ? (
           <img src={src} alt={alt} className="w-full h-full object-contain" />
         ) : (
-          <p className="font-['Montserrat',sans-serif] font-bold text-[9px] text-[#092c69] leading-none text-center">
+          <p className="font-montserrat font-bold text-[9px] text-[var(--theme-color-primary)] leading-none text-center">
             {(name || alt || '?').charAt(0)}
           </p>
         )}
       </div>
-      <p className="font-['Montserrat',sans-serif] font-semibold text-[11px] text-[#092c69] leading-normal tracking-[-0.33px] whitespace-nowrap">
+      <p className="font-montserrat font-semibold text-[11px] text-[var(--theme-color-primary)] leading-normal tracking-[-0.33px] whitespace-nowrap">
         {name || alt}
       </p>
     </div>
   )
 }
 
-/* ── Section Label — navy bg, white text ───────────────────────── */
+/* ── Section Label — primary bg, on-primary text ───────────────── */
 function SectionLabel({ text }) {
   return (
-    <div className="rounded-[5px] px-[7px] py-[2px] self-start shrink-0 bg-[#092c69] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.15)]">
-      <p className="font-['Montserrat',sans-serif] font-bold text-[11px] text-white leading-normal tracking-[-0.33px]">
+    <div className="rounded-[5px] px-[7px] py-[2px] self-start shrink-0 bg-[var(--theme-color-primary)] shadow-[var(--theme-shadow-card-soft)]">
+      <p className="font-montserrat font-bold text-[11px] text-white leading-normal tracking-[-0.33px]">
         {text}
       </p>
     </div>
   )
 }
 
-/* ── Glass Navy Card body content ──────────────────────────────── */
+/* ── Primary Glass Card body content ───────────────────────────── */
 function CardBody({ workflows, logos }) {
   return (
     <div className="flex flex-col gap-[14px] flex-1 w-full px-[10px] py-[8px] min-h-0 justify-start overflow-hidden">
@@ -127,7 +127,7 @@ function CardBody({ workflows, logos }) {
 }
 
 /* ── Glass card className (fills flex space) ───────────────────── */
-const GLASS_CARD = "bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white content-stretch flex flex-col gap-[6px] items-start relative rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-full h-full"
+const GLASS_CARD = "w-full h-full gap-[6px] rounded-[20px]"
 
 /* ── Main Infographic ──────────────────────────────────────────── */
 export default function DesignWithAI({ data = {} }) {
@@ -216,7 +216,7 @@ export default function DesignWithAI({ data = {} }) {
       title: 'Design Systems',
       workflows: [
         ['Define tokens in Figma', 'Build components (Figma)', 'Sync to code (Figma MCP + Cursor)', 'Auto-generate docs'],
-        ['AI generates component library (Stitch)', 'Map to Figma (Code Connect)', 'Maintain with Claude'],
+        ['AI generates component library (Stitch)', 'Map to Figma frames', 'Maintain with Claude'],
       ],
       logos: [
         { src: '/assets/logos/app/figma.com.png', alt: 'Figma', name: 'Figma' },
@@ -229,7 +229,7 @@ export default function DesignWithAI({ data = {} }) {
 
   return (
     <div
-      className="bg-[#fffceb] flex items-center justify-center relative"
+      className="bg-canvas flex items-center justify-center relative"
       style={{ width: '1080px', height: '1350px', flexShrink: 0, overflow: 'hidden' }}
       data-name="DesignWithAI"
     >
@@ -261,45 +261,45 @@ export default function DesignWithAI({ data = {} }) {
         >
           {/* Column headers */}
           <div
-            className="bg-[var(--color\/blue\/500,#092c69)] border-3 border-solid border-white h-[70px] rounded-[14px] w-full relative flex items-center justify-center shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+            className="bg-[var(--theme-color-primary)] border-3 border-solid border-[var(--theme-color-on-primary)] h-[70px] rounded-[14px] w-full relative flex items-center justify-center shadow-[var(--theme-shadow-card)]"
             data-name="graphic-design-header"
           >
-            <p className="font-['Montserrat',sans-serif] font-bold text-[36px] text-center text-white tracking-[-1.08px] leading-normal">
+            <p className="font-montserrat font-bold text-[36px] text-center text-white tracking-[-1.08px] leading-normal">
               {graphicDesign.title || "Graphic Design"}
             </p>
           </div>
           <div
-            className="bg-[var(--color\/blue\/500,#092c69)] border-3 border-solid border-white h-[70px] rounded-[14px] w-full relative flex items-center justify-center shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+            className="bg-[var(--theme-color-primary)] border-3 border-solid border-[var(--theme-color-on-primary)] h-[70px] rounded-[14px] w-full relative flex items-center justify-center shadow-[var(--theme-shadow-card)]"
             data-name="product-design-header"
           >
-            <p className="font-['Montserrat',sans-serif] font-bold text-[36px] text-center text-white tracking-[-1.08px] leading-normal">
+            <p className="font-montserrat font-bold text-[36px] text-center text-white tracking-[-1.08px] leading-normal">
               {productDesign.title || "Product Design"}
             </p>
           </div>
 
           {/* Row 1: Social Content | Landing Pages */}
-          <GlassNavySection title={gd[0].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/content-brush-pen--Streamline-Freehand.svg" iconAlt="Social Content">
+          <PrimaryGlassSection title={gd[0].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/content-brush-pen--Streamline-Freehand.svg" iconAlt="Social Content">
             <CardBody workflows={gd[0].workflows} logos={gd[0].logos} />
-          </GlassNavySection>
-          <GlassNavySection title={pd[0].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/website-development-browser-hand--Streamline-Freehand.svg" iconAlt="Landing Pages">
+          </PrimaryGlassSection>
+          <PrimaryGlassSection title={pd[0].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/website-development-browser-hand--Streamline-Freehand.svg" iconAlt="Landing Pages">
             <CardBody workflows={pd[0].workflows} logos={pd[0].logos} />
-          </GlassNavySection>
+          </PrimaryGlassSection>
 
           {/* Row 2: Ads & Campaigns | Web & Mobile Apps */}
-          <GlassNavySection title={gd[1].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/advertising-ad-browser--Streamline-Freehand.svg" iconAlt="Ads & Campaigns">
+          <PrimaryGlassSection title={gd[1].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/advertising-ad-browser--Streamline-Freehand.svg" iconAlt="Ads & Campaigns">
             <CardBody workflows={gd[1].workflows} logos={gd[1].logos} />
-          </GlassNavySection>
-          <GlassNavySection title={pd[1].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/connect-device-exchange--Streamline-Freehand.svg" iconAlt="Web & Mobile Apps">
+          </PrimaryGlassSection>
+          <PrimaryGlassSection title={pd[1].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/connect-device-exchange--Streamline-Freehand.svg" iconAlt="Web & Mobile Apps">
             <CardBody workflows={pd[1].workflows} logos={pd[1].logos} />
-          </GlassNavySection>
+          </PrimaryGlassSection>
 
           {/* Row 3: Brand Assets | Design Systems */}
-          <GlassNavySection title={gd[2].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/color-brush-1--Streamline-Freehand.svg" iconAlt="Brand Assets">
+          <PrimaryGlassSection title={gd[2].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/color-brush-1--Streamline-Freehand.svg" iconAlt="Brand Assets">
             <CardBody workflows={gd[2].workflows} logos={gd[2].logos} />
-          </GlassNavySection>
-          <GlassNavySection title={pd[2].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/layers-stacked-1--Streamline-Freehand.svg" iconAlt="Design Systems">
+          </PrimaryGlassSection>
+          <PrimaryGlassSection title={pd[2].title} className={GLASS_CARD} titleSize="18px" iconSrc="/assets/icons/white/layers-stacked-1--Streamline-Freehand.svg" iconAlt="Design Systems">
             <CardBody workflows={pd[2].workflows} logos={pd[2].logos} />
-          </GlassNavySection>
+          </PrimaryGlassSection>
         </div>
 
         {/* ── FOOTER ─────────────────────────────────────────── */}

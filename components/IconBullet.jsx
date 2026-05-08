@@ -1,16 +1,22 @@
 /**
- * IconBullet — icon chip + text list, 4 rows.
+ * IconBullet — icon accent badge + text list, 4 rows.
  * Figma node: 28:384  (icon-bullet)
  *
  * Props:
  *   items         {iconSrc, iconAlt, text}[]  — exactly 4 items
- *   accentColor   string                      — chip background CSS value
- *                                               default: var(--components/card-title/blue, #b4eaff)
+ *   accentColor   string                      — accent background CSS value
+ *                                               default: `--theme-accent-1`
  *   className     string                      — overrides dimensions/positioning
  *
- * Note: when used in Row 2 (amber context), accentColor should be
- *   "var(--components\/card-title\/amber,#fde68a)"
+ * Note: pass a different semantic accent variable when needed.
+ *
+ * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
  */
+const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
+const FONT_BODY = "var(--font\\/family\\/body)"
+const ACCENT_1 = "var(--theme-accent-1)"
+const SURFACE_GLASS_STRONG = "var(--theme-surface-glass-strong)"
+
 export default function IconBullet({
   items = [
     { iconSrc: null, iconAlt: "", text: "xxx" },
@@ -18,12 +24,12 @@ export default function IconBullet({
     { iconSrc: null, iconAlt: "", text: "xxx" },
     { iconSrc: null, iconAlt: "", text: "xxx" },
   ],
-  accentColor = "var(--components\\/card-title\\/blue,#b4eaff)",
+  accentColor = ACCENT_1,
   className,
 }) {
   // Row vertical offsets from Figma
   const rowTops = [0, 47, 94, 141]
-  const chipInsets = [
+  const accentInsets = [
     "0_89.97%_81.5%_0",
     "27.17%_89.97%_54.34%_0",
     "54.34%_89.97%_27.17%_0",
@@ -46,19 +52,19 @@ export default function IconBullet({
         <div key={i} className="absolute contents" data-node-id={`37:${1363 - i}`}>
           {/* Text */}
           <div
-            className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] text-[14px] text-[color:var(--text\/primary,black)] tracking-[-0.42px] overflow-hidden"
-            style={{ inset: textInsets[i].split('_').join(' ') }}
+            className="absolute flex flex-col font-medium justify-center leading-[0] text-[14px] tracking-[-0.42px] overflow-hidden"
+            style={{ inset: textInsets[i].split('_').join(' '), color: COLOR_TEXT_PRIMARY, fontFamily: FONT_BODY }}
             data-node-id={`28:${334 + (i === 0 ? 0 : i === 1 ? -1 : i === 2 ? 1 : 2)}`}
           >
             <p className="leading-[normal]">{item.text}</p>
           </div>
 
-          {/* Icon chip */}
-          <div className="absolute contents" style={{ inset: chipInsets[i].split('_').join(' ') }}>
+          {/* Icon accent badge */}
+          <div className="absolute contents" style={{ inset: accentInsets[i].split('_').join(' ') }}>
             <div
-              className="absolute rounded-[5px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+              className="absolute rounded-[5px] shadow-card"
               style={{
-                inset: chipInsets[i].split('_').join(' '),
+                inset: accentInsets[i].split('_').join(' '),
                 background: accentColor,
               }}
             />
@@ -71,8 +77,9 @@ export default function IconBullet({
               />
             ) : (
               <div
-                className="absolute size-[24px] rounded-[3px] bg-black/10"
-                style={{ left: '4px', top: `${rowTops[i] + 4}px` }}
+                className="absolute size-[24px] rounded-[3px]"
+                data-node-id={`placeholder-${i}`}
+                style={{ left: '4px', top: `${rowTops[i] + 4}px`, backgroundColor: SURFACE_GLASS_STRONG }}
               />
             )}
           </div>

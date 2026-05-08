@@ -4,32 +4,34 @@
  * Props:
  *   children    ReactNode   — slide content
  *   style       object      — additional inline styles (position, left, top, width, height, etc.)
- *   variant     string      — 'white' | 'glass' | 'navy' | 'accent'  (default: 'white')
+ *   variant     string      — 'white' | 'glass' | 'primary' | 'accent'  (default: 'white')
  *   padding     string      — default '32px 40px'
  *   radius      number      — border-radius in px, default 24
  *   shadow      string      — box-shadow override
  *   blur        boolean     — enable backdrop-filter blur (default true, glass variants only)
+ *
+ * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
  */
 
-const VARIANTS = {
+const SLIDE_CARD_VARIANTS = {
   white: {
-    background: 'rgba(255,255,255,0.92)',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+    background: 'var(--theme-surface-glass-strong)',
+    boxShadow: 'var(--theme-shadow-surface-soft)',
     backdropFilter: 'blur(12px)',
   },
   glass: {
-    background: 'rgba(255,255,255,0.55)',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+    background: 'var(--theme-surface-glass-default)',
+    boxShadow: 'var(--theme-shadow-surface-glass)',
     backdropFilter: 'blur(20px)',
   },
-  navy: {
-    background: '#092c69',
-    boxShadow: '0 8px 32px rgba(9,44,105,0.35)',
+  primary: {
+    background: 'var(--theme-color-primary)',
+    boxShadow: 'var(--theme-shadow-surface-primary)',
     backdropFilter: null,
   },
   accent: {
-    background: '#b4eaff',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
+    background: 'var(--theme-accent-1)',
+    boxShadow: 'var(--theme-shadow-surface-accent)',
     backdropFilter: 'blur(8px)',
   },
 }
@@ -43,7 +45,7 @@ export default function SlideCard({
   shadow,
   blur = true,
 }) {
-  const v = VARIANTS[variant] ?? VARIANTS.white
+  const v = SLIDE_CARD_VARIANTS[variant] ?? SLIDE_CARD_VARIANTS.white
   const backdropFilter = blur && v.backdropFilter ? v.backdropFilter : undefined
 
   return (

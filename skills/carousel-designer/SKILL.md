@@ -84,10 +84,11 @@ Delegate to the `carousel-qc-agent` subagent to verify the output.
 
 ## Visual Language
 
-- **Canvas:** 1080×1350px, `background: #fffceb`, `fontFamily: 'Montserrat'`
-- **Navbar:** author name left (24px/500), "Follow" right, 3px black line at y=83
-- **Accent pill:** `#b4eaff` rounded rect behind key text
-- **Cards:** white, `borderRadius: 20–30px`, `boxShadow: 0px 4px 4px rgba(0,0,0,0.25)`
+- **Canvas:** 1080×1350px, tokenized canvas background (`var(--theme-surface-canvas)`), design-system title font
+- **Navbar:** author name left (24px/500), "Follow" right, 3px divider line at y=83 using semantic text token
+- **Shared primitives:** use `components/CarouselPrimitives.jsx` (`CarouselNavbarEdge` / `CarouselNavbarCentered` / `CarouselSlideShell`) instead of redefining navbar/shell in each file
+- **Accent pill:** semantic accent token (`var(--theme-accent-1)`) behind key text
+- **Cards:** tokenized surface/text/shadow values (no hardcoded color literals)
 - **Illustrations:** `assets/illustrations/notion-style/oc-*.svg`
 - **Avatar (CTA):** `assets/avatar/avatar-profile.png`
 
@@ -98,12 +99,12 @@ See `references/slide-types.md` for per-slide layout specs and character limits.
 ## After QC Passes
 
 1. Run `pnpm dev` and verify visually in the browser
-2. Optionally push to Figma: `mcp__figma__generate_figma_design`
+2. Optionally push to Figma: `mcp__figma__generate_figma_design` (push-to-edit flow)
 3. Target page: **Carousels (181:417)**
 
 ---
 
-## Core Design Laws
+## Core Design Laws (Skill-Specific)
 
 1. **One idea per slide.** Each slide communicates exactly one thought.
 2. **Step slides are numbered.** Large `1.` prefix (64px, 500 weight) top-left - not a bullet list.
@@ -118,5 +119,4 @@ See `references/slide-types.md` for per-slide layout specs and character limits.
 11. **Content screenshots live in `public/screenshots/carousels/{post-slug}/`.** Reference them in JSX as `/screenshots/carousels/{post-slug}/step-1.png`. Vite serves `public/` at the site root. Never use relative paths like `../`.
 12. **QC screenshots are separate.** `pnpm screenshot <mode-key>` writes to `qc-screenshots/` (git-ignored). Never reference QC output from JSX — it's for visual QC only.
 13. **Vite port** — defaults to 5173 but falls back to 5174 if taken. Always check the terminal output for the actual URL.
-13. **Figma push — never auto-open the browser.** Generate the capture ID, then give the user the URL and say "Please open this URL in your browser." Never use shell commands (`cmd start`, `open`, `xdg-open`) to open a browser. Just share the URL.
-14. **NEVER crop images.** Images must never be forced inside a fixed-size container with `objectFit: cover` or `overflow: hidden`. Always compute the display height from the image's natural aspect ratio (`displayHeight = displayWidth * naturalHeight / naturalWidth`) and size the container to fit the image. The component adapts to the image, not the other way around.
+14. **Follow global operational rules from `CLAUDE.md`.** This includes Figma push behavior/account scope and image containment rules.

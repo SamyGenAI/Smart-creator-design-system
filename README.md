@@ -78,7 +78,7 @@ This project is designed to be driven from **Claude Code** with two MCP servers 
 
 | MCP | Purpose | Required? |
 |---|---|---|
-| **Figma Dev Mode MCP** | Lets Claude push generated designs to Figma (`mcp__figma__generate_figma_design`) and read your Figma file for token extraction | Optional — only if you want to round-trip with Figma |
+| **Figma Dev Mode MCP** | Lets Claude push generated designs to Figma (`mcp__figma__generate_figma_design`) so users can edit manually in their own file/account | Optional — only if you want Figma push/edit |
 | **Anthropic / Claude Code CLI** | Orchestrates the subagents in `.claude/agents/` | Required |
 
 Figma MCP setup: [https://help.figma.com/hc/en-us/articles/32132100833559](https://help.figma.com/hc/en-us/articles/32132100833559)
@@ -115,6 +115,7 @@ pnpm export-slides MyDeckName
 ### Push an infographic/carousel to Figma
 
 Once you're happy with the preview, ask Claude: `"push this to Figma"`. It will call `mcp__figma__generate_figma_design` and give you a URL to open that triggers the capture.
+Push destination follows the currently authenticated Figma MCP account, so each end user should authenticate MCP with their own Figma account before pushing.
 
 ---
 
@@ -122,34 +123,44 @@ Once you're happy with the preview, ask Claude: `"push this to Figma"`. It will 
 
 This is the important part: **the whole system is driven by a few files.** Swap these out and every future generation uses your brand automatically.
 
-### A. Colors, fonts, shadows → `tailwind.config.js`
+### A. Brand tokens and setup → `DESIGN.md`
 
-Single source of truth for all tokens. Change these and every component updates:
+`DESIGN.md` front matter is the source of truth for colors, typography, spacing, radii, and component aliases.
 
-```js
-colors: {
-  navy:         '#092c69',   // your primary brand color
-  canvas:       '#fffceb',   // infographic background
-  'card-blue':  'rgba(126,218,255,0.15)',
-  // ...
-}
+Run these commands after updates:
+
+```bash
+pnpm design:validate
+pnpm tokens:gen
 ```
 
-Typography, shadows (`dropshadow/100–500`), and semantic aliases (`text-primary`, `border-border-blue`, etc.) all live here too.
+For first-time onboarding, use the setup skill in chat (`skills/brand-setup/SKILL.md`) and apply answers with:
 
-### B. Design tokens reference → `references/tokens.md`
+```bash
+pnpm brand:apply -- --input tmp/brand-answers.json
+```
 
-This is what Claude reads when deciding which token to use. After editing `tailwind.config.js`, update this file so the agents know your palette.
+### B. Generated token artifact
+
+- `src/index.css` (generated)
+
+Never edit it directly; regenerate from `DESIGN.md`.
 
 ### C. Components → `components/`
 
-The building blocks Claude composes from: `InfographicHeader`, `PastelShadowBorderCard`, `NumberBullet`, `Checklist`, `IconBullet`, `Table`, `GlassNavySection`, `SlideCard`, etc. Each is ~50–100 lines of JSX with fixed sizing.
+The building blocks Claude composes from: `InfographicHeader`, `PastelShadowBorderCard`, `NumberBullet`, `Checklist`, `IconBullet`, `Table`, `PrimaryGlassSection`, `SlideCard`, etc. Each is ~50–100 lines of JSX with fixed sizing.
 
 If you want new layouts, add a component here and document its API in `references/components.md` (that's the spec the design-agent reads).
 
-### D. Templates → `templates/`
+### D. Templates (source) → `templates/`
 
-`Infographic.jsx` and `ClaudeCoworkInfographic.jsx` are reference layouts (bento grid pattern with CSS Grid `fr` rows). Claude copies these into `design/infographics/` and swaps the `data` object — it never touches structure.
+Templates are grouped by output type:
+
+- `templates/infographics/`
+- `templates/carousels/`
+- `templates/pptx-slides/`
+
+`templates/` is **source-only**. Generation must start from these files.
 
 ### E. Character budgets → `references/space-budgets.md`
 
@@ -169,7 +180,23 @@ assets/
 
 Replace `avatar/profile.jpg` with your own photo to personalize the footer signature.
 
-### G. Agent rules → `CLAUDE.md` + `.claude/agents/*.md`
+### E. Output folder (generated) → `design/`
+
+`design/` is **output-only**:
+
+- `design/infographics/`
+- `design/carousels/`
+- `design/pptx-slides/`
+
+Use the standard generator to create new outputs from templates:
+
+```bash
+pnpm generate:design -- --type infographics --template infographic --name MyTopic --data tmp/brief.json
+```
+
+This writes files in `design/` and auto-registers the mode in `src/App.jsx`.
+
+### F. Agent rules → `CLAUDE.md` + `.claude/agents/*.md`
 
 `CLAUDE.md` is the master prompt every subagent respects. If your brand has specific voice rules ("always use active voice", "never use emojis", "always end with a CTA"), add them here.
 
@@ -184,10 +211,15 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 ├── CLAUDE.md                 ← master rules for Claude Code
 ├── .claude/agents/           ← subagent definitions (copy/design/qc/slide/carousel)
 ├── skills/                   ← /infographic, /carousel, /slides skills
-├── references/               ← tokens.md · components.md · space-budgets.md
-├── tailwind.config.js        ← all design tokens
+├── references/               ← components.md · space-budgets.md
+├── DESIGN.md                 ← all design tokens (front matter)
+├── tailwind.config.js        ← consumes tokens from DESIGN.md
 ├── components/               ← reusable JSX components
-├── templates/                ← layout templates (Infographic, ClaudeCowork)
+├── templates/                ← source templates only
+│   ├── infographics/
+│   ├── carousels/
+│   └── pptx-slides/
+│   └── template-manifest.json
 ├── design/                   ← generated work, grouped by type
 │   ├── infographics/         ←   1080×1350 single-canvas pieces
 │   ├── carousels/            ←   1080×1350 multi-slide carousels
@@ -195,12 +227,15 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 │       └── output/           ←     exported .pptx files
 ├── src/App.jsx               ← preview app + MODES registry
 ├── scripts/
+│   ├── validate-design.mjs   ← DESIGN.md schema validation
+│   ├── apply-brand-answers.mjs ← setup answers -> DESIGN.md
+│   ├── generate-design-output.mjs ← template -> design output + App registry
+│   ├── check-template-boundaries.mjs ← source/output guardrail
 │   ├── fetch-logo.mjs        ← Brandfetch wordmarks
 │   ├── fetch-app-logo.mjs    ← logo.dev app icons
 │   ├── export-slides.mjs     ← PPTX export
 │   └── screenshot.mjs        ← Playwright QC screenshots
 ├── assets/                   ← avatar, icons, logos, textures, illustrations
-└── figma/code-connect.json   ← Figma node ↔ component mappings
 ```
 
 ---
@@ -213,7 +248,7 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 - **Playwright** for QC screenshots
 - **pnpm** package manager
 - **Claude Code** as the orchestrator (Opus/Sonnet subagents)
-- **Figma Dev Mode MCP** for round-tripping designs
+- **Figma Dev Mode MCP** for push-to-edit
 
 ---
 
@@ -223,6 +258,12 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 |---|---|
 | `pnpm dev` | Start Vite preview server |
 | `pnpm build` | Production build |
+| `pnpm design:validate` | Validate `DESIGN.md` schema and token references |
+| `pnpm tokens:gen` | Regenerate `src/index.css` from `DESIGN.md` |
+| `pnpm templates:check` | Enforce template folder boundaries |
+| `pnpm preflight` | Run design validation, token generation, and template checks |
+| `pnpm brand:apply -- --input tmp/brand-answers.json` | Merge setup answers into `DESIGN.md` |
+| `pnpm generate:design -- --type ... --template ... --name ... --data ...` | Generate `design/*` output from `templates/*` and register it in `src/App.jsx` |
 | `pnpm export-slides [Name]` | Export a slide deck to `design/pptx-slides/output/[Name]Slides.pptx` |
 | `pnpm screenshot <mode-key>` | Take a QC screenshot of a generated piece |
 | `node scripts/fetch-logo.mjs domain.com` | Download wordmark SVG from Brandfetch |

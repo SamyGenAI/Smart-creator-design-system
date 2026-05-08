@@ -3,12 +3,20 @@ import { SlideShell, SlideCover, SlideBullets, SlideStatement, SlideEnd, renderS
 import SlideCard from '../../components/SlideCard.jsx'
 import { SLIDE_DATA } from './IgentivVSLSlides.data.js'
 
-const FONT = "'Montserrat', sans-serif"
-const NAVY = '#092c69'
+const FONT = "var(--font\/family\/title, 'Montserrat', sans-serif)"
+const COLOR_PRIMARY = 'var(--theme-color-primary)'
+const COLOR_TEXT_PRIMARY = 'var(--theme-color-text-primary)'
+const COLOR_TEXT_MUTED = 'var(--theme-color-text-muted)'
+const COLOR_SURFACE_ALERT = 'var(--theme-accent-4)'
+const COLOR_SURFACE_SIGNAL = 'var(--theme-accent-3)'
+const COLOR_SURFACE_INFO = 'var(--theme-surface-layer-4)'
+const COLOR_SURFACE_HIGHLIGHT = 'var(--theme-accent-1)'
+const SHADOW_SOFT = 'var(--theme-shadow-card-soft)'
+const SHADOW_CARD = 'var(--theme-shadow-card)'
 
 // ── Icon in colored rounded square ───────────────────────────────────────────
 
-function IconSquare({ src, bg = '#b4eaff', size = 52, iconSize = 28 }) {
+function IconSquare({ src, bg = 'var(--theme-accent-1)', size = 52, iconSize = 28 }) {
   return (
     <div
       style={{
@@ -19,7 +27,7 @@ function IconSquare({ src, bg = '#b4eaff', size = 52, iconSize = 28 }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+        boxShadow: SHADOW_SOFT,
         flexShrink: 0,
       }}
     >
@@ -30,7 +38,7 @@ function IconSquare({ src, bg = '#b4eaff', size = 52, iconSize = 28 }) {
 
 // ── Arrow shape ──────────────────────────────────────────────────────────────
 
-function ArrowDown({ color = NAVY, size = 28 }) {
+function ArrowDown({ color = COLOR_PRIMARY, size = 28 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
       <path d="M12 4v14m0 0l-5-5m5 5l5-5" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -38,7 +46,7 @@ function ArrowDown({ color = NAVY, size = 28 }) {
   )
 }
 
-function ArrowRight({ color = NAVY, size = 32 }) {
+function ArrowRight({ color = COLOR_PRIMARY, size = 32 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
       <path d="M4 12h14m0 0l-5-5m5 5l-5 5" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -51,9 +59,9 @@ function ArrowRight({ color = NAVY, size = 32 }) {
 function SlideProblem() {
   return (
     <SlideShell nodeId="slide-2" name="slide-problem-s2">
-      {/* Navy title bar */}
+      {/* Primary title bar */}
       <SlideCard
-        variant="navy"
+        variant="primary"
         padding="0 32px"
         radius={16}
         style={{
@@ -93,21 +101,21 @@ function SlideProblem() {
         >
           <IconSquare
             src="/assets/icons/email-messages/send-email-paper-plane-1--Streamline-Freehand.png"
-            bg="#ffd6d6"
+            bg={COLOR_SURFACE_ALERT}
             size={56}
             iconSize={30}
           />
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#000', fontFamily: FONT }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: COLOR_TEXT_PRIMARY, fontFamily: FONT }}>
               Cold email is dead
             </div>
-            <div style={{ fontSize: 15, fontWeight: 500, color: '#717188', fontFamily: FONT, marginTop: 2 }}>
+            <div style={{ fontSize: 15, fontWeight: 500, color: COLOR_TEXT_MUTED, fontFamily: FONT, marginTop: 2 }}>
               Inboxes are flooded, reply rates are near zero. Buyers ignore everything templated.
             </div>
           </div>
         </SlideCard>
 
-        <ArrowDown color="#bbb" size={24} />
+        <ArrowDown color={COLOR_TEXT_MUTED} size={24} />
 
         {/* Problem 2 — Content takes too long */}
         <SlideCard
@@ -118,21 +126,21 @@ function SlideProblem() {
         >
           <IconSquare
             src="/assets/icons/business/time-hourglass-triangle--Streamline-Freehand.svg"
-            bg="#fff3d6"
+            bg={COLOR_SURFACE_SIGNAL}
             size={56}
             iconSize={30}
           />
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#000', fontFamily: FONT }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: COLOR_TEXT_PRIMARY, fontFamily: FONT }}>
               Content takes too long
             </div>
-            <div style={{ fontSize: 15, fontWeight: 500, color: '#717188', fontFamily: FONT, marginTop: 2 }}>
+            <div style={{ fontSize: 15, fontWeight: 500, color: COLOR_TEXT_MUTED, fontFamily: FONT, marginTop: 2 }}>
               Most teams spend weeks on a post that gets 12 likes and zero leads.
             </div>
           </div>
         </SlideCard>
 
-        <ArrowDown color="#bbb" size={24} />
+        <ArrowDown color={COLOR_TEXT_MUTED} size={24} />
 
         {/* Problem 3 — LinkedIn is a red ocean */}
         <SlideCard
@@ -143,15 +151,15 @@ function SlideProblem() {
         >
           <IconSquare
             src="/assets/icons/data/analytics-graph-stock--Streamline-Freehand.svg"
-            bg="#d6e8ff"
+            bg={COLOR_SURFACE_INFO}
             size={56}
             iconSize={30}
           />
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#000', fontFamily: FONT }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: COLOR_TEXT_PRIMARY, fontFamily: FONT }}>
               LinkedIn is a red ocean
             </div>
-            <div style={{ fontSize: 15, fontWeight: 500, color: '#717188', fontFamily: FONT, marginTop: 2 }}>
+            <div style={{ fontSize: 15, fontWeight: 500, color: COLOR_TEXT_MUTED, fontFamily: FONT, marginTop: 2 }}>
               Everyone is posting, but very few are positioning themselves as the expert buyers trust.
             </div>
           </div>
@@ -163,7 +171,7 @@ function SlideProblem() {
             marginTop: 8,
             fontSize: 17,
             fontWeight: 600,
-            color: NAVY,
+            color: COLOR_PRIMARY,
             fontFamily: FONT,
             textAlign: 'center',
           }}
@@ -180,9 +188,9 @@ function SlideProblem() {
 function SlideSolution() {
   return (
     <SlideShell nodeId="slide-3" name="slide-solution-s3">
-      {/* Navy title bar */}
+      {/* Primary title bar */}
       <SlideCard
-        variant="navy"
+        variant="primary"
         padding="0 32px"
         radius={16}
         style={{
@@ -227,14 +235,14 @@ function SlideSolution() {
         >
           <IconSquare
             src="/assets/icons/design/content-brush-pen--Streamline-Freehand.svg"
-            bg="#b4eaff"
+            bg={COLOR_SURFACE_HIGHLIGHT}
             size={64}
             iconSize={34}
           />
-          <div style={{ fontSize: 22, fontWeight: 700, color: '#000', fontFamily: FONT }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: COLOR_TEXT_PRIMARY, fontFamily: FONT }}>
             Premium Content
           </div>
-          <div style={{ fontSize: 15, fontWeight: 500, color: '#717188', fontFamily: FONT, lineHeight: '24px' }}>
+          <div style={{ fontSize: 15, fontWeight: 500, color: COLOR_TEXT_MUTED, fontFamily: FONT, lineHeight: '24px' }}>
             High-quality posts that position you as the go-to expert. Content builds trust before the first call.
           </div>
         </SlideCard>
@@ -253,11 +261,11 @@ function SlideSolution() {
               width: 44,
               height: 44,
               borderRadius: 22,
-              background: NAVY,
+              background: COLOR_PRIMARY,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 16px rgba(9,44,105,0.3)',
+              boxShadow: SHADOW_CARD,
             }}
           >
             <span style={{ color: 'white', fontSize: 24, fontWeight: 700, fontFamily: FONT, lineHeight: 1 }}>+</span>
@@ -280,14 +288,14 @@ function SlideSolution() {
         >
           <IconSquare
             src="/assets/icons/data/analytics-graph-bar-horizontal--Streamline-Freehand.svg"
-            bg="#b4eaff"
+            bg={COLOR_SURFACE_HIGHLIGHT}
             size={64}
             iconSize={34}
           />
-          <div style={{ fontSize: 22, fontWeight: 700, color: '#000', fontFamily: FONT }}>
+          <div style={{ fontSize: 22, fontWeight: 700, color: COLOR_TEXT_PRIMARY, fontFamily: FONT }}>
             Targeted Leads
           </div>
-          <div style={{ fontSize: 15, fontWeight: 500, color: '#717188', fontFamily: FONT, lineHeight: '24px' }}>
+          <div style={{ fontSize: 15, fontWeight: 500, color: COLOR_TEXT_MUTED, fontFamily: FONT, lineHeight: '24px' }}>
             Real buying signals tell you who's ready to talk. No cold outreach, just warm conversations.
           </div>
         </SlideCard>
@@ -303,10 +311,10 @@ function SlideSolution() {
           textAlign: 'center',
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 600, color: '#717188', fontFamily: FONT, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: COLOR_TEXT_MUTED, fontFamily: FONT, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
           Igentiv Studio
         </div>
-        <div style={{ fontSize: 40, fontWeight: 700, color: '#000', fontFamily: FONT }}>
+        <div style={{ fontSize: 40, fontWeight: 700, color: COLOR_TEXT_PRIMARY, fontFamily: FONT }}>
           We handle both.
         </div>
       </div>

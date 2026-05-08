@@ -1,80 +1,28 @@
+import { CarouselNavbarCentered, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+
 /**
  * LinkedIn Carousel — "How to use Claude Code as a non-technical"
- * Style: cream bg #fffceb · black text · #b4eaff accent · Montserrat
+ * Style: tokenized background and text · Montserrat
  * Faithful to Figma template node 193:32
  */
 
-const CARD_SHADOW = '0px 4px 4px 0px rgba(0,0,0,0.25)'
+const CARD_SHADOW = 'var(--theme-shadow-card)'
+const TEXT_PRIMARY = 'var(--theme-color-text-primary)'
+const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
+const BORDER_PRIMARY = `3px solid ${TEXT_PRIMARY}`
 
-// ─── Shared navbar ────────────────────────────────────────────────────────────
-
-function Navbar() {
-  return (
-    <>
-      <p style={{
-        position: 'absolute',
-        left: 'calc(50% - 360.5px)',
-        top: 0,
-        width: 217,
-        height: 83,
-        lineHeight: '100px',
-        fontSize: 24,
-        fontWeight: 500,
-        textAlign: 'center',
-        color: '#000',
-        margin: 0,
-        fontFamily: "'Montserrat', sans-serif",
-      }}>
-        Samy Chouaf
-      </p>
-      <p style={{
-        position: 'absolute',
-        left: 'calc(50% + 393.5px)',
-        top: 0,
-        width: 217,
-        height: 83,
-        lineHeight: '100px',
-        fontSize: 24,
-        fontWeight: 500,
-        textAlign: 'center',
-        color: '#000',
-        margin: 0,
-        fontFamily: "'Montserrat', sans-serif",
-      }}>
-        Follow
-      </p>
-      <div style={{
-        position: 'absolute',
-        left: 71,
-        top: 83,
-        width: 938,
-        height: 3,
-        background: '#000',
-      }} />
-    </>
-  )
-}
-
-// ─── Slide shell ──────────────────────────────────────────────────────────────
+const NAVBAR = <CarouselNavbarCentered textColor={TEXT_PRIMARY} />
 
 function Slide({ children, nodeId, name }) {
   return (
-    <div
-      data-node-id={nodeId}
-      data-name={name}
-      style={{
-        position: 'relative',
-        width: 1080,
-        height: 1350,
-        background: '#fffceb',
-        flexShrink: 0,
-        overflow: 'hidden',
-        fontFamily: "'Montserrat', sans-serif",
-      }}
+    <CarouselSlideShell
+      nodeId={nodeId}
+      name={name}
+      navbar={NAVBAR}
+      background={BACKGROUND_PRIMARY}
     >
-      <Navbar />
       {children}
-    </div>
+    </CarouselSlideShell>
   )
 }
 
@@ -86,7 +34,7 @@ function AccentPill({ left, top, width, height = 76, radius = 20 }) {
       position: 'absolute',
       left, top, width,
       height,
-      background: '#b4eaff',
+      background: 'var(--theme-accent-1)',
       borderRadius: radius,
     }} />
   )
@@ -134,7 +82,7 @@ function StepLabel({ number, text, italic, top = 217 }) {
         fontSize: 64,
         fontWeight: 500,
         lineHeight: '70px',
-        color: '#000',
+        color: TEXT_PRIMARY,
         minWidth: 96,
         flexShrink: 0,
       }}>
@@ -145,7 +93,7 @@ function StepLabel({ number, text, italic, top = 217 }) {
         fontSize: 64,
         fontWeight: 500,
         lineHeight: '70px',
-        color: '#000',
+        color: TEXT_PRIMARY,
         fontStyle: italic ? 'italic' : 'normal',
       }}>
         {text}
@@ -177,7 +125,7 @@ function BottomTextBox({ text, top = 1124 }) {
         fontSize: 32,
         fontWeight: 500,
         lineHeight: '50px',
-        color: '#000',
+        color: TEXT_PRIMARY,
         whiteSpace: 'pre-wrap',
       }}>
         {text}
@@ -193,11 +141,11 @@ function BottomTextBox({ text, top = 1124 }) {
 function SlideCover() {
   return (
     <Slide nodeId="194:76" name="Slide-cover">
-      <div style={{ position: 'absolute', left: 257, top: 44, width: 565, height: 101, border: '3px solid #000', borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ margin: 0, fontSize: 64, fontWeight: 500, color: '#000', lineHeight: '70px' }}>Follow the steps</p>
+      <div style={{ position: 'absolute', left: 257, top: 44, width: 565, height: 101, border: BORDER_PRIMARY, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ margin: 0, fontSize: 64, fontWeight: 500, color: TEXT_PRIMARY, lineHeight: '70px' }}>Follow the steps</p>
       </div>
       <AccentPill left={74} top={609} width={957} height={130} radius={30} />
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 217, width: 983, height: 566, fontSize: 128, fontWeight: 700, lineHeight: '130px', textAlign: 'center', color: '#000', margin: 0, whiteSpace: 'pre-wrap' }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 217, width: 983, height: 566, fontSize: 128, fontWeight: 700, lineHeight: '130px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0, whiteSpace: 'pre-wrap' }}>
         {'How to use Claude code as a \nnon-technical'}
       </p>
       <img src="/assets/illustrations/notion-style/oc-on-the-laptop.svg" alt="" style={{ position: 'absolute', left: 282, top: 875, width: 515, height: 369, objectFit: 'contain' }} />
@@ -208,7 +156,7 @@ function SlideCover() {
 function Slide1() {
   return (
     <Slide nodeId="194:82" name="Slide-1">
-      <p style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: 544, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: 544, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         Claude code sounds scary...
       </p>
     </Slide>
@@ -218,7 +166,7 @@ function Slide1() {
 function Slide2() {
   return (
     <Slide nodeId="200:110" name="Slide-2">
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 299, width: 544, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 299, width: 544, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         But you don't need to write a single line of code to use it.
       </p>
       <img src="/assets/illustrations/notion-style/oc-work-balance.svg" alt="" style={{ position: 'absolute', left: 432, top: 823, width: 309, height: 379, objectFit: 'contain' }} />
@@ -235,13 +183,13 @@ function Slide3() {
   return (
     <Slide nodeId="200:69" name="Slide-3">
       <AccentPill left={194} top={253} width={577} />
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 241, width: 659, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 241, width: 659, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         Claude Cowork is great for :
       </p>
       {items.map(({ src, text, top, iconW, iconH, left, textLeft }) => (
         <div key={top} style={{ position: 'absolute', left, top, display: 'flex', alignItems: 'center', width: 878 }}>
           <img src={src} alt="" style={{ width: iconW, height: iconH, objectFit: 'contain', flexShrink: 0 }} />
-          <p style={{ position: 'absolute', left: textLeft - left, margin: 0, fontSize: 48, fontWeight: 500, lineHeight: '70px', color: '#000', width: 692 }}>{text}</p>
+          <p style={{ position: 'absolute', left: textLeft - left, margin: 0, fontSize: 48, fontWeight: 500, lineHeight: '70px', color: TEXT_PRIMARY, width: 692 }}>{text}</p>
         </div>
       ))}
     </Slide>
@@ -257,13 +205,13 @@ function Slide4() {
   return (
     <Slide nodeId="200:717" name="Slide-4">
       <AccentPill left={414} top={251} width={475} />
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 238, width: 723, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 238, width: 723, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         What Claude Code unlocks :
       </p>
       {items.map(({ src, text, top, left, iconW, iconH, textLeft }) => (
         <div key={top} style={{ position: 'absolute', left, top, display: 'flex', alignItems: 'center' }}>
           <img src={src} alt="" style={{ width: iconW, height: iconH, objectFit: 'contain', flexShrink: 0 }} />
-          <p style={{ position: 'absolute', left: textLeft - left, margin: 0, fontSize: 48, fontWeight: 500, lineHeight: '70px', color: '#000', width: 741 }}>{text}</p>
+          <p style={{ position: 'absolute', left: textLeft - left, margin: 0, fontSize: 48, fontWeight: 500, lineHeight: '70px', color: TEXT_PRIMARY, width: 741 }}>{text}</p>
         </div>
       ))}
     </Slide>
@@ -273,11 +221,11 @@ function Slide4() {
 function Slide5() {
   return (
     <Slide nodeId="211:119" name="Slide-5">
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 238, width: 647, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 238, width: 647, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         Here's how to get started with Claude Code
       </p>
       {/* Arrow pointing right (rotated) */}
-      <p style={{ position: 'absolute', left: 813, top: 459, fontSize: 128, color: '#000', margin: 0, lineHeight: '77px', transform: 'rotate(-90deg)', transformOrigin: 'center center', width: 77, textAlign: 'center' }}>
+      <p style={{ position: 'absolute', left: 813, top: 459, fontSize: 128, color: TEXT_PRIMARY, margin: 0, lineHeight: '77px', transform: 'rotate(-90deg)', transformOrigin: 'center center', width: 77, textAlign: 'center' }}>
         ↓
       </p>
       <img src="/assets/illustrations/notion-style/oc-sling-shot.svg" alt="" style={{ position: 'absolute', left: 330, top: 675, width: 420, height: 360, objectFit: 'contain' }} />
@@ -313,7 +261,7 @@ function Slide7() {
 function SlideVSCodeTransition() {
   return (
     <Slide nodeId="carousel:vscode-transition" name="Slide-VSCode-transition">
-      <p style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: 800, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: 800, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         It's a great start but I recommend using Claude Code with VS Code
       </p>
     </Slide>
@@ -376,13 +324,13 @@ function SlidePrompts() {
   return (
     <Slide nodeId="carousel:prompts" name="Slide-Prompts">
       <AccentPill left={129} top={253} width={694} />
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 241, width: 880, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 241, width: 880, fontSize: 72, fontWeight: 500, lineHeight: '100px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         Try these prompts to get started
       </p>
       <div style={{ position: 'absolute', left: 56, top: 440, width: 968, display: 'flex', flexDirection: 'column', gap: 28 }}>
         {prompts.map((p, i) => (
           <div key={i} style={{ background: '#fff', borderRadius: 24, padding: '28px 40px', boxShadow: CARD_SHADOW }}>
-            <p style={{ margin: 0, fontSize: 40, fontWeight: 500, lineHeight: '58px', color: '#000', fontStyle: 'italic' }}>{p}</p>
+            <p style={{ margin: 0, fontSize: 40, fontWeight: 500, lineHeight: '58px', color: TEXT_PRIMARY, fontStyle: 'italic' }}>{p}</p>
           </div>
         ))}
       </div>
@@ -423,14 +371,14 @@ function SlideBonus() {
   return (
     <Slide nodeId="carousel:bonus" name="Slide-Bonus">
       <AccentPill left={56} top={253} width={230} />
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 215, width: 940, fontSize: 64, fontWeight: 500, lineHeight: '86px', textAlign: 'center', color: '#000', margin: 0 }}>
+      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 215, width: 940, fontSize: 64, fontWeight: 500, lineHeight: '86px', textAlign: 'center', color: TEXT_PRIMARY, margin: 0 }}>
         Bonus : Give Claude Code superpowers
       </p>
       <div style={{ position: 'absolute', left: 56, top: 390, width: 968, display: 'flex', flexDirection: 'column', gap: 20 }}>
         {features.map(({ icon, label, desc }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 28, background: '#fff', borderRadius: 20, padding: '20px 32px', boxShadow: CARD_SHADOW }}>
             <img src={icon} alt="" style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0 }} />
-            <p style={{ margin: 0, fontSize: 38, fontWeight: 500, lineHeight: '52px', color: '#000' }}>
+            <p style={{ margin: 0, fontSize: 38, fontWeight: 500, lineHeight: '52px', color: TEXT_PRIMARY }}>
               <strong>{label}</strong>
               {' — '}
               <span style={{ color: 'rgba(0,0,0,0.6)' }}>{desc}</span>
@@ -477,7 +425,7 @@ function SlideCTA() {
         fontWeight: 700,
         lineHeight: '110px',
         textAlign: 'center',
-        color: '#000',
+        color: TEXT_PRIMARY,
         margin: 0,
       }}>
         Follow for more
@@ -497,7 +445,7 @@ function SlideCTA() {
         fontWeight: 500,
         lineHeight: '70px',
         textAlign: 'center',
-        color: '#000',
+        color: TEXT_PRIMARY,
         margin: 0,
       }}>
         Samy Chouaf

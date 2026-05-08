@@ -6,7 +6,7 @@
  * file's siblings; layouts are assembled here for agent-generated decks to
  * import from one place.
  *
- * Canvas: 1280×720, background #FFFCEB, font Montserrat.
+ * Canvas: 1280×720, typography from DESIGN.md tokens.
  * SquareGridTexture is always the first child at opacity 0.18.
  *
  * Layout types: cover | content | two-column | statement | bullets | quote | end
@@ -15,14 +15,19 @@
 import SlideCard from './SlideCard.jsx'
 import SquareGridTexture from './SquareGridTexture.jsx'
 
-// ── Constants ────────────────────────────────────────────────────────────────
+// ── Constants — all values sourced from DESIGN.md CSS variables ──────────────
+// Edit DESIGN.md and run `pnpm tokens:gen` to change these.
 
 const CANVAS_W = 1280
 const CANVAS_H = 720
-const SLIDE_BG = '#FFFCEB'
-const NAVY = '#092c69'
-const ACCENT = '#b4eaff'
-const FONT = "'Montserrat', sans-serif"
+const SURFACE_CANVAS = 'var(--theme-surface-canvas)'
+const COLOR_PRIMARY  = 'var(--theme-color-primary)'
+const ACCENT_1       = 'var(--theme-accent-1)'
+const FONT     = "var(--font\\/family\\/title)"
+const TEXT_PRIMARY = 'var(--theme-color-text-primary)'
+const TEXT_SECONDARY = 'var(--theme-color-text-secondary)'
+const TEXT_MUTED     = 'var(--theme-color-text-muted)'
+const SHADOW_CARD_SOFT = 'var(--theme-shadow-card-soft)'
 
 // ── Canvas shell ─────────────────────────────────────────────────────────────
 
@@ -39,7 +44,7 @@ export function SlideShell({ children, nodeId, name }) {
         position: 'relative',
         width: CANVAS_W,
         height: CANVAS_H,
-        background: SLIDE_BG,
+        background: SURFACE_CANVAS,
         flexShrink: 0,
         overflow: 'hidden',
         fontFamily: FONT,
@@ -57,7 +62,7 @@ function AccentPill({ children, style = {} }) {
   return (
     <span
       style={{
-        background: ACCENT,
+        background: ACCENT_1,
         borderRadius: 12,
         padding: '2px 12px',
         display: 'inline',
@@ -111,7 +116,7 @@ export function SlideCover({ id, title, subtitle, illustration, accentWord, node
           fontSize: 64,
           fontWeight: 700,
           lineHeight: '76px',
-          color: '#000000',
+          color: TEXT_PRIMARY,
           fontFamily: FONT,
           letterSpacing: '-0.5px',
         }}
@@ -136,7 +141,7 @@ export function SlideCover({ id, title, subtitle, illustration, accentWord, node
             style={{
               fontSize: 22,
               fontWeight: 500,
-              color: '#323241',
+              color: TEXT_SECONDARY,
               fontFamily: FONT,
               lineHeight: '32px',
             }}
@@ -180,9 +185,9 @@ export function SlideContent({ id, title, body, image, nodeId }) {
 
   return (
     <SlideShell nodeId={nodeId} name={`slide-content-${id}`}>
-      {/* Navy title bar */}
+      {/* Primary title bar */}
       <SlideCard
-        variant="navy"
+        variant="primary"
         padding="0 32px"
         radius={16}
         style={{
@@ -229,7 +234,7 @@ export function SlideContent({ id, title, body, image, nodeId }) {
               margin: i === 0 ? 0 : '16px 0 0 0',
               fontSize: 18,
               fontWeight: 500,
-              color: '#323241',
+              color: TEXT_SECONDARY,
               fontFamily: FONT,
               lineHeight: '28px',
             }}
@@ -286,9 +291,9 @@ export function SlideTwoColumn({ id, title, leftContent, rightContent, split = '
 
   return (
     <SlideShell nodeId={nodeId} name={`slide-two-column-${id}`}>
-      {/* Navy title bar */}
+      {/* Primary title bar */}
       <SlideCard
-        variant="navy"
+        variant="primary"
         padding="0 32px"
         radius={16}
         style={{
@@ -314,7 +319,7 @@ export function SlideTwoColumn({ id, title, leftContent, rightContent, split = '
         style={{ position: 'absolute', top: 160, left: 60, width: leftW, height: bodyH, overflow: 'hidden' }}
       >
         {typeof leftContent === 'string' ? (
-          <p style={{ margin: 0, fontSize: 18, fontWeight: 500, color: '#323241', fontFamily: FONT, lineHeight: '28px' }}>
+          <p style={{ margin: 0, fontSize: 18, fontWeight: 500, color: TEXT_SECONDARY, fontFamily: FONT, lineHeight: '28px' }}>
             {leftContent}
           </p>
         ) : leftContent}
@@ -340,7 +345,7 @@ export function SlideTwoColumn({ id, title, leftContent, rightContent, split = '
         {isImagePath ? (
           <img src={rightContent} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         ) : typeof rightContent === 'string' ? (
-          <p style={{ margin: 0, fontSize: 18, fontWeight: 500, color: '#323241', fontFamily: FONT, lineHeight: '28px' }}>
+          <p style={{ margin: 0, fontSize: 18, fontWeight: 500, color: TEXT_SECONDARY, fontFamily: FONT, lineHeight: '28px' }}>
             {rightContent}
           </p>
         ) : rightContent}
@@ -395,7 +400,7 @@ export function SlideStatement({ id, statement, accent, sub, nodeId }) {
           style={{
             fontSize,
             fontWeight: 700,
-            color: '#000000',
+            color: TEXT_PRIMARY,
             fontFamily: FONT,
             lineHeight: `${Math.round(fontSize * 1.2)}px`,
             letterSpacing: '-0.5px',
@@ -409,7 +414,7 @@ export function SlideStatement({ id, statement, accent, sub, nodeId }) {
               marginTop: 24,
               fontSize: 20,
               fontWeight: 500,
-              color: '#323241',
+              color: TEXT_SECONDARY,
               fontFamily: FONT,
               opacity: 0.75,
             }}
@@ -439,9 +444,9 @@ export function SlideBullets({ id, title, bullets = [], nodeId }) {
 
   return (
     <SlideShell nodeId={nodeId} name={`slide-bullets-${id}`}>
-      {/* Navy title bar */}
+      {/* Primary title bar */}
       <SlideCard
-        variant="navy"
+        variant="primary"
         padding="0 32px"
         radius={16}
         style={{
@@ -489,7 +494,7 @@ export function SlideBullets({ id, title, bullets = [], nodeId }) {
               style={{
                 fontSize: 18,
                 fontWeight: 700,
-                color: '#000000',
+                color: TEXT_PRIMARY,
                 fontFamily: FONT,
                 whiteSpace: 'nowrap',
               }}
@@ -501,7 +506,7 @@ export function SlideBullets({ id, title, bullets = [], nodeId }) {
                 style={{
                   fontSize: 16,
                   fontWeight: 500,
-                  color: '#717188',
+                  color: TEXT_MUTED,
                   fontFamily: FONT,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -540,7 +545,7 @@ export function SlideQuote({ id, quote, author, role, avatar, nodeId }) {
           left: 60,
           fontSize: 280,
           fontWeight: 700,
-          color: NAVY,
+          color: COLOR_PRIMARY,
           opacity: 0.07,
           lineHeight: 1,
           fontFamily: FONT,
@@ -570,7 +575,7 @@ export function SlideQuote({ id, quote, author, role, avatar, nodeId }) {
             fontSize: 26,
             fontWeight: 500,
             fontStyle: 'italic',
-            color: '#000000',
+            color: TEXT_PRIMARY,
             fontFamily: FONT,
             lineHeight: '40px',
             textAlign: 'center',
@@ -597,11 +602,11 @@ export function SlideQuote({ id, quote, author, role, avatar, nodeId }) {
             />
           )}
           <div style={{ textAlign: avatar ? 'left' : 'center' }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, fontFamily: FONT }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: COLOR_PRIMARY, fontFamily: FONT }}>
               {author}
             </div>
             {role && (
-              <div style={{ fontSize: 15, fontWeight: 500, color: '#717188', fontFamily: FONT }}>
+              <div style={{ fontSize: 15, fontWeight: 500, color: TEXT_MUTED, fontFamily: FONT }}>
                 {role}
               </div>
             )}
@@ -640,7 +645,7 @@ export function SlideEnd({ id, authorName, handle, avatar, illustration, nodeId 
           height: 160,
           borderRadius: '50%',
           objectFit: 'cover',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          boxShadow: SHADOW_CARD_SOFT,
         }}
       />
 
@@ -654,7 +659,7 @@ export function SlideEnd({ id, authorName, handle, avatar, illustration, nodeId 
           textAlign: 'center',
           fontSize: 52,
           fontWeight: 700,
-          color: '#000000',
+          color: TEXT_PRIMARY,
           fontFamily: FONT,
           letterSpacing: '-0.5px',
         }}
@@ -673,7 +678,7 @@ export function SlideEnd({ id, authorName, handle, avatar, illustration, nodeId 
           textAlign: 'center',
           fontSize: 26,
           fontWeight: 600,
-          color: NAVY,
+          color: COLOR_PRIMARY,
           fontFamily: FONT,
         }}
       >
@@ -691,7 +696,7 @@ export function SlideEnd({ id, authorName, handle, avatar, illustration, nodeId 
             textAlign: 'center',
             fontSize: 20,
             fontWeight: 400,
-            color: '#717188',
+            color: TEXT_MUTED,
             fontFamily: FONT,
           }}
         >

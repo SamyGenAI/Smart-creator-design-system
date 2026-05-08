@@ -16,9 +16,9 @@ User topic -> slide-agent -> Done
 ## Slide Format
 
 - **Canvas:** 1280x720px (16:9, standard Keynote / YouTube)
-- **Background:** `#FFFCEB` (`--color/cream/300`) + SquareGridTexture at 60% opacity
-- **Font:** Verdana
-- **Aesthetic:** Rounded cards, frosted glass, high-blur drop shadows
+- **Background:** tokenized canvas surface (`var(--theme-surface-canvas)`) + SquareGridTexture at 60% opacity
+- **Font:** design-system title font (`var(--font/family/title)`)
+- **Aesthetic:** Rounded cards, frosted glass, tokenized shadows
 
 ---
 
@@ -53,15 +53,15 @@ The agent outputs:
 
 | Element | Value |
 |---|---|
-| Canvas background | `#FFFCEB` |
+| Canvas background | tokenized surface (`var(--theme-surface-canvas)`) |
 | Texture | SquareGridTexture opacity 0.60 |
 | Card component | `SlideCard` from `components/SlideCard.jsx` |
-| Card border-radius | 24px (default) |
-| Card shadow | `0 8px 32px rgba(0,0,0,0.15)` |
-| Card blur | `backdrop-filter: blur(12px)` |
-| Navy title bars | `SlideCard variant="navy"` — `#092c69`, white text |
-| Accent color | `#b4eaff` |
-| Font | Verdana |
+| Card border-radius | tokenized radius (default component behavior) |
+| Card shadow | tokenized shadow (`var(--theme-shadow-card)` / component defaults) |
+| Card blur | component defaults |
+| Primary title bars | `SlideCard variant="primary"` — use primary and on-primary tokens |
+| Accent color | semantic accent token (`var(--theme-accent-1)`) |
+| Font | design-system title font token |
 | Illustrations | `assets/illustrations/notion-style/oc-*.svg` |
 | Avatar | `assets/avatar/avatar-profile.png` |
 | Icons | `assets/icons/[category]/[name].svg` |
@@ -80,9 +80,9 @@ The slide-agent has access to the official PPTX skill (`~/.agents/skills/pptx/`)
 ### Visual design
 - **Vary layouts.** Don't repeat the same layout for consecutive slides. Mix cover, content, bullets, statement, two-column, quote.
 - **Dominance over equality.** One element should dominate each slide.
-- **Icons inside containers.** Never leave icons floating alone — they must be inside colored rounded shapes with shadows (handled by SlideBullets layout).
+- **Icons inside containers.** Never leave icons floating alone — they must be inside tokenized rounded shapes with shadows (handled by SlideBullets layout).
 - **Leave breathing room.** Don't fill every inch. White space is a design tool.
-- **Commit to a visual motif.** The design system provides accent pills, navy title bars, and glass cards — use them consistently.
+- **Commit to a visual motif.** The design system provides accent pills, primary title bars, and glass cards — use them consistently.
 
 ### Avoid
 - Don't repeat the same layout consecutively
@@ -102,15 +102,15 @@ The slide-agent has access to the official PPTX skill (`~/.agents/skills/pptx/`)
 
 ---
 
-## Core design laws
+## Core design laws (Skill-Specific)
 
 1. **One idea per slide.** Never combine two topics in one slide.
 2. **SlideCard wraps every content area.** No ad-hoc rounded divs.
 3. **End slide is always last.** Never add content after the `end` layout.
 4. **NEVER use em dashes.** Use a comma instead.
 5. **data.js is pure JS.** No JSX, no React imports in the data file.
-6. **Figma push — never auto-open the browser.** Share the URL, say "Please open in your browser."
-7. **Slide count in MODES.** Always set `slideCount: SLIDE_DATA.slides.length` in App.jsx.
-8. **Vary layouts.** Never use the same layout for consecutive slides.
-9. **Every slide needs a visual.** Illustrations, icons, or card variants — no bare text.
-10. **Icons inside containers.** Never floating alone — always inside SlideCard or colored shape.
+6. **Slide count in MODES.** Always set `slideCount: SLIDE_DATA.slides.length` in App.jsx.
+7. **Vary layouts.** Never use the same layout for consecutive slides.
+8. **Every slide needs a visual.** Illustrations, icons, or card variants — no bare text.
+9. **Icons inside containers.** Never floating alone — always inside SlideCard or colored shape.
+10. **Follow global operational rules from `CLAUDE.md`.** This includes Figma push behavior/account scope and image containment rules.

@@ -1,84 +1,30 @@
+import { CarouselNavbarCentered, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+
 /**
  * LinkedIn Carousel — "3 Claude Skills for Lead Search"
  * Style: cream bg #fffceb, black text, #b4eaff accent, Montserrat
  * 1080x1350 slides
  */
 
-const CARD_SHADOW = '0px 4px 4px 0px rgba(0,0,0,0.25)'
-const ACCENT = '#b4eaff'
-const CREAM = '#fffceb'
-const BLACK = '#000'
-const FONT = "'Montserrat', sans-serif"
+const CARD_SHADOW = 'var(--theme-shadow-card)'
+const ACCENT = 'var(--theme-accent-1)'
+const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
+const BLACK = 'var(--theme-color-text-primary)'
+const FONT = "var(--font\/family\/title, 'Montserrat', sans-serif)"
 
-// ─── Shared navbar ────────────────────────────────────────────────────────────
-
-function Navbar() {
-  return (
-    <>
-      <p style={{
-        position: 'absolute',
-        left: 'calc(50% - 360.5px)',
-        top: 0,
-        width: 217,
-        height: 83,
-        lineHeight: '100px',
-        fontSize: 24,
-        fontWeight: 500,
-        textAlign: 'center',
-        color: BLACK,
-        margin: 0,
-        fontFamily: FONT,
-      }}>
-        Samy Chouaf
-      </p>
-      <p style={{
-        position: 'absolute',
-        left: 'calc(50% + 393.5px)',
-        top: 0,
-        width: 217,
-        height: 83,
-        lineHeight: '100px',
-        fontSize: 24,
-        fontWeight: 500,
-        textAlign: 'center',
-        color: BLACK,
-        margin: 0,
-        fontFamily: FONT,
-      }}>
-        Follow
-      </p>
-      <div style={{
-        position: 'absolute',
-        left: 71,
-        top: 83,
-        width: 938,
-        height: 3,
-        background: BLACK,
-      }} />
-    </>
-  )
-}
-
-// ─── Slide shell ──────────────────────────────────────────────────────────────
+const NAVBAR = <CarouselNavbarCentered textColor={BLACK} fontFamily={FONT} />
 
 function Slide({ children, nodeId, name }) {
   return (
-    <div
-      data-node-id={nodeId}
-      data-name={name}
-      style={{
-        position: 'relative',
-        width: 1080,
-        height: 1350,
-        background: CREAM,
-        flexShrink: 0,
-        overflow: 'hidden',
-        fontFamily: FONT,
-      }}
+    <CarouselSlideShell
+      nodeId={nodeId}
+      name={name}
+      navbar={NAVBAR}
+      background={BACKGROUND_PRIMARY}
+      fontFamily={FONT}
     >
-      <Navbar />
       {children}
-    </div>
+    </CarouselSlideShell>
   )
 }
 
@@ -204,7 +150,7 @@ function SlideCover() {
         position: 'absolute',
         left: 257, top: 44,
         width: 565, height: 101,
-        border: '3px solid #000',
+        border: `3px solid ${BLACK}`,
         borderRadius: 30,
         display: 'flex',
         alignItems: 'center',
@@ -852,7 +798,7 @@ function SlideSetup() {
         boxSizing: 'border-box',
         textAlign: 'center',
       }}>
-        <p style={{ margin: 0, fontSize: 44, fontWeight: 700, lineHeight: '60px', color: CREAM }}>
+        <p style={{ margin: 0, fontSize: 44, fontWeight: 700, lineHeight: '60px', color: BACKGROUND_PRIMARY }}>
           Link in comments
         </p>
         <p style={{ margin: '8px 0 0', fontSize: 32, fontWeight: 500, lineHeight: '48px', color: 'rgba(255,252,235,0.5)' }}>

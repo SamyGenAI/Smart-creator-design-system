@@ -1,5 +1,5 @@
 /**
- * InfographicFooter — navy pill bar at the bottom of every infographic.
+ * InfographicFooter — primary brand pill bar at the bottom of every infographic.
  * Figma node: 54:894  (infographic-footer)
  *
  * Props:
@@ -7,6 +7,11 @@
  *   name        string   — display name (default: "Samy Chouaf")
  *   className   string   — overrides dimensions/positioning
  */
+const COLOR_PRIMARY = "var(--theme-color-primary)"
+const COLOR_ON_PRIMARY = "var(--theme-color-on-primary)"
+const FONT_TITLE = "var(--font\\/family\\/title)"
+const SHADOW_CARD = "var(--theme-shadow-card)"
+
 export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.jpg", name = "Samy Chouaf", className }) {
   return (
     <div
@@ -14,15 +19,17 @@ export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.
       data-name="infographic-footer"
       data-node-id="54:894"
     >
-      {/* Navy pill background */}
+      {/* Primary pill background */}
       <div
-        className="absolute bg-[var(--color\/blue\/500,#092c69)] border-3 border-solid border-white inset-0 rounded-[40px]"
+        className="absolute border-3 border-solid inset-0 rounded-[40px]"
+        style={{ backgroundColor: COLOR_PRIMARY, borderColor: COLOR_ON_PRIMARY }}
         data-node-id="I5:16215;5:15844"
       />
 
       {/* "Follow for more" label */}
       <div
-        className="absolute flex flex-col font-['Montserrat',sans-serif] font-semibold inset-[30%_50.27%_21.67%_25.5%] justify-center leading-[0] text-[24px] text-white tracking-[-0.72px]"
+        className="absolute flex flex-col font-semibold inset-[30%_50.27%_21.67%_25.5%] justify-center leading-[0] text-[24px] tracking-[-0.72px]"
+        style={{ color: COLOR_ON_PRIMARY, fontFamily: FONT_TITLE }}
         data-node-id="I5:16215;5:15845"
       >
         <p className="leading-[normal]">Follow for more</p>
@@ -30,7 +37,8 @@ export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.
 
       {/* Creator name */}
       <div
-        className="absolute flex flex-col font-['Montserrat',sans-serif] font-semibold inset-[28.33%_25.69%_23.33%_50.09%] justify-center leading-[0] text-[24px] text-white tracking-[-0.72px]"
+        className="absolute flex flex-col font-semibold inset-[28.33%_25.69%_23.33%_50.09%] justify-center leading-[0] text-[24px] tracking-[-0.72px]"
+        style={{ color: COLOR_ON_PRIMARY, fontFamily: FONT_TITLE }}
         data-node-id="I5:16215;5:15846"
       >
         <p className="leading-[normal]">{name}</p>
@@ -38,7 +46,8 @@ export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.
 
       {/* Avatar */}
       <div
-        className="absolute aspect-[44/44] border-2 border-solid border-white left-[44.24%] right-[51.74%] rounded-[40px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] top-[7px]"
+        className="absolute aspect-[44/44] border-2 border-solid left-[44.24%] right-[51.74%] rounded-[40px] top-[7px]"
+        style={{ boxShadow: SHADOW_CARD, borderColor: COLOR_ON_PRIMARY }}
         data-name="avatar"
         data-node-id="I5:16215;5:15847"
       >

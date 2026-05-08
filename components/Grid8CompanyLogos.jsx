@@ -4,8 +4,8 @@
  *
  * Props:
  *   logos       {src, alt}[8]  — array of exactly 8 logo objects
- *                                app icons → assets/logos/app/{domain}.png  (logo.dev, 64px)
- *                                wordmarks → assets/logos/text/{domain}.svg (Brandfetch)
+ *                                app icons → assets/logos/app/{domain}.png
+ *                                wordmarks → assets/logos/text/{domain}.svg
  *   className   string         — overrides dimensions/positioning
  *
  * IMAGE CONTAINMENT PATTERN — do not change:
@@ -27,18 +27,15 @@ export default function Grid8CompanyLogos({
   ],
   className,
 }) {
-  // 4 columns × 2 rows grid using the same inset percentages as Figma
-  // Row 1 (top): col 1=0-18%, col 2=27-45%, col 3=54-72%, col 4=81-99%
-  // Row 2 (bottom): same columns, top offset 55.36%
   const cells = [
-    { inset: "0_81.62%_55.36%_0" },         // row1 col1
-    { inset: "0_54.41%_55.36%_27.21%" },    // row1 col2
-    { inset: "0_27.21%_55.36%_54.41%" },    // row1 col3
-    { inset: "0_0_55.36%_81.62%" },         // row1 col4 — was Google Drive
-    { inset: "55.36%_81.62%_0_0" },         // row2 col1
-    { inset: "55.36%_54.41%_0_27.21%" },    // row2 col2
-    { inset: "55.36%_27.21%_0_54.41%" },    // row2 col3
-    { inset: "55.36%_0_0_81.62%" },         // row2 col4
+    { inset: "0_81.62%_55.36%_0" },
+    { inset: "0_54.41%_55.36%_27.21%" },
+    { inset: "0_27.21%_55.36%_54.41%" },
+    { inset: "0_0_55.36%_81.62%" },
+    { inset: "55.36%_81.62%_0_0" },
+    { inset: "55.36%_54.41%_0_27.21%" },
+    { inset: "55.36%_27.21%_0_54.41%" },
+    { inset: "55.36%_0_0_81.62%" },
   ]
 
   return (
@@ -52,7 +49,7 @@ export default function Grid8CompanyLogos({
         return (
           <div
             key={i}
-            className="absolute bg-white rounded-[5px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] flex items-center justify-center p-1"
+            className="absolute bg-white rounded-[5px] shadow-card flex items-center justify-center p-1"
             style={{ inset: cell.inset.split('_').join(' ') }}
           >
             {logo?.src && (

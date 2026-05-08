@@ -1,18 +1,18 @@
+/* ⚠️  Auto-generated from DESIGN.md — do not edit directly.
+   Run `pnpm tokens:gen` to regenerate from DESIGN.md.
+   Source: scripts/generate-tokens.mjs */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
-  Design token CSS variables — mirroring Figma variable names exactly.
-  Source: Figma file GBovqF34FkjgtWPj3wUmO3 (Foundations page)
-
-  Forward slashes in variable names are valid in modern browsers (Chrome 49+, Firefox 31+, Safari 9.1+).
-  Tailwind arbitrary values escape them as \/  e.g. bg-[var(--color\/blue\/500,#092c69)]
-  The fallback values (after the comma) ensure components render even without this file.
+  Design token CSS variables.
+  Source: DESIGN.md (edit there, then run `pnpm tokens:gen`).
 */
 :root {
   /* ── Primitive: Blue ──────────────────────────────────────── */
-  --color\/blue\/100: rgba(126, 218, 255, 0.15);
+  --color\/blue\/100: rgba(126,218,255,0.15);
   --color\/blue\/200: #c7efff;
   --color\/blue\/300: #b4eaff;
   --color\/blue\/400: #7edaff;
@@ -21,7 +21,7 @@
   /* ── Primitive: Cream ────────────────────────────────────── */
   --color\/cream\/100: #fffceb;
   --color\/cream\/200: #fff4e8;
-  --color\/cream\/300: #FFFCEB;
+  --color\/cream\/300: #fffceb;
 
   /* ── Primitive: Neutral ──────────────────────────────────── */
   --color\/neutral\/0:    white;
@@ -35,7 +35,7 @@
   --color\/neutral\/1000: black;
 
   /* ── Primitive: Pink ─────────────────────────────────────── */
-  --color\/pink\/100: rgba(255, 178, 218, 0.15);
+  --color\/pink\/100: rgba(255,178,218,0.15);
   --color\/pink\/200: #ffe6f3;
   --color\/pink\/300: #ffb2da;
 
@@ -45,12 +45,12 @@
   --color\/amber\/300: #fcd34d;
 
   /* ── Primitive: Green ────────────────────────────────────── */
-  --color\/green\/100: rgba(169, 255, 62, 0.15);
+  --color\/green\/100: rgba(169,255,62,0.15);
   --color\/green\/200: #d2ff9a;
   --color\/green\/300: #a9ff3e;
 
   /* ── Primitive: Orange ───────────────────────────────────── */
-  --color\/orange\/100: rgba(255, 145, 77, 0.15);
+  --color\/orange\/100: rgba(255,145,77,0.15);
   --color\/orange\/200: #ffa066;
   --color\/orange\/300: #ff914d;
 
@@ -64,12 +64,12 @@
   /* ── Border ──────────────────────────────────────────────── */
   --border\/primary:   black;
   --border\/secondary: #092c69;
-  --border\/blue:      #7edaff;
-  --border\/pink:      #ffb2da;
-  --border\/green:     #a9ff3e;
-  --border\/orange:    #ff914d;
-  --border\/amber:     #fcd34d;
-  --border\/grey:      #e3e4eb;
+  --border\/accent-1:  #7edaff;
+  --border\/accent-2:  #a9ff3e;
+  --border\/accent-3:  #fcd34d;
+  --border\/accent-4:  #ffb2da;
+  --border\/accent-5:  #ff914d;
+  --border\/neutral-1: #e3e4eb;
 
   /* ── Background ──────────────────────────────────────────── */
   --components\/background\/primary:   #fffceb;
@@ -77,35 +77,54 @@
   --components\/background\/white:     white;
 
   /* ── Card ────────────────────────────────────────────────── */
-  --components\/card\/white:  white;
-  --components\/card\/cream:  #fffceb;
-  --components\/card\/blue:   rgba(126, 218, 255, 0.15);
-  --components\/card\/pink:   rgba(255, 178, 218, 0.15);
-  --components\/card\/amber:  #fef3c7;
+  --components\/card\/white: white;
+  --components\/card\/cream: #fffceb;
+  --components\/card\/accent-1: rgba(126,218,255,0.15);
+  --components\/card\/accent-3: #fef3c7;
+  --components\/card\/accent-4: rgba(255,178,218,0.15);
 
-  /* ── Card-title chips ────────────────────────────────────── */
-  --components\/card-title\/pink:   #ffe6f3;
-  --components\/card-title\/green:  #d2ff9a;
-  --components\/card-title\/orange: #ffa066;
-  --components\/card-title\/blue:   #b4eaff;
-  --components\/card-title\/amber:  #fde68a;
+  /* ── Card-title accents ──────────────────────────────────── */
+  --components\/card-title\/accent-1: #b4eaff;
+  --components\/card-title\/accent-2: #d2ff9a;
+  --components\/card-title\/accent-3: #fde68a;
+  --components\/card-title\/accent-4: #ffe6f3;
+  --components\/card-title\/accent-5: #ffa066;
+
+  /* ── Component micro-tokens ───────────────────────────────── */
+  --check-stroke: #116F39;
 
   /* ── Highlight ───────────────────────────────────────────── */
-  --highlight\/blue:   rgba(126, 218, 255, 0.15);
-  --highlight\/green:  rgba(169, 255, 62, 0.15);
-  --highlight\/orange: rgba(255, 145, 77, 0.15);
-  --highlight\/amber:  #fef3c7;
+  --highlight\/accent-1: rgba(126,218,255,0.15);
+  --highlight\/accent-2: rgba(169,255,62,0.15);
+  --highlight\/accent-3: #fef3c7;
+  --highlight\/accent-5: rgba(255,145,77,0.15);
+
+  /* ── Surfaces (slides/cards) ─────────────────────────────── */
+  --surface\/glass\/strong: rgba(255,255,255,0.92);
+  --surface\/glass\/default: rgba(255,255,255,0.55);
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow\/card: 0px 4px 4px 0px rgba(0,0,0,0.25);
+  --shadow\/card-soft: 0 8px 32px rgba(0,0,0,0.18);
+  --shadow\/elevation\/100: 0px 1px 4px 0px rgba(12,12,13,0.05);
+  --shadow\/elevation\/200: 0px 1px 4px 0px rgba(12,12,13,0.05), 0px 1px 4px 0px rgba(12,12,13,0.10);
+  --shadow\/elevation\/400: 0px 4px 4px -4px rgba(12,12,13,0.10), 0px 16px 32px -4px rgba(12,12,13,0.10);
+  --shadow\/elevation\/500: 0px 4px 4px -4px rgba(12,12,13,0.10), 0px 16px 16px -8px rgba(12,12,13,0.10);
+  --shadow\/slide\/soft: 0 8px 32px rgba(0,0,0,0.15);
+  --shadow\/slide\/glass: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow\/slide\/accent: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow\/slide\/primary: 0 8px 32px rgba(9,44,105,0.35);
 
   /* ── Typography ──────────────────────────────────────────── */
-  --font\/family\/title:       'Montserrat', sans-serif;
-  --font\/family\/body:        'Montserrat', sans-serif;
+  --font\/family\/title: 'Montserrat', sans-serif;
+  --font\/family\/body: 'Montserrat', sans-serif;
   --font\/family\/title-serif: 'Noto Serif', serif;
 
-  --font\/size\/xs:  12px;
-  --font\/size\/sm:  16px;
-  --font\/size\/md:  18px;
-  --font\/size\/lg:  20px;
-  --font\/size\/xl:  24px;
+  --font\/size\/xs: 12px;
+  --font\/size\/sm: 16px;
+  --font\/size\/md: 18px;
+  --font\/size\/lg: 20px;
+  --font\/size\/xl: 24px;
   --font\/size\/2xl: 32px;
   --font\/size\/4xl: 56px;
   --font\/size\/5xl: 72px;
@@ -115,9 +134,48 @@
   --font\/line-height\/md: 32px;
   --font\/line-height\/lg: 40px;
   --font\/line-height\/xl: 48px;
+
+  /* ── Semantic aliases (component-facing, color-agnostic) ── */
+  --theme-color-primary: #092c69;
+  --theme-color-on-primary: white;
+  --theme-color-text-primary: black;
+  --theme-color-text-secondary: #323241;
+  --theme-color-text-muted: #717188;
+
+  --theme-surface-canvas: #fffceb;
+  --theme-surface-canvas-secondary: #fff4e8;
+  --theme-surface-layer-1: rgba(126,218,255,0.15);
+  --theme-surface-layer-2: rgba(255,178,218,0.15);
+  --theme-surface-layer-3: #fef3c7;
+  --theme-surface-layer-4: rgba(126,218,255,0.15);
+  --theme-surface-layer-5: rgba(169,255,62,0.15);
+  --theme-surface-layer-6: rgba(255,145,77,0.15);
+  --theme-surface-glass-soft: rgba(255,255,255,0.55);
+  --theme-surface-glass-strong: rgba(255,255,255,0.92);
+  --theme-surface-glass-default: rgba(255,255,255,0.55);
+
+  --theme-accent-1: #b4eaff;
+  --theme-accent-2: #d2ff9a;
+  --theme-accent-3: #fde68a;
+  --theme-accent-4: #ffe6f3;
+  --theme-accent-5: #ffa066;
+  --theme-indicator-1: rgba(255,178,218,0.7);
+
+  --theme-border-1: #7edaff;
+  --theme-border-2: #a9ff3e;
+  --theme-border-3: #fcd34d;
+  --theme-border-4: #ffb2da;
+  --theme-border-5: #ff914d;
+
+  --theme-shadow-card: 0px 4px 4px 0px rgba(0,0,0,0.25);
+  --theme-shadow-card-soft: 0 8px 32px rgba(0,0,0,0.18);
+  --theme-shadow-surface-soft: 0 8px 32px rgba(0,0,0,0.15);
+  --theme-shadow-surface-glass: 0 8px 32px rgba(0,0,0,0.12);
+  --theme-shadow-surface-accent: 0 8px 32px rgba(0,0,0,0.10);
+  --theme-shadow-surface-primary: 0 8px 32px rgba(9,44,105,0.35);
 }
 
-/* Fixed canvas — required for infographic absolute positioning to work correctly */
+/* Fixed canvas — required for infographic absolute positioning */
 .infographic-canvas {
   width: 1080px;
   height: 1350px;

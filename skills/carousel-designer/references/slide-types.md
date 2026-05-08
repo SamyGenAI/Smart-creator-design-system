@@ -18,19 +18,21 @@ Reference for the `carousel-design-agent` and `carousel-qc-agent`.
 
 ## 1. Slide Shell (shared)
 
-Every slide (except CTA) shares this shell:
+Every slide (except CTA) shares this shell. Prefer importing `CarouselSlideShell` + `CarouselNavbarEdge`/`CarouselNavbarCentered` from `components/CarouselPrimitives.jsx`:
 
 ```jsx
-function Slide({ children, nodeId, name }) {
+function Slide({ children, nodeId, name, navbar }) {
   return (
-    <div data-node-id={nodeId} data-name={name} style={{
-      position: 'relative', width: 1080, height: 1350,
-      background: '#fffceb', flexShrink: 0, overflow: 'hidden',
-      fontFamily: "'Montserrat', sans-serif",
-    }}>
-      <Navbar />
+    <CarouselSlideShell
+      nodeId={nodeId}
+      name={name}
+      withNavbar
+      navbar={navbar}
+      background={'var(--theme-surface-canvas)'}
+      fontFamily={"var(--font\\/family\\/title)"}
+    >
       {children}
-    </div>
+    </CarouselSlideShell>
   )
 }
 ```
@@ -38,7 +40,7 @@ function Slide({ children, nodeId, name }) {
 **Navbar** (always present except CTA):
 - Author name: left `calc(50% - 360.5px)`, top 0, 217px wide, 83px tall, fontSize 24, fontWeight 500, textAlign center
 - "Follow": left `calc(50% + 393.5px)`, same sizing
-- Divider: `left: 71, top: 83, width: 938, height: 3, background: '#000'`
+- Divider color should use semantic text token (e.g. `var(--theme-color-text-primary)`)
 
 **Safe content zone:** `top: 110px` to `top: 1300px` (below navbar, above canvas edge)
 
@@ -58,9 +60,9 @@ function Slide({ children, nodeId, name }) {
 ```
 
 ### Key elements
-- **Title:** 128px, Montserrat Bold, centered, line-height 130px, max 2 lines
-- **Subtitle:** 64px, Montserrat Medium, inside a bordered pill (3px solid black, borderRadius 30)
-- **AccentPill:** `#b4eaff`, height 130px, left 74, width 957, radius 30 — sits behind bottom of title text
+- **Title:** 128px, title-font bold tier, centered, line-height 130px, max 2 lines
+- **Subtitle:** 64px, title-font medium tier, inside a bordered pill (3px solid semantic text color, borderRadius 30)
+- **AccentPill:** semantic accent token (`var(--theme-accent-1)`), height 130px, left 74, width 957, radius 30 — sits behind bottom of title text
 - **Illustration:** one `oc-*.svg` from `assets/illustrations/notion-style/`, objectFit contain
 
 ### Character limits
@@ -106,13 +108,13 @@ function Slide({ children, nodeId, name }) {
 [Navbar]
 [Step number + text]    top: 217, left: 56, flex row, number=64px bold
 [Screenshot area]       top: ~450–550, borderRadius 20, boxShadow
-[Optional bottom note]  top: ~1124, white pill card
+[Optional bottom note]  top: ~1124, elevated surface pill card
 ```
 
 ### Key elements
 - **Step label:** number (`1.`, `2.`, etc.) at 64px/500, minWidth 96px + text at 64px/500
 - **Screenshot placeholder:** `ScreenPlaceholder` component — user replaces with actual screenshot
-- **Bottom note (optional):** white rounded card (borderRadius 40, padding 28px 40px) with descriptive note at 32px
+- **Bottom note (optional):** elevated surface rounded card (borderRadius 40, padding 28px 40px) with descriptive note at 32px
 
 ```jsx
 function StepLabel({ number, text, top = 217 }) {
@@ -150,11 +152,11 @@ function StepLabel({ number, text, top = 217 }) {
 Each row:
 ```jsx
 <div style={{ display: 'flex', alignItems: 'center', gap: 28,
-              background: '#fff', borderRadius: 20, padding: '20px 32px',
-              boxShadow: '0px 4px 4px rgba(0,0,0,0.25)' }}>
+              background: 'var(--theme-color-on-primary)', borderRadius: 20, padding: '20px 32px',
+              boxShadow: 'var(--theme-shadow-card)' }}>
   <img src={icon} style={{ width: 72, height: 72, objectFit: 'contain' }} />
   <p style={{ margin: 0, fontSize: 38, fontWeight: 500, lineHeight: '52px' }}>
-    <strong>{label}</strong>{' — '}<span style={{ color: 'rgba(0,0,0,0.6)' }}>{desc}</span>
+    <strong>{label}</strong>{' — '}<span style={{ color: 'var(--theme-color-text-secondary)' }}>{desc}</span>
   </p>
 </div>
 ```
@@ -195,12 +197,12 @@ Max 5 rows. Each row is ~144px tall.
 function SlideCTA() {
   return (
     <div style={{ position: 'relative', width: 1080, height: 1350,
-                  background: '#fffceb', flexShrink: 0, overflow: 'hidden',
-                  fontFamily: "'Montserrat', sans-serif" }}>
+                  background: 'var(--theme-surface-canvas)', flexShrink: 0, overflow: 'hidden',
+                  fontFamily: "var(--font\\/family\\/title)" }}>
       {/* Circular avatar */}
       <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)',
                     top: 260, width: 400, height: 400, borderRadius: '50%',
-                    overflow: 'hidden', boxShadow: '0px 4px 4px rgba(0,0,0,0.25)' }}>
+                    overflow: 'hidden', boxShadow: 'var(--theme-shadow-card)' }}>
         <img src="/assets/avatar/avatar-profile.png"
              style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
@@ -252,7 +254,7 @@ function SlideCTA() {
 ```jsx
 function AccentPill({ left, top, width, height = 76, radius = 20 }) {
   return <div style={{ position: 'absolute', left, top, width, height,
-                       background: '#b4eaff', borderRadius: radius }} />
+                       background: 'var(--theme-accent-1)', borderRadius: radius }} />
 }
 ```
 
@@ -261,10 +263,10 @@ function AccentPill({ left, top, width, height = 76, radius = 20 }) {
 function ScreenPlaceholder({ top, height = 544, left = 31, width = 1017 }) {
   return (
     <div style={{ position: 'absolute', left, top, width, height, borderRadius: 20,
-                  boxShadow: '0px 4px 4px rgba(0,0,0,0.25)',
-                  background: 'rgba(0,0,0,0.04)', border: '2px dashed rgba(0,0,0,0.12)',
+                  boxShadow: 'var(--theme-shadow-card)',
+                  background: 'var(--theme-surface-layer-1)', border: '2px dashed var(--theme-color-text-secondary)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <p style={{ margin: 0, fontSize: 28, color: 'rgba(0,0,0,0.25)', fontWeight: 500 }}>
+      <p style={{ margin: 0, fontSize: 28, color: 'var(--theme-color-text-secondary)', fontWeight: 500 }}>
         [ screen goes here ]
       </p>
     </div>

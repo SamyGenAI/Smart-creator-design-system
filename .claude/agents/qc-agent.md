@@ -38,17 +38,17 @@ You are the **QC Agent** for the Smart Creator Design System. Your job is to ver
 - [ ] Grid container is `flex-1`
 - [ ] Full-width rows use `gridColumn: '1 / -1'`
 - [ ] All [Color]SolidBorderSection have `widthClass="w-full" heightClass="h-full"`
-- [ ] All GlassNavySection inside grid have `className={GLASS}` (not default 308×225px)
+- [ ] All PrimaryGlassSection inside grid have `className={GLASS}` (not default 308×225px)
 
 ### 5. Section Headings
-- [ ] Navy glass section titles ≤ 25 chars (at 24px)
+- [ ] Primary glass section titles ≤ 25 chars (at 24px)
 - [ ] Colored border section titles ≤ 20 chars (at 24px)
 - [ ] All numbered sections have sequential numbers
 
 ### 6. Color Alternation
 - [ ] No two adjacent grid cells share the same color theme
-- [ ] Colors cycle through: blue, orange, green, pink
-- [ ] Navy glass sections can appear anywhere (neutral)
+- [ ] Colors cycle through semantic accent variants (no literal color assumptions)
+- [ ] Primary glass sections can appear anywhere (neutral)
 
 ### 7. Content Density
 - [ ] No card body has only placeholder/empty content unless intentionally empty

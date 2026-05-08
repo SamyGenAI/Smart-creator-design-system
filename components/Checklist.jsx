@@ -8,18 +8,24 @@
  *   title       string    — bold label above the list (optional, set null to hide)
  *   items       string[]  — list text items (2–4)
  *   className   string    — overrides dimensions/positioning
+ *
+ * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
  */
+const ACCENT_2 = "var(--theme-accent-2)"
+const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
+const FONT_TITLE = "var(--font\\/family\\/title)"
+const FONT_BODY = "var(--font\\/family\\/body)"
 
 // Checkmark icon — rendered as a colored badge
 // Figma node: 5:15858
 function Checkmark({ className }) {
   return (
     <div className={className || "relative size-[25px]"} data-name="Checkmark" data-node-id="5:15858">
-      {/* Green rounded square */}
-      <div className="absolute inset-0 rounded-[4px] bg-[var(--components\/card-title\/green,#d2ff9a)]" />
-      {/* Checkmark stroke — simplified SVG since original is asset-based */}
+      {/* Accent badge square */}
+      <div className="absolute inset-0 rounded-[4px]" style={{ backgroundColor: ACCENT_2 }} />
+      {/* Checkmark stroke — color from check-stroke token in DESIGN.md */}
       <svg className="absolute inset-[15%]" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 7L5.5 10.5L12 4" stroke="#116F39" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 7L5.5 10.5L12 4" stroke="var(--check-stroke)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
   )
@@ -42,7 +48,8 @@ export default function Checklist({ title = null, items = ["xxx", "xxx", "xxx"],
       {/* Optional title */}
       {title && (
         <div
-          className="absolute flex flex-col font-['Montserrat',sans-serif] font-bold inset-[0_0_91.01%_0.85%] justify-center leading-[0] text-[14px] text-black tracking-[-0.42px]"
+          className="absolute flex flex-col font-bold inset-[0_0_91.01%_0.85%] justify-center leading-[0] text-[14px] tracking-[-0.42px]"
+          style={{ color: COLOR_TEXT_PRIMARY, fontFamily: FONT_TITLE }}
           data-node-id="28:198"
         >
           <p className="leading-[normal]">{title}</p>
@@ -59,7 +66,8 @@ export default function Checklist({ title = null, items = ["xxx", "xxx", "xxx"],
         >
           <Checkmark className="relative shrink-0 size-[25px]" />
           <div
-            className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[14px] text-black tracking-[-0.42px] w-[234px] overflow-hidden"
+            className="flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-[14px] tracking-[-0.42px] w-[234px] overflow-hidden"
+            style={{ color: COLOR_TEXT_PRIMARY, fontFamily: FONT_BODY }}
             data-node-id={`28:${253 + i * 2}`}
           >
             <p className="leading-[normal]">{item}</p>

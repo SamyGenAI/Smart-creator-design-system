@@ -31,11 +31,11 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
 3. **Map sections to components** — Based on each section's `type`:
    | type | Component |
    |------|-----------|
-   | `intro` | GlassNavySection (full width) |
+   | `intro` | PrimaryGlassSection (full width) |
    | `numbered` | [Color]SolidBorderSection (alternating colors) |
-   | `cta` | GlassNavySection (full width) |
-   | `visual` | GlassNavySection + child shape (Pyramid, Target, etc.) |
-   | `list` | GlassNavySection + child (Checklist, IconBullet, NumberBullet) |
+   | `cta` | PrimaryGlassSection (full width) |
+   | `visual` | PrimaryGlassSection + child shape (Pyramid, Target, etc.) |
+   | `list` | PrimaryGlassSection + child (Checklist, IconBullet, NumberBullet) |
    | `highlight` | PastelShadowBorderCard |
 
    **Rule: No empty sections.** Every card body must have content. If a section has no items, either add body text, an illustration, or merge it with another section. Never render a card with an empty body.
@@ -58,7 +58,7 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
    - **Remaining space** = 1350 - header - footer - padding → this is your content budget
    - Make sure every element fits. If it doesn't, simplify the layout — remove sections, merge cards, or switch to a simpler layout strategy.
 
-5. **Color alternation** — Never place two adjacent cells with the same color. Cycle through: blue → orange → green → pink. Navy glass sections break the pattern.
+5. **Color alternation** — Never place two adjacent cells with the same color. Cycle through your semantic accent variants. Primary glass sections can break the pattern.
 
 6. **Write the JSX file** — Create `design/infographics/[Name]Infographic.jsx`. The outer structure is always:
    ```
@@ -73,75 +73,19 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
 
 ## Layout Patterns
 
-### ⚠️ THE ONLY CORRECT LAYOUT PATTERN
+Choose the simplest structure that fits the brief:
 
-Components (`Checklist`, `IconBullet`, `NumberBullet`, `TextBox`, etc.) use **percentage-based absolute positioning tied to their default pixel dimensions**. They CANNOT be placed as flex/grid children — they will misalign. They MUST be layered using `inline-grid` with `ml-[]` `mt-[]` pixel offsets on top of fixed-size `GlassNavySection` cards.
+1. **Bento grid** for many mixed sections
+2. **Hero layout** for one dominant visual + supporting context
+3. **Stacked rows** for 3–4 equal sections
+4. **Split layout** for explicit A/B comparisons
 
-```jsx
-{/* CORRECT — inline-grid stacking pattern */}
-<div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0">
-  {/* Card background — fixed pixel size */}
-  <GlassNavySection
-    title="Section Title"
-    className="bg-[rgba(255,255,255,0.1)] border-3 border-solid border-white col-1 content-stretch flex flex-col gap-[10px] h-[257px] items-start ml-0 mt-0 relative rounded-[20px] row-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] w-[633px]"
-  />
-  {/* Component layered on top via ml/mt offsets */}
-  <div className="col-1 ml-[36px] mt-[66px] relative row-1">
-    <Checklist items={['Item one', 'Item two', 'Item three']} />
-  </div>
-</div>
-```
-
-Multiple cards in a row use `ml-[Npx]` to place them side by side:
-```jsx
-<div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0">
-  {/* Card 1 at ml-0 */}
-  <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative row-1">
-    <GlassNavySection ... className="... w-[321px] h-[257px] ..." />
-    <div className="col-1 ml-[18px] mt-[66px] relative row-1"><Checklist ... /></div>
-  </div>
-  {/* Card 2 at ml-[344px] (321px card + 23px gap) */}
-  <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[344px] mt-0 place-items-start relative row-1">
-    <GlassNavySection ... className="... w-[633px] h-[257px] ..." />
-    <div className="col-1 ml-[29px] mt-[68px] relative row-1"><IconBullet ... /></div>
-  </div>
-</div>
-```
-
-**Standard card widths (must sum to 981px with gaps):**
-- 1 full-width card: `w-[977px]` or `w-[981px]`
-- 2 equal cards: `w-[477px]` + gap + `w-[477px]`
-- narrow + wide: `w-[321px]` + `ml-[344px]` + `w-[633px]`
-- 3 equal cards: `w-[321px]` + `ml-[344px]` + `w-[308px]` + `ml-[673px]` + `w-[308px]`
-
-**Standard component offsets inside cards:**
-- Content starts at `mt-[66px]` to `mt-[70px]` (clears the 51px navy header + padding)
-- Left padding: `ml-[18px]` to `ml-[36px]`
-
-**Do NOT use CSS Grid `fr` rows or `flex-1` body — these break the absolute positioning of components.**
-
-### Hero Layout (for one central visual)
-```jsx
-<div className="flex-1 w-full flex flex-col items-center justify-center gap-[22px] mt-[14px] mb-[14px]">
-  {/* Optional intro text */}
-  {/* Central visual: Pyramid, Target, illustration, etc. */}
-  {/* Optional context below */}
-</div>
-```
-
-### Stacked Rows (for equal sections)
-```jsx
-<div className="flex-1 w-full flex flex-col gap-[16px] mt-[14px] mb-[14px]">
-  {/* Full-width sections stacked vertically */}
-</div>
-```
-
-### Common rules for all layouts
-- `flex-none` on header and footer — **always**
-- `flex-1` on body — **always**
-- `overflow-hidden` on canvas — **always**
-- All [Color]SolidBorderSection get `widthClass="w-full" heightClass="h-full"` when inside a grid
-- All GlassNavySection inside a grid get `className={GLASS}` and `titleSize="24px"`
+### Common layout rules
+- `flex-none` on header/footer, `flex-1` on body
+- `overflow-hidden` on outer canvas
+- Use design-system components first, add local wrappers only when necessary
+- `PrimaryGlassSection` now carries tokenized glass defaults; only pass minimal size/layout classes (e.g. `h-full w-full`) unless a specific override is required
+- Never hardcode color literals in `design/**/*.jsx`; use semantic token vars only (`var(--theme-...)`)
 
 ## Asset Inventory — use these proactively
 
@@ -155,7 +99,7 @@ Available: `oc-on-the-laptop`, `oc-thinking`, `oc-project-development`, `oc-puzz
 Use `.svg` extension. Always wrap in `flex items-center justify-center` container.
 
 ### Icons (`assets/icons/`)
-Dark SVG icons organized by category. Pass as `<img>` to `IconBullet` or use directly. GlassNavySection auto-inverts icons to white — always pass dark icons. Categories:
+Dark SVG icons organized by category. Pass as `<img>` to `IconBullet` or use directly. PrimaryGlassSection auto-inverts icons to on-primary contrast — always pass dark source icons. Categories:
 - `programming-apps-websites/` — code, database, plugins, security, browser
 - `business/` — charts, briefcase, strategy
 - `work-office/` — tools, productivity
@@ -173,11 +117,8 @@ Files in `design/infographics/` are two levels below the project root, so compon
 import InfographicHeader from '../../components/InfographicHeader.jsx'
 import SquareGridTexture from '../../components/SquareGridTexture.jsx'
 import InfographicFooter from '../../components/InfographicFooter.jsx'
-import GlassNavySection from '../../components/GlassNavySection.jsx'
-import BlueSolidBorderSection from '../../components/BlueSolidBorderSection.jsx'
-import OrangeSolidBorderSection from '../../components/OrangeSolidBorderSection.jsx'
-import GreenSolidBorderSection from '../../components/GreenSolidBorderSection.jsx'
-import PinkSolidBorderSection from '../../components/PinkSolidBorderSection.jsx'
+import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
+import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
 ```
 
 ## Rules
@@ -188,8 +129,8 @@ import PinkSolidBorderSection from '../../components/PinkSolidBorderSection.jsx'
 4. **Preserve `data-node-id` and `data-name` attributes** on all elements.
 5. **No empty card bodies.** Every section must have visible content — text, list, illustration, or icon. If content is missing, add a fitting illustration or merge with a neighboring section.
 6. **Test the math.** Before writing, calculate: header ~130px + footer 60px + padding 56px + grid gaps = fixed overhead. Remaining space goes to `fr` rows. Make sure no row gets less than ~100px.
-7. **Color tokens must use escaped slashes in Tailwind:** `bg-[var(--color\/blue\/500,#092c69)]`
-8. **Icons are dark/black SVGs.** GlassNavySection applies `brightness(0) invert(1)`. Never pass white icons.
+7. **Use semantic theme tokens only.** For Tailwind arbitrary values, reference `var(--theme-...)` tokens instead of raw color literals.
+8. **Icons must be dark source SVGs.** PrimaryGlassSection applies an inversion filter for on-primary contrast. Never pass pre-inverted icons.
 9. **Infographic shapes** (Pyramid, Target, etc.) are in `assets/infographics/`. Import as React components.
 10. **Illustrations** are in `assets/illustrations/`. Use as `<img>` tags with `object-contain`.
 11. **Use component variety.** Across a multi-section infographic, use at least 3 different inner components (NumberBullet, Checklist, IconBullet, TextBox, Table, illustration, etc.). Repetition of the same component in every section looks cheap.
@@ -202,5 +143,5 @@ import PinkSolidBorderSection from '../../components/PinkSolidBorderSection.jsx'
     // WRONG — breaks percentage-based absolute rows
     <Checklist items={[...]} className="h-[138px] w-[200px]" />
     ```
-14. **TextBox is a small pill, not a banner.** Default size is `h-[34px] w-[153px]`. Never pass `w-full` or large widths — the text will overflow. Use it for short statements (≤50 chars). For longer body text in GlassNavySection, render a plain `<p>` with Montserrat font instead.
+14. **TextBox is a small pill, not a banner.** Default size is `h-[34px] w-[153px]`. Never pass `w-full` or large widths — the text will overflow. Use it for short statements (≤50 chars). For longer body text in PrimaryGlassSection, render a plain `<p>` with the design-system title font token instead.
 15. **Grid row height must fit the default component.** Before assigning fr units, calculate: `51px header + component default height + 24px padding = minimum row px`. Use enough fr units so no row is too short. Reference heights: Checklist=189px (needs ≥264px row), IconBullet=173px (needs ≥248px), NumberBullet=138px (needs ≥213px).

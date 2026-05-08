@@ -91,7 +91,7 @@ const data = {
       iconSrc: null,
       sectionTitle: "Free Tier Includes",
       highlightText: "Free tier",
-      colorBoxColor: "var(--components\\/card-title\\/green,#d2ff9a)",
+      colorBoxColor: "var(--theme-accent-3)",
     },
   },
 

@@ -16,9 +16,9 @@ All components are in `components/`. Each preserves `data-node-id` and `data-nam
 - `highlightWord` must appear verbatim in `title` (case-sensitive, matches first occurrence only)
 - **Max title: ~18 chars** · **Max subtitle: ~40 chars** (see `references/space-budgets.md`)
 
-## GlassNavySection — `components/GlassNavySection.jsx`
+## PrimaryGlassSection — `components/PrimaryGlassSection.jsx`
 - **Figma node:** `22:324`
-- Primary card container: navy header bar (51px) + body area
+- Primary card container: primary header bar (51px) + body area
 - Props: `title`, `iconSrc`, `className`, `titleSize` (default `"32px"`)
 - **Always pass explicit dimensions via `className`** — default 308×225px is rarely correct
 - **Max title: ~20 chars** at 32px, ~25 chars at 24px
@@ -26,24 +26,24 @@ All components are in `components/`. Each preserves `data-node-id` and `data-nam
 
 ## InfographicFooter — `components/InfographicFooter.jsx`
 - **Figma node:** `54:894`
-- Navy pill (1048×60px): "Follow for more · avatar · name"
+- Primary pill (1048×60px): "Follow for more · avatar · name"
 - Props: `avatarSrc`, `name`, `className`
 
 ## PastelShadowBorderCard — `components/PastelShadowBorderCard.jsx`
 - **Figma node:** `52:382`
-- Blue-tinted glass card (381×161px) with border and shadow
+- Accent-tinted glass card (381×161px) with border and shadow
 - Props: `text`, `className`
 - **Max text: ~120 chars**
 
 ## NumberBullet — `components/NumberBullet.jsx`
 - **Figma node:** `49:279`
-- Pink badge numbered list (179×138px), exactly 3 items
+- Indicator badge numbered list (179×138px), exactly 3 items
 - Props: `items` (string[3]), `className`
 - **Max per item: ~18 chars**
 
 ## Checklist — `components/Checklist.jsx`
 - **Figma node:** `28:283`
-- Green checkmark list (236×189px), exactly 3 items rendered
+- Accent checkmark list (236×189px), exactly 3 items rendered
 - Props: `title` (optional), `items` (string[]), `className`
 - **Max per item: ~25 chars**
 
@@ -51,12 +51,12 @@ All components are in `components/`. Each preserves `data-node-id` and `data-nam
 - **Figma node:** `28:384`
 - Icon chip + text, exactly 4 rows (319×173px)
 - Props: `items` ([{iconSrc, iconAlt, text}]), `accentColor`, `className`
-- `accentColor`: blue for Row 1, amber for Row 2
+- `accentColor`: use semantic accent tokens per row/context
 - **Max per item: ~30 chars**
 
 ## Table — `components/Table.jsx`
 - **Figma node:** `47:1203`
-- Amber 3-column × 4-row table (390×133px)
+- Accent 3-column × 4-row table (390×133px)
 - Props: `headers` (string[3]), `rows` (string[3][3]), `className`
 - **Max per cell: ~10 chars**
 
@@ -76,28 +76,16 @@ All components are in `components/`. Each preserves `data-node-id` and `data-nam
 ## ColoredTextBoxes — `components/ColoredTextBoxes.jsx`
 - **Figma node:** `51:372`
 - 2×2 grid of colored squares (172×98px)
-- Props: `color` (default chip-green), `className`
+- Props: `color` (default `--theme-accent-2`), `className`
 
-## Brand Border Section Family — `components/BrandBorderSectionBase.jsx`
+## BrandBorderSectionBase — `components/BrandBorderSectionBase.jsx`
 
-Shared base for colored section cards with title bar + black number badge.
+Single reusable component for numbered border sections.
 
-**Solid border wrappers:**
-| Component | File | Figma node | Default width |
-|---|---|---|---|
-| OrangeSolidBorderSection | `components/OrangeSolidBorderSection.jsx` | `66:711` | 415px |
-| BlueSolidBorderSection | `components/BlueSolidBorderSection.jsx` | `66:725` | 415px |
-| PinkSolidBorderSection | `components/PinkSolidBorderSection.jsx` | `66:739` | 470px |
-| GreenSolidBorderSection | `components/GreenSolidBorderSection.jsx` | `66:753` | 470px |
+Use variants instead of color-specific wrapper components:
+- `theme`: `"primary" | "accent" | "support" | "success"`
+- `variant`: `"solid" | "white"`
 
-**White border + shadow wrappers:**
-| Component | File | Default width |
-|---|---|---|
-| OrangeWhiteBorderSection | `components/OrangeWhiteBorderSection.jsx` | 600px |
-| BlueWhiteBorderSection | `components/BlueWhiteBorderSection.jsx` | 600px |
-| PinkWhiteBorderSection | `components/PinkWhiteBorderSection.jsx` | 600px |
-| GreenWhiteBorderSection | `components/GreenWhiteBorderSection.jsx` | 600px |
-
-**Common props:** `title`, `number`, `widthClass`, `heightClass`, `children`
+**Common props:** `theme`, `variant`, `title`, `number`, `widthClass`, `heightClass`, `children`, `rootName`
 **Geometry:** height 195px, header 51px, number badge 44×42px, body area ~134px (overflow-hidden)
 **Max title: ~20 chars** at 24px Bold

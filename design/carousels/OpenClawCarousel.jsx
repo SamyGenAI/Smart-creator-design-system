@@ -1,70 +1,47 @@
+import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+
 /**
  * LinkedIn Carousel — "Setup your 24/7 AI agent in 10 minutes"
  * 13 slides: Cover + 2 Story + 1 Context + 8 Steps + Wrapup + CTA
- * 1080x1350px · #fffceb bg · Montserrat
+ * 1080x1350px · tokenized background · Montserrat
  *
  * STYLE VARIANT: neo-brutalist cards (3px black border + 8px hard offset shadow,
  * no blur) instead of the standard soft white shadow. Text boxes are cream with
  * the same border/offset shadow to feel like stickers on the canvas.
  */
 
-const HARD_SHADOW = '8px 8px 0px 0px #000'
-const SOFT_SHADOW = '0px 4px 4px 0px rgba(0,0,0,0.25)'
-const ACCENT = '#b4eaff'
-const CREAM = '#fffceb'
-const CREAM_DEEP = '#fff4c2'
-const BLACK = '#000'
-const FONT = "'Montserrat', sans-serif"
-const BORDER = '3px solid #000'
+const HARD_SHADOW = '8px 8px 0px 0px var(--theme-color-text-primary)'
+const SOFT_SHADOW = 'var(--theme-shadow-card)'
+const BACKGROUND_ACCENT = 'var(--theme-accent-1)'
+const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
+const BACKGROUND_SECONDARY = 'var(--theme-surface-canvas-secondary)'
+const SURFACE_ELEVATED = 'var(--theme-color-on-primary)'
+const TEXT_PRIMARY = 'var(--theme-color-text-primary)'
+const TEXT_SECONDARY = 'var(--theme-color-text-secondary)'
+const FONT = "var(--font\/family\/title, 'Montserrat', sans-serif)"
+const BORDER_PRIMARY = `3px solid ${TEXT_PRIMARY}`
+const BACKGROUND_SUPPORT = 'var(--theme-accent-2)'
+const BACKGROUND_SIGNAL = 'var(--theme-accent-3)'
+const BACKGROUND_ACTION = 'var(--theme-accent-4)'
+const BACKGROUND_HIGHLIGHT = 'var(--theme-accent-5)'
+const BACKGROUND_INFO = 'var(--theme-border-1)'
 
 const SCREENS = '/screenshots/carousels/How to setup 24-7 AI agent'
 
-// ─── Navbar ───────────────────────────────────────────────────────────────────
-
-function Navbar() {
-  return (
-    <div style={{ position: 'absolute', top: 0, left: 0, width: 1080 }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 83,
-        paddingLeft: 56,
-        paddingRight: 56,
-        boxSizing: 'border-box',
-      }}>
-        <span style={{ fontSize: 24, fontWeight: 500, color: BLACK, fontFamily: FONT, whiteSpace: 'nowrap' }}>
-          Samy Chouaf
-        </span>
-        <span style={{ fontSize: 24, fontWeight: 500, color: BLACK, fontFamily: FONT, whiteSpace: 'nowrap' }}>
-          Follow
-        </span>
-      </div>
-      <div style={{ marginLeft: 56, marginRight: 56, height: 3, background: BLACK }} />
-    </div>
-  )
-}
-
-// ─── Slide shell ──────────────────────────────────────────────────────────────
+const NAVBAR = <CarouselNavbarEdge textColor={TEXT_PRIMARY} fontFamily={FONT} />
 
 function Slide({ children, nodeId, name, withNavbar = true }) {
   return (
-    <div
-      data-node-id={nodeId}
-      data-name={name}
-      style={{
-        position: 'relative',
-        width: 1080,
-        height: 1350,
-        background: CREAM,
-        flexShrink: 0,
-        overflow: 'hidden',
-        fontFamily: FONT,
-      }}
+    <CarouselSlideShell
+      nodeId={nodeId}
+      name={name}
+      withNavbar={withNavbar}
+      navbar={NAVBAR}
+      background={BACKGROUND_PRIMARY}
+      fontFamily={FONT}
     >
-      {withNavbar && <Navbar />}
       {children}
-    </div>
+    </CarouselSlideShell>
   )
 }
 
@@ -74,7 +51,7 @@ function AccentPill({ left, top, width, height = 76, radius = 20 }) {
   return (
     <div style={{
       position: 'absolute', left, top, width, height,
-      background: ACCENT, borderRadius: radius,
+      background: BACKGROUND_ACCENT, borderRadius: radius,
     }} />
   )
 }
@@ -89,11 +66,11 @@ function StepLabel({ number, text }) {
     }}>
       <span style={{
         fontSize: 64, fontWeight: 500, lineHeight: '70px',
-        color: BLACK, minWidth: 96, flexShrink: 0,
+        color: TEXT_PRIMARY, minWidth: 96, flexShrink: 0,
       }}>
         {number}.
       </span>
-      <p style={{ margin: 0, fontSize: 64, fontWeight: 500, lineHeight: '70px', color: BLACK }}>
+      <p style={{ margin: 0, fontSize: 64, fontWeight: 500, lineHeight: '70px', color: TEXT_PRIMARY }}>
         {text}
       </p>
     </div>
@@ -109,10 +86,10 @@ function StepImage({ src, alt, naturalWidth, naturalHeight, top = 360, width = 9
     <div style={{
       position: 'absolute', left, top,
       width, height: displayHeight,
-      border: BORDER,
+      border: BORDER_PRIMARY,
       borderRadius: 18,
       boxShadow: HARD_SHADOW,
-      background: '#fff',
+      background: SURFACE_ELEVATED,
       overflow: 'hidden',
     }}>
       <img src={src} alt={alt} style={{
@@ -130,15 +107,15 @@ function BottomNote({ text, top }) {
     <div style={{
       position: 'absolute', left: 70, top,
       width: 940, minHeight: 148,
-      background: CREAM_DEEP,
-      border: BORDER,
+      background: BACKGROUND_SECONDARY,
+      border: BORDER_PRIMARY,
       borderRadius: 24,
       padding: '28px 40px',
       boxShadow: HARD_SHADOW,
       boxSizing: 'border-box',
       display: 'flex', alignItems: 'center',
     }}>
-      <p style={{ margin: 0, fontSize: 32, fontWeight: 500, lineHeight: '46px', color: BLACK }}>
+      <p style={{ margin: 0, fontSize: 32, fontWeight: 500, lineHeight: '46px', color: TEXT_PRIMARY }}>
         {text}
       </p>
     </div>
@@ -159,12 +136,12 @@ function SlideCover() {
         position: 'absolute',
         left: 290, top: 110,
         width: 500, height: 76,
-        border: BORDER, borderRadius: 30,
-        background: CREAM_DEEP,
+        border: BORDER_PRIMARY, borderRadius: 30,
+        background: BACKGROUND_SECONDARY,
         boxShadow: HARD_SHADOW,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <p style={{ margin: 0, fontSize: 36, fontWeight: 500, color: BLACK, lineHeight: '46px', whiteSpace: 'nowrap' }}>
+        <p style={{ margin: 0, fontSize: 36, fontWeight: 500, color: TEXT_PRIMARY, lineHeight: '46px', whiteSpace: 'nowrap' }}>
           OpenClaw on Hostinger
         </p>
       </div>
@@ -176,7 +153,7 @@ function SlideCover() {
       <div style={{ position: 'absolute', left: 60, top: 260, width: 960 }}>
         <p style={{
           margin: 0, fontSize: 120, fontWeight: 700,
-          lineHeight: '128px', textAlign: 'center', color: BLACK,
+          lineHeight: '128px', textAlign: 'center', color: TEXT_PRIMARY,
         }}>
           How to setup a 24/7 AI agent in 10 minutes
         </p>
@@ -204,7 +181,7 @@ function SlideStory1() {
         width: 900,
         fontSize: 84, fontWeight: 700,
         lineHeight: '100px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         Your AI agent works without you touching your computer.
       </p>
@@ -216,7 +193,7 @@ function SlideStory1() {
         width: 820,
         fontSize: 44, fontWeight: 700,
         lineHeight: '60px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         3 design drafts and 2 warm leads, ready in your WhatsApp.
       </p>
@@ -242,7 +219,7 @@ function SlideStory2() {
         width: 900,
         fontSize: 84, fontWeight: 700,
         lineHeight: '100px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         The setup is simple, no technical skill needed.
       </p>
@@ -254,7 +231,7 @@ function SlideStory2() {
         width: 820,
         fontSize: 44, fontWeight: 700,
         lineHeight: '60px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         10 minutes, 8 clicks, zero code.
       </p>
@@ -280,7 +257,7 @@ function SlideContext() {
         width: 900,
         fontSize: 84, fontWeight: 700,
         lineHeight: '100px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         You don't need a $600 Mac mini under your desk.
       </p>
@@ -292,7 +269,7 @@ function SlideContext() {
         width: 820,
         fontSize: 44, fontWeight: 700,
         lineHeight: '60px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         Run OpenClaw in the cloud, on a cheap VPS.
       </p>
@@ -470,10 +447,10 @@ function SlideStep8() {
           right: 56, top: 118,
           width: 96, height: 96,
           borderRadius: 20,
-          border: BORDER,
+          border: BORDER_PRIMARY,
           boxShadow: HARD_SHADOW,
           objectFit: 'cover',
-          background: '#fff',
+          background: SURFACE_ELEVATED,
         }}
       />
 
@@ -497,37 +474,37 @@ function SlideWrapup() {
   const prompts = [
     {
       icon: '/assets/icons/business/alert-alarm-clock--Streamline-Freehand.svg',
-      bg: '#b4eaff',
+      bg: 'var(--theme-accent-1)',
       title: 'Every day 7am',
       body: 'Summarize my calendar + top news.',
     },
     {
       icon: '/assets/icons/business/time-clock-nine-twenty-five-1--Streamline-Freehand.svg',
-      bg: '#d2ff9a',
+      bg: BACKGROUND_SUPPORT,
       title: 'Friday 6pm',
       body: 'Send me a weekly recap of my DMs.',
     },
     {
       icon: '/assets/icons/data/analytics-graph-line-triple--Streamline-Freehand.svg',
-      bg: '#ffe6f3',
+      bg: BACKGROUND_SIGNAL,
       title: 'Monday 9am',
       body: 'Scan trending posts in my niche.',
     },
     {
       icon: '/assets/icons/email-messages/send-email-paper-plane-1--Streamline-Freehand.png',
-      bg: '#fde68a',
+      bg: BACKGROUND_ACTION,
       title: 'On new lead',
       body: 'Draft a reply and ping me.',
     },
     {
       icon: '/assets/icons/business/view-binocular--Streamline-Freehand.svg',
-      bg: '#ffa066',
+      bg: BACKGROUND_HIGHLIGHT,
       title: 'Daily 8pm',
       body: 'Monitor 5 competitor accounts.',
     },
     {
       icon: '/assets/icons/business/edit-pen-write-paper--Streamline-Freehand.svg',
-      bg: '#7edaff',
+      bg: BACKGROUND_INFO,
       title: 'Every Sunday',
       body: 'Turn my week into 3 post drafts.',
     },
@@ -541,7 +518,7 @@ function SlideWrapup() {
         width: 960,
         fontSize: 64, fontWeight: 700,
         lineHeight: '76px', textAlign: 'center',
-        color: BLACK, margin: 0,
+        color: TEXT_PRIMARY, margin: 0,
       }}>
         6 prompt ideas to get you started
       </p>
@@ -555,8 +532,8 @@ function SlideWrapup() {
       }}>
         {prompts.map(({ icon, bg, title, body }) => (
           <div key={title} style={{
-            background: CREAM_DEEP,
-            border: BORDER,
+            background: BACKGROUND_SECONDARY,
+            border: BORDER_PRIMARY,
             borderRadius: 22,
             padding: '22px 24px 24px',
             boxShadow: HARD_SHADOW,
@@ -566,16 +543,16 @@ function SlideWrapup() {
             <div style={{
               width: 72, height: 72, borderRadius: 36,
               background: bg,
-              border: BORDER,
+              border: BORDER_PRIMARY,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
               <img src={icon} alt="" style={{ width: 42, height: 42, objectFit: 'contain' }} />
             </div>
-            <p style={{ margin: 0, fontSize: 26, fontWeight: 700, lineHeight: '32px', color: BLACK }}>
+            <p style={{ margin: 0, fontSize: 26, fontWeight: 700, lineHeight: '32px', color: TEXT_PRIMARY }}>
               {title}
             </p>
-            <p style={{ margin: 0, fontSize: 24, fontWeight: 500, lineHeight: '32px', color: 'rgba(0,0,0,0.7)' }}>
+            <p style={{ margin: 0, fontSize: 24, fontWeight: 500, lineHeight: '32px', color: TEXT_SECONDARY }}>
               {body}
             </p>
           </div>
@@ -586,7 +563,7 @@ function SlideWrapup() {
         position: 'absolute', left: 70, top: 1205,
         width: 940,
         fontSize: 30, fontWeight: 700, lineHeight: '40px',
-        textAlign: 'center', color: BLACK, margin: 0,
+        textAlign: 'center', color: TEXT_PRIMARY, margin: 0,
       }}>
         Ask anything, OpenClaw will find a way to do it.
       </p>
@@ -619,7 +596,7 @@ function SlideCTA() {
         width: 700,
         fontSize: 96, fontWeight: 700,
         lineHeight: '110px', textAlign: 'center',
-        color: BLACK, margin: 0, whiteSpace: 'nowrap',
+        color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap',
       }}>
         Follow for more
       </p>
@@ -630,7 +607,7 @@ function SlideCTA() {
         width: 600,
         fontSize: 48, fontWeight: 500,
         lineHeight: '70px', textAlign: 'center',
-        color: BLACK, margin: 0, whiteSpace: 'nowrap',
+        color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap',
       }}>
         Samy Chouaf
       </p>

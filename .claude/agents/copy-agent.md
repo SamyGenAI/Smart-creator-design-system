@@ -49,10 +49,10 @@ Return a single fenced JSON block with this shape:
 
 | Field | Max chars | Font context |
 |-------|-----------|--------------|
-| title | 18 | 73px Montserrat Bold |
-| subtitle | 40 | 32px Montserrat Medium Italic |
-| Section heading (navy glass, 24px) | 25 | 24px Montserrat Bold |
-| Section heading (colored border, 24px) | 20 | 24px Montserrat Bold |
+| title | 18 | 73px title-font bold tier |
+| subtitle | 40 | 32px title-font medium italic tier |
+| Section heading (primary glass, 24px) | 25 | 24px title-font bold tier |
+| Section heading (colored border, 24px) | 20 | 24px title-font bold tier |
 | Checklist item | 25 | 14px Medium |
 | IconBullet item | 30 | 14px Medium |
 | NumberBullet item | 18 | 14px Medium |
@@ -66,10 +66,10 @@ Use these `type` values to signal to the Design Agent what kind of visual treatm
 
 | type | Meaning | Design Agent maps to |
 |------|---------|---------------------|
-| `intro` | Full-width overview / hook | GlassNavySection (full row) |
+| `intro` | Full-width overview / hook | PrimaryGlassSection (full row) |
 | `numbered` | Numbered step or level | [Color]SolidBorderSection |
-| `cta` | Call-to-action / closing | GlassNavySection (full row) |
-| `visual` | Diagram or illustration slot | GlassNavySection + child shape |
+| `cta` | Call-to-action / closing | PrimaryGlassSection (full row) |
+| `visual` | Diagram or illustration slot | PrimaryGlassSection + child shape |
 | `list` | Bullet list content | Card with Checklist/IconBullet/NumberBullet |
 | `comparison` | Side-by-side data | Table or comparison layout |
 | `highlight` | Key insight / quote | PastelShadowBorderCard |
