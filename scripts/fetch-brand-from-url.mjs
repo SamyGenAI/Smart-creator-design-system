@@ -13,7 +13,9 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const DEFAULT_OUT = resolve(ROOT, 'public', 'brand-data.json')
+const DEFAULT_ASSET_DIR = resolve(ROOT, 'public', 'assets', 'brand-jina')
 const JINA_READER = 'https://r.jina.ai/'
+const MAX_IMAGE_DOWNLOADS = 12
 
 function getTargetUrl(argv) {
   const positional = argv.filter((a) => !a.startsWith('--'))
@@ -36,6 +38,33 @@ function jinaHeaders(extra = {}) {
   const key = process.env.JINA_API_KEY
   if (key) headers.Authorization = `Bearer ${key}`
   return headers
+}
+
+function sleep(ms) {
+  return new Promise((resolveSleep) => setTimeout(resolveSleep, ms))
+}
+
+function toPublicRelative(absPath) {
+  return absPath.replace(ROOT + '\\', '').replaceAll('\\', '/')
+}
+
+function safeSlug(value, fallback = 'asset') {
+  const clean = String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return clean || fallback
+}
+
+function extensionFrom(urlLike, contentType) {
+  if (contentType?.includes('image/png')) return '.png'
+  if (contentType?.includes('image/jpeg')) return '.jpg'
+  if (contentType?.includes('image/webp')) return '.webp'
+  if (contentType?.includes('image/gif')) return '.gif'
+  if (contentType?.includes('image/svg+xml')) return '.svg'
+  const match = String(urlLike).match(/\.(png|jpg|jpeg|webp|gif|svg)(?:$|\?)/i)
+  if (!match) return '.png'
+  return `.${match[1].toLowerCase() === 'jpeg' ? 'jpg' : match[1].toLowerCase()}`
 }
 
 async function fetchJinaHtml(targetUrl) {
@@ -264,10 +293,27 @@ function extractStylesFromHtml(html) {
   }
 }
 
-async function main() {
-  const targetUrl = getTargetUrl(process.argv.slice(2))
-  const outPath = DEFAULT_OUT
+async function downloadAsset(assetUrl, outDir, baseName) {
+  try {
+    const response = await fetch(assetUrl)
+    if (!response.ok) {
+      console.warn(`[fetch-brand-from-url] Asset download failed (${response.status}): ${assetUrl}`)
+      return null
+    }
+    const contentType = response.headers.get('content-type') || ''
+    const ext = extensionFrom(assetUrl, contentType)
+    const filename = `${safeSlug(baseName)}${ext}`
+    const outPath = resolve(outDir, filename)
+    const arrayBuffer = await response.arrayBuffer()
+    writeFileSync(outPath, Buffer.from(arrayBuffer))
+    return outPath
+  } catch (err) {
+    console.warn(`[fetch-brand-from-url] Asset download error: ${assetUrl}`, err?.message || err)
+    return null
+  }
+}
 
+async function fetchOnce(targetUrl) {
   const [rawHtml, contentData, screenshot] = await Promise.all([
     fetchJinaHtml(targetUrl).catch((err) => {
       console.warn('[fetch-brand-from-url] HTML fetch failed:', err?.message || err)
@@ -279,11 +325,66 @@ async function main() {
       return ''
     }),
   ])
+  return { rawHtml, contentData, screenshot, extracted: extractStylesFromHtml(rawHtml) }
+}
 
-  const extracted = extractStylesFromHtml(rawHtml)
+async function fetchWithRetries(targetUrl, maxAttempts = 3) {
+  let last = null
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const result = await fetchOnce(targetUrl)
+    last = result
+    if (result.extracted.colors.length > 0) {
+      if (attempt > 1) {
+        console.log(`[fetch-brand-from-url] Colors found on retry ${attempt}/${maxAttempts}`)
+      }
+      return { ...result, attemptsUsed: attempt }
+    }
+    if (attempt < maxAttempts) {
+      const waitMs = 800 * attempt
+      console.warn(
+        `[fetch-brand-from-url] No colors detected (attempt ${attempt}/${maxAttempts}). Retrying in ${waitMs}ms...`
+      )
+      await sleep(waitMs)
+    }
+  }
+  return { ...last, attemptsUsed: maxAttempts }
+}
+
+async function main() {
+  const targetUrl = getTargetUrl(process.argv.slice(2))
+  const outPath = DEFAULT_OUT
+  const assetDir = DEFAULT_ASSET_DIR
+  mkdirSync(resolve(ROOT, 'public'), { recursive: true })
+  mkdirSync(assetDir, { recursive: true })
+
+  const { contentData, screenshot, extracted, attemptsUsed } = await fetchWithRetries(targetUrl, 3)
+
+  const savedAssets = {
+    screenshot: null,
+    images: [],
+  }
+
+  if (screenshot) {
+    const screenshotPath = await downloadAsset(screenshot, assetDir, 'website-screenshot')
+    if (screenshotPath) savedAssets.screenshot = toPublicRelative(screenshotPath)
+  }
+
+  const imageCandidates = Array.from(
+    new Set(
+      Object.values(contentData.images || {}).filter(
+        (value) => typeof value === 'string' && /^https?:\/\//i.test(value)
+      )
+    )
+  ).slice(0, MAX_IMAGE_DOWNLOADS)
+
+  for (let i = 0; i < imageCandidates.length; i += 1) {
+    const localPath = await downloadAsset(imageCandidates[i], assetDir, `image-${String(i + 1).padStart(2, '0')}`)
+    if (localPath) savedAssets.images.push(toPublicRelative(localPath))
+  }
 
   const payload = {
     fetchedAt: new Date().toISOString(),
+    attemptsUsed,
     url: targetUrl,
     title: contentData.title || '',
     description: contentData.description || '',
@@ -291,13 +392,13 @@ async function main() {
     images: contentData.images || {},
     links: contentData.links || {},
     screenshotUrl: screenshot || null,
+    savedAssets,
     colors: extracted.colors,
     fonts: extracted.fonts,
     designPatterns: extracted.designPatterns,
     cssSnippet: extracted.cssSnippet,
   }
 
-  mkdirSync(resolve(ROOT, 'public'), { recursive: true })
   writeFileSync(outPath, JSON.stringify(payload, null, 2), 'utf8')
   console.log(`Wrote ${outPath}`)
 }

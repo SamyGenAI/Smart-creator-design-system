@@ -1,6 +1,9 @@
 # Brand setup questionnaire (adaptive)
 
 Use `public/brand-data.json` as the starting point. Ask only what is missing, ambiguous, or needs confirmation.
+Prefer visual references in this order:
+1) `public/assets/brand-jina/` (auto-saved from Jina)
+2) `public/assets/brand-screenshots/` (user-provided)
 
 ## After Jina (`public/brand-data.json`)
 
@@ -24,9 +27,9 @@ Use `public/brand-data.json` as the starting point. Ask only what is missing, am
 
 ## If extraction is weak
 
-- Empty or tiny `colors`: ask for pasted brand hex values (primary, background, accents).
+- Empty or tiny `colors`: check `attemptsUsed` in `public/brand-data.json`. If attempts are low or uncertain, re-run the fetch once; if still empty, ask for pasted brand hex values (primary, background, accents).
 - Empty `fonts`: ask for primary and serif names explicitly.
-- No `screenshotUrl`: still run vision on user-provided files under `public/assets/brand-screenshots/`; rely more on user input.
+- No `screenshotUrl`: run vision on local assets in `public/assets/brand-jina/` and user-provided files under `public/assets/brand-screenshots/`; rely more on user input when needed.
 
 ## Before writing `tmp/brand-answers.json`
 

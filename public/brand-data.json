@@ -1,5 +1,6 @@
 {
-  "fetchedAt": "2026-05-08T17:57:12.667Z",
+  "fetchedAt": "2026-05-08T18:26:15.615Z",
+  "attemptsUsed": 1,
   "url": "https://example.com",
   "title": "Example Domain",
   "description": "",
@@ -8,7 +9,11 @@
   "links": {
     "Learn more": "https://iana.org/domains/example"
   },
-  "screenshotUrl": "https://storage.googleapis.com/reader-6b7dc.appspot.com/screenshots/182ccedb33a9e03fbf1079b209da1a31?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GOOG1ELLSULY4RDXUOTATASTWDU3D3SI3CD3VL25DO7CBYL4C4E3IY6XA4K3E%2F20260508%2Fus-central1%2Fs3%2Faws4_request&X-Amz-Date=20260508T175712Z&X-Amz-Expires=14400&X-Amz-SignedHeaders=host&X-Amz-Signature=3c4a29a919404fac97881c1446911f9ea4c08bde2fdd4494725e363d1ec19b3d",
+  "screenshotUrl": "https://storage.googleapis.com/reader-6b7dc.appspot.com/screenshots/182ccedb33a9e03fbf1079b209da1a31?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GOOG1ELLSULY4RDXUOTATASTWDU3D3SI3CD3VL25DO7CBYL4C4E3IY6XA4K3E%2F20260508%2Fus-central1%2Fs3%2Faws4_request&X-Amz-Date=20260508T182614Z&X-Amz-Expires=14400&X-Amz-SignedHeaders=host&X-Amz-Signature=09ea286efa2fb0457228de28f80037e0935a583eaf939882758042e30a6f70f1",
+  "savedAssets": {
+    "screenshot": "public/assets/brand-jina/website-screenshot.png",
+    "images": []
+  },
   "colors": [
     "#eee",
     "#348"
