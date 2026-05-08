@@ -2,3 +2,4 @@ node_modules/
 dist/
 .env
 qc-screenshots/
+design/

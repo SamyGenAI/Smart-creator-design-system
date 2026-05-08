@@ -1,72 +1,99 @@
 ---
 name: brand-setup
-description: Run initial design-system onboarding for new users by asking a short brand questionnaire, writing DESIGN.md from answers, regenerating tokens, and validating the setup. Use when user asks to set up branding, personalize templates, onboard a new workspace, or make all generated designs match a new brand.
+description: Onboard or rebrand the Smart Creator design system using a website URL (Jina Reader extraction), user-approved colors and fonts, local screenshot vision analysis, then apply answers to DESIGN.md and regenerate CSS tokens. Use when the user runs /setup or @setup, asks to set up branding, personalize the repo for their brand, onboard a new workspace, or make generated infographics and carousels match a new brand.
 ---
 
-# Brand Setup Skill
+# Brand setup (workspace onboarding)
 
-Use this skill to initialize or rebrand the design system through a short chat questionnaire.
+Run this as a guided, multi-step workflow. Do not skip the Jina extraction step or the screenshot vision step unless the user explicitly opts out of one (then document the gap).
 
-## Workflow
+Read [references/questionnaire.md](references/questionnaire.md) for the adaptive question flow.
 
-1. Ask the user these questions in chat:
-   - Brand name
-   - Brand description (one sentence)
-   - Primary brand color (`#hex`)
-   - Canvas background color (`#hex`)
-   - Accent palette aliases (`accent-1`, `accent-2`, `accent-3`, `accent-4`, `accent-5`) as `#hex`
-   - Primary font family and serif display font family
-   - Optional rounded overrides (`glass-header`, `glass`, `card`, `pill`)
+## Prerequisites
 
-2. Build an answers JSON file at `tmp/brand-answers.json` with this shape:
+- Optional: `JINA_API_KEY` in the environment for higher Jina rate limits (works without a key at lower limits).
+- Use the host product vision (Claude Code / Cursor) on image files under `public/assets/brand-screenshots/`.
 
-```json
-{
-  "brandName": "Acme Brand",
-  "brandDescription": "One sentence description",
-  "fonts": {
-    "primary": "<font-family-name>",
-    "serif": "<font-family-name>"
-  },
-  "colors": {
-    "navy": "<hex>",
-    "canvas": "<hex>",
-    "accent-1": "{colors.blue-300}",
-    "accent-2": "{colors.green-200}",
-    "accent-3": "{colors.amber-200}",
-    "accent-4": "{colors.pink-200}",
-    "accent-5": "{colors.orange-200}"
-  },
-  "rounded": {
-    "glass-header": "10px",
-    "glass": "20px",
-    "card": "7.951px",
-    "pill": "40px"
-  }
-}
-```
+## Workflow (8 steps)
 
-3. Apply the answers:
+1. **Website URL**  
+   Ask for the canonical site URL if not already provided.
 
-```bash
-node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json
-```
+2. **Jina extraction**  
+   Run from the repo root:
+   ```bash
+   node scripts/fetch-brand-from-url.mjs "<https-url>"
+   ```
+   This writes [public/brand-data.json](public/brand-data.json) (title, description, content preview, screenshot URL from Jina, extracted colors, fonts, design patterns, CSS snippet).
 
-4. Regenerate and validate:
+3. **Present extraction**  
+   Load `public/brand-data.json` and summarize: colors (first batch), fonts, design patterns, screenshot URL. Note that Jina screenshot URLs expire in about 7 days; the JSON preserves the URL for immediate use.
 
-```bash
-pnpm tokens:gen
-node scripts/validate-design.mjs
-```
+4. **User approval / edits**  
+   Confirm or collect corrected values (valid `#hex` only where the pipeline expects hex):
+   - Primary brand color (maps to `colors.navy` in answers)
+   - Canvas / background color (`colors.canvas`)
+   - Accent palette for `accent-1` through `accent-5` (each may be `#hex` or `{colors.*}` references if the user prefers)
+   - Primary sans font and serif display font (`fonts.primary`, `fonts.serif`)
+   - Optional: `rounded` overrides (`glass-header`, `glass`, `card`, `pill`) informed by vision + CSS patterns
 
-5. Report:
-   - Which tokens changed
-   - Whether token generation succeeded
-   - Any follow-up needed for assets (`assets/avatar/profile.jpg`, icons/logos)
+   If Jina returned no usable colors, ask the user to paste hex values manually.
+
+5. **Branded screenshots**  
+   Ask the user to add representative screenshots (home, marketing, product UI) under `public/assets/brand-screenshots/`. Wait until they confirm files are in place.
+
+6. **Vision pass (host model)**  
+   Read each image in `public/assets/brand-screenshots/` (skip hidden or non-image files). Describe: dominant colors, typography feel, corner radii, shadows / elevation, spacing density, glass or gradients. Merge this with `public/brand-data.json` and the user’s edits from step 4.
+
+7. **Answers JSON**  
+   Write `tmp/brand-answers.json` using this shape (fill from steps 4–6; omit keys the user did not change so `apply-brand-answers` keeps existing `DESIGN.md` values where appropriate):
+
+   ```json
+   {
+     "brandName": "Brand display name",
+     "brandDescription": "One sentence.",
+     "fonts": {
+       "primary": "Font Name",
+       "serif": "Serif Font Name"
+     },
+     "colors": {
+       "navy": "#hex",
+       "canvas": "#hex",
+       "accent-1": "#hex or {colors.blue-300}",
+       "accent-2": "",
+       "accent-3": "",
+       "accent-4": "",
+       "accent-5": ""
+     },
+     "rounded": {
+       "glass-header": "10px",
+       "glass": "20px",
+       "card": "8px",
+       "pill": "40px"
+     }
+   }
+   ```
+
+   Only include `colors` keys you intend to overwrite. `scripts/apply-brand-answers.mjs` deep-merges into `DESIGN.md` front matter.
+
+8. **Apply and validate**  
+   From repo root:
+   ```bash
+   node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json
+   pnpm tokens:gen
+   node scripts/validate-design.mjs
+   ```
+
+   Report: which areas changed (brand name, description, colors, fonts, radii), whether `pnpm tokens:gen` succeeded, and validation result.
 
 ## Guardrails
 
-- Update only `DESIGN.md` via `scripts/apply-brand-answers.mjs`.
-- Do not hand-edit `src/index.css`; regenerate it from `DESIGN.md` with `pnpm tokens:gen`.
-- If user gives non-hex color values, ask for a valid `#hex`.
-- Keep `design/` as output-only; setup should not edit generated designs.
+- Update `DESIGN.md` only via `scripts/apply-brand-answers.mjs` for the automated merge path. If the user needs tokens not covered by answers (full palette retune), edit `DESIGN.md` manually afterward and re-run `pnpm tokens:gen` and `node scripts/validate-design.mjs`.
+- Do not hand-edit `src/index.css`; regenerate with `pnpm tokens:gen`.
+- If the user gives non-hex color values where hex is required, ask for a valid `#hex`.
+- Keep `design/` output-only; onboarding must not edit generated designs.
+
+## Follow-up for the user
+
+- Avatar: `assets/avatar/profile.jpg` (per project docs)
+- Icons and logos under `assets/` as needed for templates

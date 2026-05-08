@@ -1,0 +1,19 @@
+{
+  "fetchedAt": "2026-05-08T17:57:12.667Z",
+  "url": "https://example.com",
+  "title": "Example Domain",
+  "description": "",
+  "contentPreview": "This domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)",
+  "images": {},
+  "links": {
+    "Learn more": "https://iana.org/domains/example"
+  },
+  "screenshotUrl": "https://storage.googleapis.com/reader-6b7dc.appspot.com/screenshots/182ccedb33a9e03fbf1079b209da1a31?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GOOG1ELLSULY4RDXUOTATASTWDU3D3SI3CD3VL25DO7CBYL4C4E3IY6XA4K3E%2F20260508%2Fus-central1%2Fs3%2Faws4_request&X-Amz-Date=20260508T175712Z&X-Amz-Expires=14400&X-Amz-SignedHeaders=host&X-Amz-Signature=3c4a29a919404fac97881c1446911f9ea4c08bde2fdd4494725e363d1ec19b3d",
+  "colors": [
+    "#eee",
+    "#348"
+  ],
+  "fonts": [],
+  "designPatterns": [],
+  "cssSnippet": "body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}"
+}
