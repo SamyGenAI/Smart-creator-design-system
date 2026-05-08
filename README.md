@@ -44,13 +44,17 @@ The rules, tokens, component APIs, and character budgets live in `CLAUDE.md` + `
 
 ## Getting started
 
-### 1. Clone & install
+### 1. Download, open, and install
 
 ```bash
 git clone https://github.com/<your-user>/Figma-Design-System.git
 cd Figma-Design-System
 pnpm install
 ```
+
+Open the repo in either:
+- **Cursor** (Agent mode workflow supported)
+- **VS Code + Claude Code** (slash-command workflow supported)
 
 ### 2. Set up API keys
 
@@ -72,7 +76,18 @@ LOGO_DEV_API_KEY=
 
 > You can build infographics without either key. They only exist so Claude can auto-download brand assets when you reference a company.
 
-### 3. Claude Code MCP servers
+### 3. Agent compatibility (Cursor + Claude Code)
+
+This repo supports both entry points for onboarding and generation:
+
+| Tool | How to trigger setup |
+|---|---|
+| **Claude Code (in VS Code or terminal)** | Run `/setup` in a new conversation |
+| **Cursor Agent** | Reference `@setup` in chat |
+
+Both paths run the same `brand-setup` skill workflow and produce the same artifacts (`public/brand-data.json`, `tmp/brand-answers.json`, updated `DESIGN.md`, regenerated `src/index.css`).
+
+### 4. Claude Code MCP servers
 
 This project is designed to be driven from **Claude Code** with two MCP servers connected:
 
@@ -85,7 +100,7 @@ Figma MCP setup: [https://help.figma.com/hc/en-us/articles/32132100833559](https
 
 No additional Anthropic API key is needed — Claude Code handles auth.
 
-### 4. Run the preview app
+### 5. Run the preview app
 
 ```bash
 pnpm dev
@@ -104,6 +119,30 @@ Inside Claude Code, just describe what you want:
 - **Slide deck:** `/slides` then describe the deck
 
 Claude will run the copy → design → QC pipeline, drop a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`), and register it in `src/App.jsx`. Refresh the browser to see it.
+
+---
+
+## First-time brand onboarding (`/setup`)
+
+After installing dependencies, start a **new** chat and run:
+
+- **Claude Code:** `/setup`
+- **Cursor Agent:** `@setup`
+
+The onboarding workflow will:
+1. Ask for your website URL
+2. Run `node scripts/fetch-brand-from-url.mjs <url>`
+3. Save extraction data to `public/brand-data.json`
+4. Ask you to approve or edit colors/fonts
+5. Ask you to place brand screenshots in `public/assets/brand-screenshots/`
+6. Analyze screenshots with host vision
+7. Write `tmp/brand-answers.json`
+8. Apply and validate brand tokens:
+   - `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
+   - `pnpm tokens:gen`
+   - `node scripts/validate-design.mjs`
+
+Result: your local clone is re-skinned to the new brand and ready for infographic/carousel/slide generation.
 
 ### Export a deck to `.pptx`
 
