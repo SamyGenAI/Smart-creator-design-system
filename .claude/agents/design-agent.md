@@ -18,7 +18,8 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
    - `references/space-budgets.md` — vertical budgets and character limits
    - `references/components.md` — component API and constraints
    - `CLAUDE.md` — master rules
-   - `design-philosophy.md` (repo root) **when present** — visual movement + craft posture
+   - `design-philosophy.md` (repo root) **when present** — visual movement + craft posture; read it in full before mapping components
+   - `public/assets/design-inspiration/` — **scan any images present** (skip `.gitkeep` and hidden files); study how the layout is structured (shapes, bands, blocks, whitespace), how colors are distributed across the canvas (dominant vs accent vs neutral zones), and where visual weight is placed — then apply those patterns to your layout decisions
    - Optional deep link: `skills/design-philosophy/SKILL.md` if you need the operational checklist
 
 2. **Choose the layout strategy** — Let the content brief drive the layout. Don't force a grid when a simpler structure fits better.
@@ -172,3 +173,10 @@ import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
 ## Design philosophy intake
 
 When **`design-philosophy.md`** exists at the repo root or [`skills/design-philosophy/SKILL.md`](../../skills/design-philosophy/SKILL.md) directs you to it, **read it before mapping components**. Let the manifesto steer rhythm, spacing drama, dominant vs accent placement, and how aggressively to deploy glass vs solid sections — while still obeying `references/space-budgets.md` and character limits.
+
+Also **scan `public/assets/design-inspiration/`** (skip `.gitkeep` and hidden files). If images are present, study them as structural references — the goal is to understand **how the design is built and how colors are distributed across it**:
+- **Structure and shapes** — how space is divided (columns, bands, blocks, whitespace zones), what geometric forms carry the layout, how sections are delimited
+- **Color distribution** — which colors dominate, which are accents, where contrast is deployed (edges, headers, focal cards), how much of the canvas each color role owns
+- **Visual weight and hierarchy** — where the eye lands first and how it travels through the piece
+
+Extract these patterns and apply them to your layout decisions: how you divide the 1350px canvas, how many chromatic roles you use and where you place them, and which sections carry visual weight vs recede. If the folder is empty, rely on the manifesto alone.

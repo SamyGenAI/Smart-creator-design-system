@@ -10,7 +10,8 @@ Read before coding:
 - `references/space-budgets.md`
 - `references/components.md`
 - `CLAUDE.md`
-- `design-philosophy.md` (repo root) when present
+- `design-philosophy.md` (repo root) when present — read in full before mapping components
+- `public/assets/design-inspiration/` — scan any images present (skip `.gitkeep` and hidden files); study the **structure** (how space is divided, what shapes and bands are used), the **color distribution** (which colors dominate vs accent vs recede, and how much canvas each role owns), and **where visual weight lands** — apply those patterns to your layout and color placement decisions
 - `skills/design-philosophy/SKILL.md` when you need the operational checklist
 
 Output:
@@ -31,3 +32,4 @@ Core rules:
 11. **Palette economy:** max **2–3** intentional chromatic focal roles per piece (dominant brand + neutrals, one sharp accent). Dominant + sharp accent beats timid, evenly-distributed palettes.
 12. **Elevation:** every card/section container → at least `shadow-elevation-100` (or `shadow-card` when that is the component default). `PrimaryGlassSection` / wide brand bands → `shadow-elevation-400`+ (or sanctioned heavy token). No flat “premium” cards.
 13. Read **`design-philosophy.md`** when it exists — let it guide accent discipline, rhythm, and composition feel without breaking space budgets.
+14. Scan **`public/assets/design-inspiration/`** — if images are present, extract: how the layout is structured (shapes, bands, blocks, whitespace zones), how colors are distributed across the canvas (dominant/accent/neutral ownership), and where visual weight is concentrated. Apply those patterns to your canvas division, color placement, and component weighting. Empty folder → rely on manifesto alone.
