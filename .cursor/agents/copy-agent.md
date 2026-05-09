@@ -29,5 +29,5 @@ Rules:
 2. `highlightWord` must appear in `title`.
 3. No placeholders.
 4. 6-10 sections max.
-5. Footer name defaults to `Samy Chouaf`.
+5. Footer `name` defaults to **`Your Full Name`** until `@setup`; after onboarding match the project's configured creator display string.
 6. Do not suggest layout/components/colors.

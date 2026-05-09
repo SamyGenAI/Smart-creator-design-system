@@ -144,27 +144,48 @@ function extractStylesFromHtml(html) {
     return { colors: [], fonts: [], cssSnippet: '', designPatterns: [] }
   }
 
-  const colors = new Set()
+  const colorCounts = new Map()
+  const bumpColor = (raw) => {
+    const key = String(raw).toLowerCase().replace(/\s/g, '')
+    colorCounts.set(key, (colorCounts.get(key) || 0) + 1)
+  }
+
+  const isFilteredColor = (key) => {
+    if (key.startsWith('rgba(') && key.endsWith(',0)')) return true
+    if (!key.startsWith('#')) return false
+    const body = key.slice(1)
+    if (body.length === 3) return body === '000' || body === 'fff'
+    if (body.length === 4) {
+      const rgb = body.slice(0, 3)
+      return rgb === '000' || rgb === 'fff'
+    }
+    if (body.length >= 6) {
+      const rgb6 = body.slice(0, 6)
+      return rgb6 === '000000' || rgb6 === 'ffffff'
+    }
+    return false
+  }
+
   const fonts = new Set()
   const designPatterns = new Set()
 
   const hexPattern = /#(?:[0-9a-fA-F]{3,4}){1,2}\b/g
-  for (const m of html.match(hexPattern) || []) colors.add(m.toLowerCase())
+  for (const m of html.match(hexPattern) || []) bumpColor(m)
 
   const rgbPattern =
     /rgba?\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*[\d.]+)?\s*\)/gi
-  for (const m of html.match(rgbPattern) || []) colors.add(m.toLowerCase().replace(/\s/g, ''))
+  for (const m of html.match(rgbPattern) || []) bumpColor(m)
 
   const hslPattern =
     /hsla?\s*\(\s*\d{1,3}\s*,\s*\d{1,3}%?\s*,\s*\d{1,3}%?(?:\s*,\s*[\d.]+)?\s*\)/gi
-  for (const m of html.match(hslPattern) || []) colors.add(m.toLowerCase().replace(/\s/g, ''))
+  for (const m of html.match(hslPattern) || []) bumpColor(m)
 
   const cssVarPattern = /--[\w-]+:\s*([^;]+)/gi
   let cssVarMatch
   while ((cssVarMatch = cssVarPattern.exec(html)) !== null) {
     const value = cssVarMatch[1].trim()
     if (value.match(/#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(/)) {
-      colors.add(value.toLowerCase())
+      bumpColor(value)
     }
   }
 
@@ -285,8 +306,14 @@ function extractStylesFromHtml(html) {
     .join('\n')
     .substring(0, 3000)
 
+  const rankedColors = [...colorCounts.entries()]
+    .filter(([k]) => !isFilteredColor(k))
+    .sort((a, b) => b[1] - a[1])
+    .map(([k]) => k)
+    .slice(0, 30)
+
   return {
-    colors: Array.from(colors).slice(0, 30),
+    colors: rankedColors,
     fonts: Array.from(fonts).slice(0, 15),
     cssSnippet,
     designPatterns: Array.from(designPatterns),

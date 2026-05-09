@@ -1,5 +1,16 @@
 # Brand setup questionnaire (adaptive)
 
+## Creator identity (**always**, before palettes or themes)
+
+>**Track A & B.** Names and avatar are standardized before brand extraction or Theme Factory.
+
+1. **First name** — ask: *How should your first name appear on footers and bylines?*
+2. **Last name** — ask: *How should your family name appear?*
+3. **Full display string** — use `` `${first} ${last}`.trim() `` everywhere the workspace still shows **`Your Full Name`** — run the global replacement in the **Creator identity & avatar** section of `skills/brand-setup/SKILL.md`.
+4. **Avatar** — confirm a headshot at **`assets/avatar/avatar-profile.png`** (or note deferred upload).
+
+---
+
 ## Track gate (always)
 
 1. Ask: *Do you already have a website URL or settled visual identity (logo, fonts, palette) we can mirror?*
@@ -57,10 +68,12 @@ Prefer visual references in this order:
 
 ## Done checklist
 
+- [ ] Creator **first + last name** captured; **`Your Full Name`** globally replaced with the joined display string (see **Creator identity & avatar** in `skills/brand-setup/SKILL.md`); repo search confirms no stray placeholder
+- [ ] Avatar file present at **`assets/avatar/avatar-profile.png`** (or user warned and deferred explicitly)
 - [ ] `design-philosophy.md` at repo root (or explicit user opt-out noted)
 - [ ] `skills/design-philosophy/SKILL.md` updated when philosophy changes
 - [ ] `tmp/brand-answers.json` written
 - [ ] `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
 - [ ] `pnpm tokens:gen`
 - [ ] `node scripts/validate-design.mjs`
-- [ ] User told about optional assets (`assets/avatar`, icons)
+- [ ] User told about optional **`assets/`** pieces (icons, logos) besides the avatar

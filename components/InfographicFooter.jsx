@@ -3,8 +3,8 @@
  * Figma node: 54:894  (infographic-footer)
  *
  * Props:
- *   avatarSrc   string   — path to profile picture (e.g. "/assets/avatar/profile.jpg")
- *   name        string   — display name (default: "Samy Chouaf")
+ *   avatarSrc   string   — path to profile picture (e.g. "/assets/avatar/avatar-profile.png")
+ *   name        string   — display name (default: "Your Full Name" until @setup replaces it)
  *   className   string   — overrides dimensions/positioning
  */
 const COLOR_PRIMARY = "var(--theme-color-primary)"
@@ -12,7 +12,11 @@ const COLOR_ON_PRIMARY = "var(--theme-color-on-primary)"
 const FONT_TITLE = "var(--font\\/family\\/title)"
 const SHADOW_CARD = "var(--theme-shadow-card)"
 
-export default function InfographicFooter({ avatarSrc = "/assets/avatar/profile.jpg", name = "Samy Chouaf", className }) {
+export default function InfographicFooter({
+  avatarSrc = "/assets/avatar/avatar-profile.png",
+  name = "Your Full Name",
+  className,
+}) {
   return (
     <div
       className={className || "h-[60px] relative w-[1048px]"}

@@ -133,7 +133,7 @@ export default function BentoCoworkInfographicTemplate({ data = {} }) {
         <div className="flex-none shrink-0">
           <InfographicFooter
             avatarSrc={footer.avatarSrc || '/assets/avatar/avatar-profile.png'}
-            name={footer.name || 'Samy Chouaf'}
+            name={footer.name || 'Your Full Name'}
             className="h-[60px] relative w-[1048px]"
           />
         </div>

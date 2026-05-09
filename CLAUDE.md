@@ -68,7 +68,7 @@ See `skills/infographics-designer/SKILL.md` for the full workflow details.
 
 ```
 assets/
-├── avatar/profile.jpg         ← User's profile picture (add manually)
+├── avatar/avatar-profile.png ← User profile / headshot (@setup puts it here)
 ├── textures/                  ← Background textures
 ├── logos/app/{domain}.png     ← fetch: node scripts/fetch-app-logo.mjs domain.com
 ├── logos/text/{domain}.svg    ← fetch: node scripts/fetch-logo.mjs domain.com

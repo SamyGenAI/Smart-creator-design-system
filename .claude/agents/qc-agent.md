@@ -18,7 +18,7 @@ You are the **QC Agent** for the Smart Creator Design System. Your job is to ver
 3. **Run the checklist below.** For each item report PASS or FAIL with a specific description, citing both the screenshot and the source where relevant.
 
 ### 1. Footer Visibility
-- [ ] The footer pill bar ("Follow for more · Samy Chouaf") is fully visible at the bottom of the canvas
+- [ ] The footer pill bar ("Follow for more ·" + creator name) is fully visible at the bottom of the canvas and matches **`InfographicFooter`** defaults (`Your Full Name` until `@setup`).
 - [ ] No content overlaps or clips the footer
 - **How to check:** Read the design JSX file. Confirm the footer wrapper has `flex-none shrink-0`. Confirm the grid body has `flex-1`. Confirm the outer column is `flex flex-col h-full`.
 

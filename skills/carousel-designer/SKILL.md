@@ -39,7 +39,7 @@ Delegate to the `carousel-copy-agent` subagent with the user's topic.
 **Input:** The user's topic (e.g. "5 AI tools every marketer should use")
 
 **Output:** A structured JSON content brief:
-- `topic`, `authorName` (default "Samy Chouaf")
+- `topic`, `authorName` (default "Your Full Name")
 - `slides[]` — one object per slide with `type`, `title`, `subtitle`, `body`, `stepNumber`
 - `charReport` — character counts vs. limits for every text field
 
@@ -114,7 +114,7 @@ See `references/slide-types.md` for per-slide layout specs and character limits.
 6. **AccentPill highlights the key phrase.** One per slide, behind the most important 2-5 words.
 7. **Screen placeholders are valid.** Use `ScreenPlaceholder` for step slides where a screenshot will go.
 8. **NEVER use em dashes (—).** Replace with a comma instead. Em dashes are banned from all slide copy and code strings.
-9. **Navbar uses flexbox, not pixels.** The Navbar must be a full-width flex container (`justify-content: space-between`) with padding, so "Samy Chouaf" and "Follow" always sit at the extremities and stay inside the slide.
+9. **Navbar uses flexbox, not pixels.** The Navbar must be a full-width flex container (`justify-content: space-between`) with padding, so **`Your Full Name`** (creator label placeholder until `@setup`) and "Follow" always sit at the extremities and stay inside the slide.
 10. **Cover slide has no Navbar.** Only context, step, wrap-up slides get the navbar. CTA and Cover both skip it.
 11. **Content screenshots live in `public/screenshots/carousels/{post-slug}/`.** Reference them in JSX as `/screenshots/carousels/{post-slug}/step-1.png`. Vite serves `public/` at the site root. Never use relative paths like `../`.
 12. **QC screenshots are separate.** `pnpm screenshot <mode-key>` writes to `qc-screenshots/` (git-ignored). Never reference QC output from JSX — it's for visual QC only.

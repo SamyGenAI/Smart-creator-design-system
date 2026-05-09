@@ -68,7 +68,7 @@ Pure JS module, no JSX. Exports `SLIDE_DATA`.
 export const SLIDE_DATA = {
   meta: {
     title: "Topic Name",
-    authorName: "Samy Chouaf",
+    authorName: "Your Full Name",
   },
   slides: [
     { id: 's1', layout: 'cover',     title: '...', subtitle: '...', illustration: '/assets/...', accentWord: '...' },
@@ -76,7 +76,7 @@ export const SLIDE_DATA = {
     { id: 's3', layout: 'bullets',   title: '...', bullets: [{ icon: '/assets/icons/...', label: '...', desc: '...' }] },
     { id: 's4', layout: 'statement', statement: '...' },
     { id: 's5', layout: 'quote',     quote: '...', author: '...' },
-    { id: 's6', layout: 'end',       authorName: 'Samy Chouaf' },
+    { id: 's6', layout: 'end',       authorName: 'Your Full Name' },
   ],
 }
 ```

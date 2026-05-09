@@ -33,7 +33,7 @@ Return a single fenced JSON block with this shape:
     }
   ],
   "footer": {
-    "name": "Samy Chouaf"
+    "name": "Your Full Name"
   },
   "charReport": {
     "title": { "text": "...", "chars": 12, "limit": 18, "ok": true },
@@ -83,5 +83,5 @@ Use these `type` values to signal to the Design Agent what kind of visual treatm
 5. **Subtitle is a hook.** It should make someone stop scrolling. Use italic style mentally.
 6. **highlightWord must appear verbatim in title.** It gets a colored background chip.
 7. **No placeholder text.** Every string is final, publication-ready copy.
-8. **Footer name is always "Samy Chouaf"** unless the user specifies otherwise.
+8. **Footer `name`** must match the workspace owner after `@setup` (virgin clones use **`Your Full Name`** as template placeholder until brand setup replaces it). If the briefing names someone else explicitly, honor that instead.
 9. **Do NOT suggest layout, components, or colors.** That's the Design Agent's job. Only provide content and type hints.

@@ -52,8 +52,8 @@ The rules, tokens, component APIs, and character budgets live in `CLAUDE.md` + `
 ### 1. Download, open, and install
 
 ```bash
-git clone https://github.com/<your-user>/Figma-Design-System.git
-cd Figma-Design-System
+git clone https://github.com/SamyGenAI/Smart-creator-design-system.git
+cd Smart-creator-design-system
 pnpm install
 ```
 
@@ -133,6 +133,8 @@ After installing dependencies, start a **new** chat and run:
 
 - **Claude Code:** `/setup`
 - **Cursor Agent:** `@setup`
+
+The agent will collect your **first and last names** as they should appear on footers and slides, swap the **`Your Full Name`** template placeholder repo-wide with that string, and have you supply **`assets/avatar/avatar-profile.png`**. Details: `skills/brand-setup/SKILL.md` (sections **Creator identity & avatar**, then Track A/B).
 
 The agent will first ask whether you have an existing website or visual identity. Your answer determines which track it follows:
 
@@ -224,7 +226,7 @@ How many characters fit in each cell at each font size. If you change component 
 
 ```
 assets/
-├── avatar/profile.jpg        ← your headshot (footer)
+├── avatar/avatar-profile.png ← your headshot (footer / carousels / slides export)
 ├── icons/                    ← section icons — drop your own SVGs in
 ├── logos/app/                ← auto-populated by fetch-app-logo.mjs
 ├── logos/text/               ← auto-populated by fetch-logo.mjs
@@ -232,7 +234,7 @@ assets/
 └── textures/                 ← background textures
 ```
 
-Replace `avatar/profile.jpg` with your own photo to personalize the footer signature.
+During `@setup`, add your portrait as `assets/avatar/avatar-profile.png` (square-friendly headshot) so infographics, carousels, and slide exports resolve the avatar.
 
 ### E. Output folder (generated) → `design/`
 

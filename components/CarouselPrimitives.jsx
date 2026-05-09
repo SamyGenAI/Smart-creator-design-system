@@ -5,7 +5,7 @@ const DEFAULT_BACKGROUND = 'var(--theme-surface-canvas)'
 export function CarouselNavbarEdge({
   textColor = DEFAULT_TEXT,
   fontFamily = DEFAULT_FONT,
-  leftLabel = 'Samy Chouaf',
+  leftLabel = 'Your Full Name',
   rightLabel = 'Follow',
 }) {
   return (
@@ -34,7 +34,7 @@ export function CarouselNavbarEdge({
 export function CarouselNavbarCentered({
   textColor = DEFAULT_TEXT,
   fontFamily = DEFAULT_FONT,
-  leftLabel = 'Samy Chouaf',
+  leftLabel = 'Your Full Name',
   rightLabel = 'Follow',
 }) {
   return (

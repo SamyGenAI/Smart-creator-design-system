@@ -118,8 +118,8 @@ const data = {
   },
 
   footer: {
-    avatarSrc: "/assets/avatar/profile.jpg",
-    name: "Samy Chouaf",
+    avatarSrc: "/assets/avatar/avatar-profile.png",
+    name: "Your Full Name",
   },
 }
 ```
@@ -180,8 +180,8 @@ const data = {
     },
   ],
   footer: {
-    avatarSrc: "/assets/avatar/profile.jpg",
-    name: "Samy Chouaf",
+    avatarSrc: "/assets/avatar/avatar-profile.png",
+    name: "Your Full Name",
   },
 }
 ```

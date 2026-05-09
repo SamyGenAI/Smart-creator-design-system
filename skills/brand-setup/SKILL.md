@@ -1,6 +1,6 @@
 ---
 name: brand-setup
-description: Onboard or rebrand Smart Creator via Track A (website URL + Jina) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then aspiration vision, design-philosophy.md, DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
+description: Capture creator first+last name, replace template placeholder Your Full Name, place assets/avatar/avatar-profile.png, then onboard Smart Creator via Track A (website URL + Jina) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then aspiration vision, design-philosophy.md, DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
 ---
 
 # Brand setup (workspace onboarding)
@@ -20,7 +20,33 @@ Confirm before running Jina or Theme Factory:
 
 Ask plainly: *Do you already have a site or brand visuals to pull from, or should we start from a Theme Factory preset?*
 
-### Track B — Theme factory path
+## Creator identity & avatar (mandatory — right after Track gate)
+
+Do this **before** URL extraction (Track A) or Theme Factory (Track B). The template repo ships with a **neutral author placeholder** so new owners can personalize in one pass.
+
+1. **Given name** — ask: *What is your first name (as you want it to appear)?*
+2. **Family name** — ask: *What is your last name (as you want it to appear)?*
+3. **Display name** — set `creatorDisplayName` to a single string: trim and join as `` `${firstName} ${lastName}` `` (normalize internal spaces). Preserve the user’s preferred capitalization.
+
+4. **Replace the placeholder globally** — the repo uses the literal **`Your Full Name`** everywhere a human author/footer/nav label is needed (agents, defaults, templates, examples). Replace **every occurrence** of the exact substring `Your Full Name` with `creatorDisplayName` across tracked source and docs:
+
+   **Include:** `components/`, `templates/`, `skills/`, `.claude/agents/`, `.cursor/agents/`, root `CLAUDE.md`, root `README.md`, and other markdown under `references/` **when** those files contain the placeholder.
+
+   **Exclude:** `node_modules/`, `.git/`, build output, **`design/`** generated outputs (skip those unless the user explicitly wants older exports refreshed), and purely local Claude paths such as `.claude/settings.local.json`.
+
+   After replacing, optionally run a quick repo search for **`Your Full Name`** to confirm zero remaining matches before continuing.
+
+   **Consistency:** downstream copy agents reference the same footer/author wording—do not invent alternate spellings mid-workflow.
+
+5. **Avatar / profile image** — ask the user to provide a square-friendly **headshot** (PNG or JPG).
+
+   - **Canonical path:** save (or convert and save) the file as **`assets/avatar/avatar-profile.png`**. This path is referenced by infographic footers, carousels, and slide export defaults.
+   - If the source is JPG, convert or re-export as PNG at this path unless the pipeline already resolves both (prefer one canonical file).
+   - If they cannot supply an image immediately, explain that footers/CTAs will reference a missing file until `assets/avatar/avatar-profile.png` exists—but **still** proceed with names and branding; remind them before closing onboarding.
+
+Do **not** skip this section for “solo” setups—distribution relies on neutral defaults (`Your Full Name`) being replaced exactly once during `@setup`.
+
+## Track B — Theme factory path
 
 When Track B applies:
 
@@ -41,6 +67,8 @@ When Track B applies:
 > **Warning — stale template data:** `public/brand-data.json` ships with placeholder values from the template repo. Always verify it was produced by the current user's URL extraction run before trusting it. On Track B, ignore this file entirely and collect brand name / description verbally.
 
 ## Workflow (10 steps)
+
+**Prerequisite:** complete the **Creator identity & avatar** steps above **for names** (`Your Full Name` → `creatorDisplayName` everywhere) **before** the numbered workflow below. Obtain **`assets/avatar/avatar-profile.png`** during the same session when possible — if truly deferred per that section, keep going with branding tokens but remind the user before sign-off.
 
 1. **Website URL (Track A only)**  
    Ask for the canonical site URL. **Track B:** skip; note *no URL* in your session notes.
@@ -172,6 +200,6 @@ When Track B applies:
 
 ## Follow-up for the user
 
-- Avatar: `assets/avatar/profile.jpg` (per project docs)
-- Icons and logos under `assets/` as needed for templates
+- Profile / avatar image: **`assets/avatar/avatar-profile.png`** (required for footer and slide defaults; confirmed during Creator identity & avatar).
+- Icons and logos under `assets/` as needed for templates.
 - See [references/questionnaire.md](references/questionnaire.md) **Done checklist** to verify nothing was skipped.

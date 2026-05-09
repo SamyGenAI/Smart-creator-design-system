@@ -194,7 +194,7 @@ import { SlideShell } from '../components/SlideLayouts.jsx'
 
 **Example data:**
 ```js
-{ id: 'send', layout: 'end', authorName: 'Samy Chouaf' }
+{ id: 'send', layout: 'end', authorName: 'Your Full Name' }
 ```
 
 ---

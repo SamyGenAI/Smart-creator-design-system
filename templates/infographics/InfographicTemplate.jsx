@@ -272,7 +272,7 @@ export default function InfographicTemplate({ data = {} }) {
 
         <InfographicFooter
           avatarSrc={footer.avatarSrc || "/assets/avatar/avatar-profile.png"}
-          name={footer.name || "Samy Chouaf"}
+          name={footer.name || "Your Full Name"}
           className="h-[60px] relative shrink-0 w-[1048px]"
         />
       </div>

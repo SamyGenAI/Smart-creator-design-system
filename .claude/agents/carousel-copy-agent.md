@@ -27,7 +27,7 @@ Return a single fenced JSON block:
 ```json
 {
   "topic": "...",
-  "authorName": "Samy Chouaf",
+  "authorName": "Your Full Name",
   "slides": [
     {
       "type": "cover",
@@ -106,5 +106,5 @@ Return a single fenced JSON block:
 4. **Context before steps.** Always 1–2 context slides before the first step slide.
 5. **Count every character.** Include the `charReport`. Flag any field that exceeds its limit.
 6. **CTA is always last.** The `cta` slide needs no copy — just include `{ "type": "cta" }`.
-7. **Footer name is always "Samy Chouaf"** unless the user specifies otherwise.
+7. **`authorName`** must match **`CarouselPrimitives` / Navbar defaults** (**`Your Full Name`** until `@setup` replaces placeholders). Respect a different briefing if the user assigns another byline.
 8. **Do NOT suggest layout, positioning, or colors.** That is the design agent's job.
