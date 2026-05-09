@@ -15,7 +15,7 @@ Generate LinkedIn infographics (1080×1350px) by:
 
 | File | Content | When to read |
 |------|---------|-------------|
-| `DESIGN.md` | **Single source of truth** — all design tokens, brand colors, typography, spacing, component specs, and Do's and Don'ts | When looking up any token value or design rule. **Edit this file to change the visual identity.** |
+| `DESIGN.md` | **Single source of truth** — all semantic design tokens, typography, spacing, component specs, and Do's and Don'ts | When looking up any token value or design rule. **Edit this file to change the visual identity.** |
 | `references/space-budgets.md` | Per-template vertical budgets + character limits | **Before building any data object** |
 | `references/components.md` | Component API reference + max text lengths | When mapping content to components |
 | `templates/template-manifest.json` | Template registry used by generation pipeline | When creating new outputs from templates |
@@ -100,7 +100,7 @@ assets/
 **When to run `pnpm tokens:gen`:** after every edit to `DESIGN.md`. Regenerates `src/index.css` (CSS custom properties). Tailwind reads DESIGN.md at build time — no extra step needed.
 
 **Tailwind token aliases** (resolved from DESIGN.md, usable as Tailwind classes):
-- Colors: `bg-navy`, `bg-canvas`, `bg-accent-1`, `bg-accent-2`, `bg-accent-3`, `bg-accent-4`, `bg-accent-5`, `bg-glass-white`, `bg-indicator-1`, `text-navy`
+- Colors: `bg-bg-brand`, `bg-bg-canvas`, `bg-bg-accent-1`, `bg-bg-accent-2`, `bg-bg-accent-3`, `bg-bg-accent-4`, `bg-bg-accent-5`, `text-text-primary`
 - Border radius: `rounded-glass`, `rounded-glass-header`, `rounded-card`, `rounded-pill`
 - Shadows: `shadow-card`, `shadow-elevation-100` … `shadow-elevation-500`
 - Fonts: `font-montserrat`, `font-noto-serif`
@@ -116,7 +116,7 @@ assets/
 
 ## Rules for Claude
 
-1. **Never hardcode brand colors, fonts, or radii** — use Tailwind token classes (`bg-navy`, `font-montserrat`, `rounded-glass`, `shadow-card`) or CSS variables (`var(--theme-...)`). Edit `DESIGN.md` + run `pnpm tokens:gen` to change them globally.
+1. **Never hardcode token values** — use semantic Tailwind token classes (`bg-bg-brand`, `font-montserrat`, `rounded-glass`, `shadow-card`) or CSS variables (`var(--theme-...)`). Edit `DESIGN.md` + run `pnpm tokens:gen` to change them globally.
 2. **Do not hand-edit `src/index.css`** — keep it generated from `DESIGN.md` via `scripts/generate-tokens.mjs`. If variable slots must change, update `scripts/generate-tokens.mjs`.
 3. **Never change component structure** — only pass different prop values.
 4. **Never download icons** — reference local paths, let user provide files.
@@ -154,7 +154,7 @@ assets/
 | Property | Value |
 |---|---|
 | Canvas | 1280×720px |
-| Background | `#FFFCEB` (`--color/cream/300`) |
+| Background | `#FFFCEB` (`--color/bg/canvas`) |
 | Texture | `SquareGridTexture` at 60% opacity |
 | Font | Montserrat only |
 | Skill | `skills/slides/SKILL.md` |

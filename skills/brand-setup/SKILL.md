@@ -33,9 +33,11 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
 
 4. **User approval / edits**  
    Confirm or collect corrected values (valid `#hex` only where the pipeline expects hex):
-   - Primary brand color (maps to `colors.navy` in answers)
-   - Canvas / background color (`colors.canvas`)
-   - Accent palette for `accent-1` through `accent-5` (each may be `#hex` or `{colors.*}` references if the user prefers)
+  - Brand surface color (`colors.bg.brand`)
+  - Canvas / background color (`colors.bg.canvas`)
+  - Optional surface roles (`colors.bg.surface`, `colors.bg.surfaceAlt`)
+  - Accent palette for `colors.bg.accent.1` through `colors.bg.accent.5` (each may be `#hex` or `{colors.*}` references)
+  - Text roles (`colors.text.primary`, `colors.text.secondary`, `colors.text.onBrand`)
    - Primary sans font and serif display font (`fonts.primary`, `fonts.serif`)
    - Optional: `rounded` overrides (`glass-header`, `glass`, `card`, `pill`) informed by vision + CSS patterns
 
@@ -61,15 +63,28 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
        "primary": "Font Name",
        "serif": "Serif Font Name"
      },
-     "colors": {
-       "navy": "#hex",
-       "canvas": "#hex",
-       "accent-1": "#hex or {colors.blue-300}",
-       "accent-2": "",
-       "accent-3": "",
-       "accent-4": "",
-       "accent-5": ""
-     },
+    "colors": {
+      "semantic": {
+        "bg": {
+          "brand": "#hex",
+          "canvas": "#hex",
+          "surface": "#hex",
+          "surfaceAlt": "#hex",
+          "accent": {
+            "1": "#hex",
+            "2": "#hex",
+            "3": "#hex",
+            "4": "#hex",
+            "5": "#hex"
+          }
+        },
+        "text": {
+          "primary": "#hex",
+          "secondary": "#hex",
+          "onBrand": "#hex"
+        }
+      }
+    },
      "rounded": {
        "glass-header": "10px",
        "glass": "20px",
@@ -79,7 +94,7 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
    }
    ```
 
-   Only include `colors` keys you intend to overwrite. `scripts/apply-brand-answers.mjs` deep-merges into `DESIGN.md` front matter.
+  Only include `colors.semantic` keys you intend to overwrite. `scripts/apply-brand-answers.mjs` deep-merges into `DESIGN.md` front matter.
 
 8. **Apply and validate**  
    From repo root:

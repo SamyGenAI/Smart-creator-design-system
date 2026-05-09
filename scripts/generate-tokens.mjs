@@ -49,8 +49,10 @@ const bodyFontFamily = tokenMap['typography.body.fontFamily']
 const serifFontFamily = tokenMap['typography.title-serif.fontFamily']
   ? token('typography.title-serif.fontFamily')
   : titleFontFamily
-const primaryColor = tokenAny(['primary', 'colors.primary'])
-const canvasSecondary = tokenAny(['canvas-secondary', 'colors.canvas-secondary', 'cream-200'])
+const primaryColor = tokenAny(['colors.bg.brand'])
+const canvasColor = tokenAny(['colors.bg.canvas'])
+const surfaceColor = tokenAny(['colors.bg.surface'])
+const surfaceAltColor = tokenAny(['colors.bg.surfaceAlt'])
 const surfacePrimaryShadow = tokenAny(['shadows.surface-primary'])
 
 const css = `@tailwind base;
@@ -62,97 +64,65 @@ const css = `@tailwind base;
   Source: DESIGN.md (edit there, then run \`pnpm tokens:gen\`).
 */
 :root {
-  /* ── Primitive: Blue ──────────────────────────────────────── */
-  --color\\/blue\\/100: ${token('alphaColors.blue-100')};
-  --color\\/blue\\/200: ${token('blue-200')};
-  --color\\/blue\\/300: ${token('blue-300')};
-  --color\\/blue\\/400: ${token('blue-400')};
-  --color\\/blue\\/500: ${primaryColor};
-
-  /* ── Primitive: Cream ────────────────────────────────────── */
-  --color\\/cream\\/100: ${token('canvas')};
-  --color\\/cream\\/200: ${token('cream-200')};
-  --color\\/cream\\/300: ${token('canvas')};
-
-  /* ── Primitive: Neutral ──────────────────────────────────── */
-  --color\\/neutral\\/0:    white;
-  --color\\/neutral\\/200:  ${token('neutral-200')};
-  --color\\/neutral\\/300:  ${token('neutral-300')};
-  --color\\/neutral\\/400:  ${token('neutral-400')};
-  --color\\/neutral\\/500:  ${token('neutral-500')};
-  --color\\/neutral\\/600:  ${token('neutral-600')};
-  --color\\/neutral\\/700:  ${token('neutral-700')};
-  --color\\/neutral\\/800:  ${token('neutral-800')};
-  --color\\/neutral\\/1000: black;
-
-  /* ── Primitive: Pink ─────────────────────────────────────── */
-  --color\\/pink\\/100: ${token('alphaColors.pink-100')};
-  --color\\/pink\\/200: ${token('pink-200')};
-  --color\\/pink\\/300: ${token('pink-300')};
-
-  /* ── Primitive: Amber ────────────────────────────────────── */
-  --color\\/amber\\/100: ${token('amber-100')};
-  --color\\/amber\\/200: ${token('amber-200')};
-  --color\\/amber\\/300: ${token('amber-300')};
-
-  /* ── Primitive: Green ────────────────────────────────────── */
-  --color\\/green\\/100: ${token('alphaColors.green-100')};
-  --color\\/green\\/200: ${token('green-200')};
-  --color\\/green\\/300: ${token('green-300')};
-
-  /* ── Primitive: Orange ───────────────────────────────────── */
-  --color\\/orange\\/100: ${token('alphaColors.orange-100')};
-  --color\\/orange\\/200: ${token('orange-200')};
-  --color\\/orange\\/300: ${token('orange-300')};
+  /* ── Semantic palette ─────────────────────────────────────── */
+  --color\\/bg\\/canvas: ${canvasColor};
+  --color\\/bg\\/surface: ${surfaceColor};
+  --color\\/bg\\/surface-alt: ${surfaceAltColor};
+  --color\\/bg\\/brand: ${primaryColor};
+  --color\\/bg\\/accent\\/1: ${token('colors.bg.accent.1')};
+  --color\\/bg\\/accent\\/2: ${token('colors.bg.accent.2')};
+  --color\\/bg\\/accent\\/3: ${token('colors.bg.accent.3')};
+  --color\\/bg\\/accent\\/4: ${token('colors.bg.accent.4')};
+  --color\\/bg\\/accent\\/5: ${token('colors.bg.accent.5')};
 
   /* ── Text ────────────────────────────────────────────────── */
-  --text\\/primary:    black;
-  --text\\/secondary:  ${token('neutral-800')};
-  --text\\/contrast:   ${token('neutral-600')};
-  --text\\/invert:     white;
+  --text\\/primary:    ${token('colors.text.primary')};
+  --text\\/secondary:  ${token('colors.text.secondary')};
+  --text\\/contrast:   ${token('colors.text.muted')};
+  --text\\/invert:     ${token('colors.text.onBrand')};
   --text\\/text-brand: ${primaryColor};
 
   /* ── Border ──────────────────────────────────────────────── */
-  --border\\/primary:   black;
-  --border\\/secondary: ${primaryColor};
-  --border\\/accent-1:  ${token('border-accent-1')};
-  --border\\/accent-2:  ${token('border-accent-2')};
-  --border\\/accent-3:  ${token('border-accent-3')};
-  --border\\/accent-4:  ${token('border-accent-4')};
-  --border\\/accent-5:  ${token('orange-300')};
-  --border\\/neutral-1: ${token('border-neutral-1')};
+  --border\\/primary:   ${token('colors.border.strong')};
+  --border\\/secondary: ${token('colors.border.subtle')};
+  --border\\/accent-1:  ${token('colors.border.accent.1')};
+  --border\\/accent-2:  ${token('colors.border.accent.2')};
+  --border\\/accent-3:  ${token('colors.border.accent.3')};
+  --border\\/accent-4:  ${token('colors.border.accent.4')};
+  --border\\/accent-5:  ${token('colors.border.accent.5')};
+  --border\\/neutral-1: ${token('colors.border.subtle')};
 
   /* ── Background ──────────────────────────────────────────── */
-  --components\\/background\\/primary:   ${token('canvas')};
-  --components\\/background\\/secondary: ${canvasSecondary};
+  --components\\/background\\/primary:   ${canvasColor};
+  --components\\/background\\/secondary: ${surfaceAltColor};
   --components\\/background\\/white:     white;
 
   /* ── Card ────────────────────────────────────────────────── */
   --components\\/card\\/white: white;
-  --components\\/card\\/cream: ${token('canvas')};
-  --components\\/card\\/accent-1: ${token('alphaColors.surface-accent-1')};
-  --components\\/card\\/accent-3: ${token('amber-100')};
-  --components\\/card\\/accent-4: ${token('alphaColors.surface-accent-4')};
+  --components\\/card\\/cream: ${canvasColor};
+  --components\\/card\\/accent-1: ${token('alphaColors.bg.surfaceAccent.1')};
+  --components\\/card\\/accent-3: ${token('colors.bg.accent.3')};
+  --components\\/card\\/accent-4: ${token('alphaColors.bg.surfaceAccent.4')};
 
   /* ── Card-title accents ──────────────────────────────────── */
-  --components\\/card-title\\/accent-1: ${token('accent-1')};
-  --components\\/card-title\\/accent-2: ${token('accent-2')};
-  --components\\/card-title\\/accent-3: ${token('accent-3')};
-  --components\\/card-title\\/accent-4: ${token('accent-4')};
-  --components\\/card-title\\/accent-5: ${token('accent-5')};
+  --components\\/card-title\\/accent-1: ${token('colors.bg.accent.1')};
+  --components\\/card-title\\/accent-2: ${token('colors.bg.accent.2')};
+  --components\\/card-title\\/accent-3: ${token('colors.bg.accent.3')};
+  --components\\/card-title\\/accent-4: ${token('colors.bg.accent.4')};
+  --components\\/card-title\\/accent-5: ${token('colors.bg.accent.5')};
 
   /* ── Component micro-tokens ───────────────────────────────── */
-  --check-stroke: ${token('check-stroke')};
+  --check-stroke: ${token('colors.stroke.check')};
 
   /* ── Highlight ───────────────────────────────────────────── */
-  --highlight\\/accent-1: ${token('alphaColors.blue-100')};
-  --highlight\\/accent-2: ${token('alphaColors.green-100')};
-  --highlight\\/accent-3: ${token('amber-100')};
-  --highlight\\/accent-5: ${token('alphaColors.orange-100')};
+  --highlight\\/accent-1: ${token('alphaColors.bg.accentSoft.1')};
+  --highlight\\/accent-2: ${token('alphaColors.bg.accentSoft.2')};
+  --highlight\\/accent-3: ${token('alphaColors.bg.accentSoft.3')};
+  --highlight\\/accent-5: ${token('alphaColors.bg.accentSoft.5')};
 
   /* ── Surfaces (slides/cards) ─────────────────────────────── */
-  --surface\\/glass\\/strong: ${token('alphaColors.glass-strong')};
-  --surface\\/glass\\/default: ${token('alphaColors.glass-default')};
+  --surface\\/glass\\/strong: ${token('alphaColors.overlay.glass.strong')};
+  --surface\\/glass\\/default: ${token('alphaColors.overlay.glass.default')};
 
   /* ── Shadows ─────────────────────────────────────────────── */
   --shadow\\/card: ${token('shadows.card')};
@@ -188,35 +158,35 @@ const css = `@tailwind base;
 
   /* ── Semantic aliases (component-facing, color-agnostic) ── */
   --theme-color-primary: ${primaryColor};
-  --theme-color-on-primary: white;
-  --theme-color-text-primary: black;
-  --theme-color-text-secondary: ${token('neutral-800')};
-  --theme-color-text-muted: ${token('neutral-700')};
+  --theme-color-on-primary: ${token('colors.text.onBrand')};
+  --theme-color-text-primary: ${token('colors.text.primary')};
+  --theme-color-text-secondary: ${token('colors.text.secondary')};
+  --theme-color-text-muted: ${token('colors.text.muted')};
 
-  --theme-surface-canvas: ${token('canvas')};
-  --theme-surface-canvas-secondary: ${canvasSecondary};
-  --theme-surface-layer-1: ${token('alphaColors.surface-accent-1')};
-  --theme-surface-layer-2: ${token('alphaColors.surface-accent-4')};
-  --theme-surface-layer-3: ${token('amber-100')};
-  --theme-surface-layer-4: ${token('alphaColors.blue-100')};
-  --theme-surface-layer-5: ${token('alphaColors.green-100')};
-  --theme-surface-layer-6: ${token('alphaColors.orange-100')};
-  --theme-surface-glass-soft: ${token('alphaColors.glass-default')};
-  --theme-surface-glass-strong: ${token('alphaColors.glass-strong')};
-  --theme-surface-glass-default: ${token('alphaColors.glass-default')};
+  --theme-surface-canvas: ${canvasColor};
+  --theme-surface-canvas-secondary: ${surfaceAltColor};
+  --theme-surface-layer-1: ${token('alphaColors.bg.surfaceAccent.1')};
+  --theme-surface-layer-2: ${token('alphaColors.bg.surfaceAccent.4')};
+  --theme-surface-layer-3: ${token('alphaColors.bg.accentSoft.3')};
+  --theme-surface-layer-4: ${token('alphaColors.bg.accentSoft.1')};
+  --theme-surface-layer-5: ${token('alphaColors.bg.accentSoft.2')};
+  --theme-surface-layer-6: ${token('alphaColors.bg.accentSoft.5')};
+  --theme-surface-glass-soft: ${token('alphaColors.overlay.glass.default')};
+  --theme-surface-glass-strong: ${token('alphaColors.overlay.glass.strong')};
+  --theme-surface-glass-default: ${token('alphaColors.overlay.glass.default')};
 
-  --theme-accent-1: ${token('accent-1')};
-  --theme-accent-2: ${token('accent-2')};
-  --theme-accent-3: ${token('accent-3')};
-  --theme-accent-4: ${token('accent-4')};
-  --theme-accent-5: ${token('accent-5')};
-  --theme-indicator-1: ${token('alphaColors.indicator-1')};
+  --theme-accent-1: ${token('colors.bg.accent.1')};
+  --theme-accent-2: ${token('colors.bg.accent.2')};
+  --theme-accent-3: ${token('colors.bg.accent.3')};
+  --theme-accent-4: ${token('colors.bg.accent.4')};
+  --theme-accent-5: ${token('colors.bg.accent.5')};
+  --theme-indicator-1: ${token('alphaColors.overlay.indicator.primary')};
 
-  --theme-border-1: ${token('border-accent-1')};
-  --theme-border-2: ${token('border-accent-2')};
-  --theme-border-3: ${token('border-accent-3')};
-  --theme-border-4: ${token('border-accent-4')};
-  --theme-border-5: ${token('orange-300')};
+  --theme-border-1: ${token('colors.border.accent.1')};
+  --theme-border-2: ${token('colors.border.accent.2')};
+  --theme-border-3: ${token('colors.border.accent.3')};
+  --theme-border-4: ${token('colors.border.accent.4')};
+  --theme-border-5: ${token('colors.border.accent.5')};
 
   --theme-shadow-card: ${token('shadows.card')};
   --theme-shadow-card-soft: ${token('shadows.card-soft')};

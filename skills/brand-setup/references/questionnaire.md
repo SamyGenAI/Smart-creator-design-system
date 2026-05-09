@@ -10,11 +10,11 @@ Prefer visual references in this order:
 1. **Confirm URL**  
    "We extracted data from: [url]. Is this the right site?"
 
-2. **Primary + canvas**  
-   From `colors` and vision: propose `navy` (primary) and `canvas` (page background). Ask: "Use these hex values, or paste corrections?"
+2. **Brand + canvas roles**  
+   From `colors` and vision: propose `colors.bg.brand` (primary brand surface) and `colors.bg.canvas` (page background). Ask: "Use these hex values, or paste corrections?"
 
-3. **Accents**  
-   From extracted palette + screenshots: propose five accents for cards and section pills (`accent-1` … `accent-5`). Ask for approval or five `#hex` replacements.
+3. **Accent roles**  
+   From extracted palette + screenshots: propose five accents for cards and section pills (`colors.bg.accent.1` … `colors.bg.accent.5`). Ask for approval or five `#hex` replacements.
 
 4. **Fonts**  
    From `fonts` in JSON + screenshot typography: propose `fonts.primary` and `fonts.serif`. Ask for approval or exact family names (must match how they will appear in CSS / Google Fonts if loaded).
@@ -33,7 +33,7 @@ Prefer visual references in this order:
 
 ## Before writing `tmp/brand-answers.json`
 
-- Re-read `DESIGN.md` front matter if needed so references like `{colors.blue-300}` stay valid when the user chooses reference style.
+- Re-read `DESIGN.md` front matter if needed so semantic references like `{colors.bg.accent.1}` stay valid when the user chooses reference style.
 - Ensure every hex is `#` + 3, 6, or 8 hex digits.
 
 ## Done checklist

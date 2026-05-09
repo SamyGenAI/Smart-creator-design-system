@@ -3,6 +3,13 @@
 // Pure SVG — no external image dependencies
 
 const W = 410, H = 172.5;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  onBrand: "var(--theme-color-on-primary)",
+  accent3: "var(--theme-accent-3)",
+  accent5: "var(--theme-accent-5)",
+  layer5: "var(--theme-surface-layer-6)",
+}
 
 // The pyramid trapezoid (flat top): top edge narrower, base wider
 // Derived from Figma tier bounding boxes: top 69px @ y=0, base 197px @ y=172.5
@@ -17,8 +24,7 @@ const PYR = {
 // Tier band dividers (y positions)
 const TIER_Y = [0, 57.5, 115, H];
 
-// Colors from design tokens: orange-300 → orange-200 → light orange
-const TIER_COLORS = ["#ff914d", "#ffa066", "#ffd4b5"];
+const TIER_COLORS = [TOKENS.accent5, "var(--theme-accent-5)", TOKENS.layer5];
 
 // x coordinate of each side at a given y (linear interpolation along trapezoid sides)
 function leftEdge(y)  { return PYR.topLeft  + (PYR.botLeft  - PYR.topLeft)  * (y / H); }
@@ -74,7 +80,7 @@ export default function Pyramid({
               x={midX * 0.5} // bias toward left since labels are left-of-center in design
               y={cy + 4}
               textAnchor="middle"
-              fill="white"
+              fill={TOKENS.onBrand}
               fontFamily="Montserrat, sans-serif"
               fontWeight="700"
               fontSize="8"
@@ -92,7 +98,7 @@ export default function Pyramid({
             y1={cy}
             x2={ANNOT_X - 4}
             y2={cy}
-            stroke="#092c69"
+            stroke={TOKENS.brand}
             strokeWidth="0.8"
           />
         ))}

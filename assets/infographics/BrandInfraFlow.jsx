@@ -3,19 +3,36 @@
 // Hybrid SVG (arrows) + HTML (boxes) — uses design system tokens
 
 const W = 650, H = 460;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  onBrand: "var(--theme-color-on-primary)",
+  textPrimary: "var(--theme-color-text-primary)",
+  accent1: "var(--theme-accent-1)",
+  accent2: "var(--theme-accent-2)",
+  accent3: "var(--theme-accent-3)",
+  accent4: "var(--theme-accent-4)",
+  accent5: "var(--theme-accent-5)",
+  border1: "var(--theme-border-1)",
+  border2: "var(--theme-border-2)",
+  border3: "var(--theme-border-3)",
+  border5: "var(--theme-border-5)",
+  layer1: "var(--theme-surface-layer-1)",
+  layer2: "var(--theme-surface-layer-2)",
+  layer5: "var(--theme-surface-layer-5)",
+}
 
 const TAG_COLORS = [
-  { bg: "#b4eaff", text: "#092c69" },
-  { bg: "#fde68a", text: "#092c69" },
-  { bg: "#d2ff9a", text: "#092c69" },
-  { bg: "#ffa066", text: "#092c69" },
-  { bg: "#ffe6f3", text: "#092c69" },
+  { bg: TOKENS.accent1, text: TOKENS.textPrimary },
+  { bg: TOKENS.accent3, text: TOKENS.textPrimary },
+  { bg: TOKENS.accent2, text: TOKENS.textPrimary },
+  { bg: TOKENS.accent5, text: TOKENS.textPrimary },
+  { bg: TOKENS.accent4, text: TOKENS.textPrimary },
 ];
 
 const AGENT_STYLES = [
-  { header: "#b4eaff", bg: "rgba(126,218,255,0.15)", border: "#7edaff" },
-  { header: "#ffa066", bg: "rgba(255,145,77,0.15)", border: "#ff914d" },
-  { header: "#d2ff9a", bg: "rgba(169,255,62,0.15)", border: "#a9ff3e" },
+  { header: TOKENS.accent1, bg: TOKENS.layer1, border: TOKENS.border1 },
+  { header: TOKENS.accent5, bg: TOKENS.layer5, border: TOKENS.border5 },
+  { header: TOKENS.accent2, bg: TOKENS.layer5, border: TOKENS.border2 },
 ];
 
 const BRAND_BOX = { x: 35, y: 10, w: 580, h: 150 };
@@ -56,19 +73,19 @@ export default function BrandInfraFlow({
       >
         <defs>
           <marker id="bif-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0.5 L7,4 L0,7.5 L1.5,4 Z" fill="#092c69" />
+            <path d="M0,0.5 L7,4 L0,7.5 L1.5,4 Z" fill={TOKENS.brand} />
           </marker>
         </defs>
 
         {/* Fork: brand box → 3 agents */}
-        <line x1={325} y1={BRAND_BOX.y + BRAND_BOX.h} x2={325} y2={185} stroke="#092c69" strokeWidth="2" />
-        <line x1={AGENT_CX[0]} y1={185} x2={AGENT_CX[2]} y2={185} stroke="#092c69" strokeWidth="2" />
+        <line x1={325} y1={BRAND_BOX.y + BRAND_BOX.h} x2={325} y2={185} stroke={TOKENS.brand} strokeWidth="2" />
+        <line x1={AGENT_CX[0]} y1={185} x2={AGENT_CX[2]} y2={185} stroke={TOKENS.brand} strokeWidth="2" />
         {AGENT_CX.map((cx, i) => (
           <line
             key={`fork-${i}`}
             x1={cx} y1={185}
             x2={cx} y2={AGENT_Y - 6}
-            stroke="#092c69" strokeWidth="2"
+            stroke={TOKENS.brand} strokeWidth="2"
             markerEnd="url(#bif-arrow)"
           />
         ))}
@@ -79,23 +96,23 @@ export default function BrandInfraFlow({
             key={`merge-up-${i}`}
             x1={cx} y1={AGENT_Y + AGENT_H}
             x2={cx} y2={AGENT_Y + AGENT_H + 18}
-            stroke="#092c69" strokeWidth="2"
+            stroke={TOKENS.brand} strokeWidth="2"
           />
         ))}
         <line
           x1={AGENT_CX[0]} y1={AGENT_Y + AGENT_H + 18}
           x2={AGENT_CX[2]} y2={AGENT_Y + AGENT_H + 18}
-          stroke="#092c69" strokeWidth="2"
+          stroke={TOKENS.brand} strokeWidth="2"
         />
         <line
           x1={325} y1={AGENT_Y + AGENT_H + 18}
           x2={325} y2={OUTPUT_BOX.y - 6}
-          stroke="#092c69" strokeWidth="2"
+          stroke={TOKENS.brand} strokeWidth="2"
           markerEnd="url(#bif-arrow)"
         />
       </svg>
 
-      {/* ── Brand Infrastructure box (navy) ─────────────────────────── */}
+      {/* ── Brand Infrastructure box ─────────────────────────────────── */}
       <div
         className="absolute rounded-[16px] flex flex-col items-center justify-center overflow-hidden"
         style={{
@@ -103,13 +120,13 @@ export default function BrandInfraFlow({
           left: BRAND_BOX.x,
           width: BRAND_BOX.w,
           height: BRAND_BOX.h,
-          background: "#092c69",
-          boxShadow: "0 4px 12px rgba(9,44,105,0.25)",
+          background: TOKENS.brand,
+          boxShadow: "var(--theme-shadow-surface-primary)",
         }}
       >
         <span
-          className="font-['Montserrat',sans-serif] font-bold text-white tracking-[-0.4px] mb-[14px]"
-          style={{ fontSize: 20 }}
+          className="font-['Montserrat',sans-serif] font-bold tracking-[-0.4px] mb-[14px]"
+          style={{ color: TOKENS.onBrand, fontSize: 20 }}
         >
           Brand Infrastructure
         </span>
@@ -151,7 +168,7 @@ export default function BrandInfraFlow({
             >
               <span
                 className="font-['Montserrat',sans-serif] font-bold tracking-[-0.2px] uppercase"
-                style={{ fontSize: 11, color: "#092c69" }}
+                style={{ fontSize: 11, color: TOKENS.textPrimary }}
               >
                 {agent.label}
               </span>
@@ -159,7 +176,7 @@ export default function BrandInfraFlow({
             <div className="flex-1 flex items-center justify-center px-[8px]">
               <span
                 className="font-['Montserrat',sans-serif] font-semibold text-center leading-[1.3] tracking-[-0.3px]"
-                style={{ fontSize: 16, color: "#092c69" }}
+                style={{ fontSize: 16, color: TOKENS.textPrimary }}
               >
                 {agent.name}
               </span>
@@ -176,13 +193,13 @@ export default function BrandInfraFlow({
           left: OUTPUT_BOX.x,
           width: OUTPUT_BOX.w,
           height: OUTPUT_BOX.h,
-          border: "2px solid #a9ff3e",
-          background: "rgba(169,255,62,0.15)",
+          border: `2px solid ${TOKENS.border2}`,
+          background: TOKENS.layer5,
         }}
       >
         <span
           className="font-['Montserrat',sans-serif] font-semibold text-center leading-[1.4] tracking-[-0.28px] px-[16px]"
-          style={{ fontSize: 14, color: "#092c69" }}
+          style={{ fontSize: 14, color: TOKENS.textPrimary }}
         >
           {output}
         </span>
@@ -191,8 +208,8 @@ export default function BrandInfraFlow({
           style={{
             width: 40,
             height: 40,
-            background: "#ffffff",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)",
+            background: "var(--components\\/card\\/white)",
+            boxShadow: "var(--theme-shadow-card-soft)",
           }}
         >
           <img

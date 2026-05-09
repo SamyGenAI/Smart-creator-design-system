@@ -16,33 +16,40 @@ const REQUIRED_ROOT_KEYS = [
 ]
 
 const REQUIRED_COLOR_KEYS = [
-  'primary',
-  'canvas',
-  'blue-200',
-  'blue-300',
-  'blue-400',
-  'amber-100',
-  'amber-200',
-  'amber-300',
-  'green-200',
-  'green-300',
-  'pink-200',
-  'pink-300',
-  'orange-200',
-  'orange-300',
+  'bg.canvas',
+  'bg.surface',
+  'bg.surfaceAlt',
+  'bg.brand',
+  'bg.accent.1',
+  'bg.accent.2',
+  'bg.accent.3',
+  'bg.accent.4',
+  'bg.accent.5',
+  'text.primary',
+  'text.secondary',
+  'text.onBrand',
+  'border.subtle',
+  'border.strong',
+  'state.success',
+  'state.warning',
+  'state.info',
+  'state.danger',
+  'indicator.primary',
+  'stroke.check',
 ]
 
 const REQUIRED_ALPHA_KEYS = [
-  'blue-100',
-  'pink-100',
-  'green-100',
-  'orange-100',
-  'surface-accent-1',
-  'surface-accent-4',
-  'glass-white',
-  'indicator-1',
-  'glass-strong',
-  'glass-default',
+  'bg.accentSoft.1',
+  'bg.accentSoft.2',
+  'bg.accentSoft.3',
+  'bg.accentSoft.4',
+  'bg.accentSoft.5',
+  'bg.surfaceAccent.1',
+  'bg.surfaceAccent.4',
+  'overlay.glass.subtle',
+  'overlay.glass.default',
+  'overlay.glass.strong',
+  'overlay.indicator.primary',
 ]
 
 const REQUIRED_SHADOW_KEYS = [
@@ -91,6 +98,16 @@ function looksLikeCssValue(value) {
   return typeof value === 'string' && /(px|rem|em|%|vh|vw)$/.test(value)
 }
 
+function hasPath(obj, path) {
+  const parts = path.split('.')
+  let current = obj
+  for (const part of parts) {
+    if (!isPlainObject(current) || !(part in current)) return false
+    current = current[part]
+  }
+  return true
+}
+
 export function validateDesignSpec(design) {
   const errors = []
 
@@ -106,14 +123,14 @@ export function validateDesignSpec(design) {
     errors.push('`colors` must be an object')
   } else {
     for (const key of REQUIRED_COLOR_KEYS) {
-      if (!(key in design.colors)) errors.push(`Missing required color token: colors.${key}`)
+      if (!hasPath(design.colors, key)) errors.push(`Missing required color token: colors.${key}`)
     }
 
-    for (const [key, value] of Object.entries(design.colors)) {
+    for (const [key, value] of Object.entries(flattenTokenMap(design.colors, 'colors'))) {
       if (typeof value !== 'string') {
-        errors.push(`colors.${key} must be a string`)
+        errors.push(`${key} must be a string`)
       } else if (!isHexColor(value) && !isReference(value)) {
-        errors.push(`colors.${key} must be a #hex value or {reference}`)
+        errors.push(`${key} must be a #hex value or {reference}`)
       }
     }
   }
@@ -156,7 +173,7 @@ export function validateDesignSpec(design) {
     errors.push('`alphaColors` must be an object')
   } else {
     for (const key of REQUIRED_ALPHA_KEYS) {
-      if (!(key in design.alphaColors)) errors.push(`Missing required alpha token: alphaColors.${key}`)
+      if (!hasPath(design.alphaColors, key)) errors.push(`Missing required alpha token: alphaColors.${key}`)
     }
   }
 
@@ -204,6 +221,20 @@ function resolveRefs(obj, design) {
     result[key] = resolveRef(val, design)
   }
   return result
+}
+
+function deepMergeObjects(base, extra) {
+  if (!isPlainObject(base)) return isPlainObject(extra) ? { ...extra } : {}
+  if (!isPlainObject(extra)) return { ...base }
+  const merged = { ...base }
+  for (const [key, value] of Object.entries(extra)) {
+    if (isPlainObject(value) && isPlainObject(merged[key])) {
+      merged[key] = deepMergeObjects(merged[key], value)
+      continue
+    }
+    merged[key] = value
+  }
+  return merged
 }
 
 function buildFontSizes(typography, legacyFontScale = LEGACY_FONT_SCALE) {
@@ -298,7 +329,7 @@ export function parseDesignMd(filePath) {
   const resolved = resolveRefs(design, design)
   const alphaColors = resolved.alphaColors ?? {}
   const boxShadow = resolved.shadows ?? {}
-  const colors = { ...(resolved.colors ?? {}), ...alphaColors }
+  const colors = deepMergeObjects(resolved.colors ?? {}, alphaColors)
   const borderRadius = resolved.rounded ?? {}
   const fontFamilies = buildFontFamilies(resolved.typography)
   const fontSizes = buildFontSizes(resolved.typography, resolved.fontScale ?? LEGACY_FONT_SCALE)

@@ -3,13 +3,18 @@
 // Pure SVG — no external image dependencies
 
 const W = 440, H = 187.5;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  accent1: "var(--theme-accent-1)",
+  accent2: "var(--theme-accent-2)",
+  accent4: "var(--theme-accent-4)",
+}
 
 // All 3 circles share the same center (from Figma: perfectly centered)
 const CX = 220, CY = 94;
 const OUTER_R = 94, MID_R = 60, INNER_R = 25;
 
-// Colors (outer → inner): green → pink → blue
-const RING_COLORS = ["#d2ff9a", "#ffe6f3", "#b4eaff"];
+const RING_COLORS = [TOKENS.accent2, TOKENS.accent4, TOKENS.accent1];
 
 // Annotation zones (from Figma inset analysis)
 const RIGHT_X = 352; // left edge of right annotation blocks
@@ -44,11 +49,11 @@ export default function Target({
 
         {/* Connector lines to annotations */}
         {/* Top-right: from top of outer ring upward-right to annotation */}
-        <line x1={CX + 66} y1={CY - 66} x2={RIGHT_X} y2={14}  stroke="#092c69" strokeWidth="0.8" />
+        <line x1={CX + 66} y1={CY - 66} x2={RIGHT_X} y2={14}  stroke={TOKENS.brand} strokeWidth="0.8" />
         {/* Bottom-right: from right-mid of middle ring to annotation */}
-        <line x1={CX + 50} y1={CY + 40} x2={RIGHT_X} y2={152} stroke="#092c69" strokeWidth="0.8" />
+        <line x1={CX + 50} y1={CY + 40} x2={RIGHT_X} y2={152} stroke={TOKENS.brand} strokeWidth="0.8" />
         {/* Left: from left edge of outer ring horizontally to left annotation */}
-        <line x1={CX - OUTER_R} y1={CY} x2={LEFT_W} y2={CY}  stroke="#092c69" strokeWidth="0.8" />
+        <line x1={CX - OUTER_R} y1={CY} x2={LEFT_W} y2={CY}  stroke={TOKENS.brand} strokeWidth="0.8" />
       </svg>
 
       {/* ── Annotation blocks ─────────────────────────────────────────── */}

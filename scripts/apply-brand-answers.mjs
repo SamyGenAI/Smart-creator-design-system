@@ -71,10 +71,14 @@ function main() {
   const designContent = readFileSync(DESIGN_PATH, 'utf8')
   const { frontmatter, body } = readFrontMatter(designContent)
 
+  const semanticColors = answers.colors?.semantic ?? answers.colors ?? {}
+  const legacyColors = answers.colors?.legacy ?? {}
+  const normalizedColors = { ...legacyColors, ...semanticColors }
+
   const next = deepMerge(frontmatter, {
     name: answers.brandName ?? frontmatter.name,
     description: answers.brandDescription ?? frontmatter.description,
-    colors: answers.colors ?? {},
+    colors: normalizedColors,
     rounded: answers.rounded ?? {},
     spacing: answers.spacing ?? {},
   })

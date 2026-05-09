@@ -3,15 +3,23 @@
 // Pure SVG — no external image dependencies
 
 const W = 607, H = 346;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  textPrimary: "var(--theme-color-text-primary)",
+  accent1: "var(--theme-accent-1)",
+  accent5: "var(--theme-accent-5)",
+  accent4: "var(--theme-accent-4)",
+  layer1: "var(--theme-surface-layer-1)",
+}
 
 // Chart area boundaries (within the full canvas)
 const CHART = { left: 93, top: 0, right: W, bottom: 320 };
 
 // Phase column x boundaries (derived from Figma insets)
 const PHASES = [
-  { x1: 93,  x2: 231, fill: "rgba(126,218,255,0.2)", label: "Learn what is desirable"              },
-  { x1: 231, x2: 434, fill: "#b4eaff",               label: "Develop mature forms of your concept" },
-  { x1: 434, x2: W,   fill: "#7edaff",               label: "Test viability"                        },
+  { x1: 93,  x2: 231, fill: TOKENS.layer1, label: "Learn what is desirable" },
+  { x1: 231, x2: 434, fill: TOKENS.accent1, label: "Develop mature forms of your concept" },
+  { x1: 434, x2: W,   fill: "var(--theme-border-1)", label: "Test viability" },
 ];
 
 // Staircase polyline points (data point positions from Figma inset analysis)
@@ -38,8 +46,8 @@ function staircasePoints(pts) {
 
 // Milestone markers (index into DATA_POINTS, color, label, labelY)
 const MILESTONES = [
-  { idx: 2, fill: "#ffa066", label: "Milestone", labelY: 237 },
-  { idx: 4, fill: "#ffb2da", label: "Milestone", labelY: 138 },
+  { idx: 2, fill: TOKENS.accent5, label: "Milestone", labelY: 237 },
+  { idx: 4, fill: TOKENS.accent4, label: "Milestone", labelY: 138 },
 ];
 
 export default function Growth({
@@ -84,21 +92,21 @@ export default function Growth({
 
         {/* ── Axis lines ───────────────────────────────────────────── */}
         {/* Y-axis */}
-        <line x1={CHART.left} y1={CHART.top} x2={CHART.left} y2={CHART.bottom} stroke="#092c69" strokeWidth="1.5" />
+        <line x1={CHART.left} y1={CHART.top} x2={CHART.left} y2={CHART.bottom} stroke={TOKENS.brand} strokeWidth="1.5" />
         {/* X-axis */}
-        <line x1={CHART.left} y1={CHART.bottom} x2={CHART.right} y2={CHART.bottom} stroke="#092c69" strokeWidth="1.5" />
+        <line x1={CHART.left} y1={CHART.bottom} x2={CHART.right} y2={CHART.bottom} stroke={TOKENS.brand} strokeWidth="1.5" />
 
         {/* ── Staircase growth line ─────────────────────────────────── */}
         <polyline
           points={staircasePoints(DATA_POINTS)}
           fill="none"
-          stroke="#092c69"
+          stroke={TOKENS.brand}
           strokeWidth="1.5"
         />
 
         {/* ── Regular data-point dots ───────────────────────────────── */}
         {DATA_POINTS.filter((_, i) => ![2, 4].includes(i)).map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="4" fill="#092c69" />
+          <circle key={i} cx={x} cy={y} r="4" fill={TOKENS.brand} />
         ))}
 
         {/* ── Milestone markers (large, colored) ───────────────────── */}
@@ -115,7 +123,7 @@ export default function Growth({
                 x={x}
                 y={m.labelY}
                 textAnchor="middle"
-                fill="#092c69"
+                fill={TOKENS.brand}
                 fontFamily="Montserrat, sans-serif"
                 fontWeight="600"
                 fontSize="9"
@@ -133,7 +141,7 @@ export default function Growth({
             x={(p.x1 + p.x2) / 2}
             y={15}
             textAnchor="middle"
-            fill="#092c69"
+            fill={TOKENS.brand}
             fontFamily="Montserrat, sans-serif"
             fontWeight="600"
             fontSize="9"
@@ -150,7 +158,7 @@ export default function Growth({
             x={CHART.left - 4}
             y={12 + i * 13}
             textAnchor="end"
-            fill="black"
+            fill={TOKENS.textPrimary}
             fontFamily="Montserrat, sans-serif"
             fontWeight="600"
             fontSize="12"
@@ -163,7 +171,7 @@ export default function Growth({
           x={W}
           y={H}
           textAnchor="end"
-          fill="black"
+          fill={TOKENS.textPrimary}
           fontFamily="Montserrat, sans-serif"
           fontWeight="600"
           fontSize="12"

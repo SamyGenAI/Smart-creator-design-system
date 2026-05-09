@@ -3,18 +3,29 @@
 // Pure SVG — no external image dependencies
 
 const W = 390, H = 93.5;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  textPrimary: "var(--theme-color-text-primary)",
+  textSecondary: "var(--theme-color-text-secondary)",
+  accent1: "var(--theme-accent-1)",
+  accent2: "var(--theme-accent-2)",
+  accent4: "var(--theme-accent-4)",
+  accent5: "var(--theme-accent-5)",
+  layer1: "var(--theme-surface-layer-1)",
+  layer2: "var(--theme-surface-layer-2)",
+  layer5: "var(--theme-surface-layer-6)",
+}
 
 // 4 circles at equal spacing, r=25, cy=25
 const CIRCLE_CX = [37.5, 142.5, 247.5, 352.5];
 const CIRCLE_R  = 25;
 const CIRCLE_CY = 25;
 
-// Each step has an outer (ring) and inner (fill) color
 const COLORS = [
-  { outer: "#ffe6f3",             inner: "#ffb2da" }, // pink
-  { outer: "rgba(126,218,255,0.3)", inner: "#b4eaff" }, // blue
-  { outer: "rgba(169,255,62,0.15)", inner: "#d2ff9a" }, // green
-  { outer: "rgba(255,145,77,0.15)", inner: "#ffa066" }, // orange
+  { outer: TOKENS.layer2, inner: TOKENS.accent4 },
+  { outer: TOKENS.layer1, inner: TOKENS.accent1 },
+  { outer: "var(--theme-surface-layer-5)", inner: TOKENS.accent2 },
+  { outer: TOKENS.layer5, inner: TOKENS.accent5 },
 ];
 
 const LABEL_Y = 58; // y where step labels start (62% of 93.5)
@@ -43,7 +54,7 @@ export default function Process({
       >
         <defs>
           <marker id="proc-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-            <path d="M0,0 L7,3.5 L0,7 L2,3.5 Z" fill="#092c69" />
+            <path d="M0,0 L7,3.5 L0,7 L2,3.5 Z" fill={TOKENS.brand} />
           </marker>
         </defs>
 
@@ -64,7 +75,7 @@ export default function Process({
               key={i}
               x1={x1} y1={CIRCLE_CY}
               x2={x2} y2={CIRCLE_CY}
-              stroke="#092c69"
+              stroke={TOKENS.brand}
               strokeWidth="1"
               markerEnd="url(#proc-arrow)"
             />
@@ -78,7 +89,7 @@ export default function Process({
             x={cx}
             y={LABEL_Y}
             textAnchor="middle"
-            fill="#092c69"
+            fill={TOKENS.brand}
             fontFamily="Montserrat, sans-serif"
             fontWeight="700"
             fontSize="8"
@@ -94,7 +105,7 @@ export default function Process({
             x={cx}
             y={LABEL_Y + 11}
             textAnchor="middle"
-            fill="#323241"
+            fill={TOKENS.textSecondary}
             fontFamily="Montserrat, sans-serif"
             fontWeight="400"
             fontSize="5"

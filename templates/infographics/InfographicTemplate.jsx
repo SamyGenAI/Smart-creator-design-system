@@ -105,7 +105,7 @@ export default function InfographicTemplate({ data = {} }) {
             >
               <IconBullet
                 items={row1.card2?.iconBullet?.items || []}
-                accentColor="var(--components\\/card-title\\/blue,#b4eaff)"
+                accentColor="var(--components\\/card-title\\/accent-1,var(--theme-accent-1))"
                 className="col-1 h-[173px] ml-0 mt-0 relative row-1 w-[319px]"
               />
             </div>
@@ -125,7 +125,7 @@ export default function InfographicTemplate({ data = {} }) {
           />
           <IconBullet
             items={row2.iconBullet?.items || []}
-            accentColor="var(--components\\/card-title\\/amber,#fde68a)"
+            accentColor="var(--components\\/card-title\\/accent-3,var(--theme-accent-3))"
             className="col-1 h-[173px] ml-[29px] mt-[68px] relative row-1 w-[319px]"
             data-node-id="41:543"
           />
@@ -212,7 +212,7 @@ export default function InfographicTemplate({ data = {} }) {
             )}
             <div className="border-2 border-black border-dashed col-1 h-[123px] ml-[12px] mt-[122px] rounded-[12px] row-1 w-[271px]" data-node-id="5:16128" />
             <ColoredTextBoxes
-              color={row3.card3?.colorBoxColor || "var(--components\\/card-title\\/green,#d2ff9a)"}
+              color={row3.card3?.colorBoxColor || "var(--components\\/card-title\\/accent-2,var(--theme-accent-2))"}
               className="col-1 h-[98px] ml-[19px] mt-[135px] relative row-1 w-[172px]"
             />
             <TextBox

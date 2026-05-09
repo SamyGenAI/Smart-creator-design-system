@@ -5,14 +5,20 @@
 
 const W = 419, H = 341.76;
 
+const TOKENS = {
+  bgBrand: "var(--theme-color-primary)",
+  bgAccent1Strong: "var(--theme-border-1)",
+  bgAccent1: "var(--theme-accent-1)",
+  bgAccent1Soft: "var(--theme-surface-layer-1)",
+  textOnBrand: "var(--theme-color-on-primary)",
+  textPrimary: "var(--theme-color-text-primary)",
+}
+
 // 3 circle centers (from Figma inset analysis)
-//  Top    = Secondary research (dark navy)
-//  Bottom = Primary research (medium blue)
-//  Right  = Research perimeter (light blue)
 const CIRCLES = [
-  { cx: 181, cy:  79, r: 72, fill: "#092c69", textColor: "white",   label: "Secondary\nresearch" },
-  { cx: 181, cy: 261, r: 72, fill: "#7edaff", textColor: "white",   label: "Primary\nresearch"   },
-  { cx: 338, cy: 170, r: 72, fill: "rgba(126,218,255,0.4)", textColor: "#092c69", label: "Research\nperimeter" },
+  { cx: 181, cy:  79, r: 72, fill: TOKENS.bgBrand, textColor: TOKENS.textOnBrand, label: "Secondary\nresearch" },
+  { cx: 181, cy: 261, r: 72, fill: TOKENS.bgAccent1Strong, textColor: TOKENS.textOnBrand, label: "Primary\nresearch" },
+  { cx: 338, cy: 170, r: 72, fill: TOKENS.bgAccent1Soft, textColor: TOKENS.textPrimary, label: "Research\nperimeter" },
 ];
 
 // Curved arrow paths between circles (clockwise: top → right → bottom → top)
@@ -66,7 +72,7 @@ export default function Loop({
       >
         <defs>
           <marker id="loop-arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <circle cx="4" cy="4" r="3" fill="#092c69" />
+            <circle cx="4" cy="4" r="3" fill={TOKENS.bgBrand} />
           </marker>
         </defs>
 
@@ -76,16 +82,16 @@ export default function Loop({
             key={i}
             d={arrow.d}
             fill="none"
-            stroke="#092c69"
+            stroke={TOKENS.bgBrand}
             strokeWidth="1.5"
             markerEnd="url(#loop-arrow)"
           />
         ))}
 
         {/* Small connection dots at arrow origins */}
-        <circle cx={245} cy={108} r={DOT_R} fill="#b4eaff" stroke="#092c69" strokeWidth="1" />
-        <circle cx={352} cy={235} r={DOT_R} fill="#b4eaff" stroke="#092c69" strokeWidth="1" />
-        <circle cx={117} cy={235} r={DOT_R} fill="#b4eaff" stroke="#092c69" strokeWidth="1" />
+        <circle cx={245} cy={108} r={DOT_R} fill={TOKENS.bgAccent1} stroke={TOKENS.bgBrand} strokeWidth="1" />
+        <circle cx={352} cy={235} r={DOT_R} fill={TOKENS.bgAccent1} stroke={TOKENS.bgBrand} strokeWidth="1" />
+        <circle cx={117} cy={235} r={DOT_R} fill={TOKENS.bgAccent1} stroke={TOKENS.bgBrand} strokeWidth="1" />
 
         {/* Circles */}
         {resolvedCircles.map((c, i) => (
@@ -120,7 +126,7 @@ export default function Loop({
             x={label.x}
             y={label.y}
             textAnchor="middle"
-            fill="black"
+            fill={TOKENS.textPrimary}
             fontFamily="'Permanent Marker', cursive"
             fontSize="20"
           >

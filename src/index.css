@@ -11,59 +11,27 @@
   Source: DESIGN.md (edit there, then run `pnpm tokens:gen`).
 */
 :root {
-  /* ── Primitive: Blue ──────────────────────────────────────── */
-  --color\/blue\/100: rgba(126,218,255,0.15);
-  --color\/blue\/200: #c7efff;
-  --color\/blue\/300: #b4eaff;
-  --color\/blue\/400: #7edaff;
-  --color\/blue\/500: #092c69;
-
-  /* ── Primitive: Cream ────────────────────────────────────── */
-  --color\/cream\/100: #fffceb;
-  --color\/cream\/200: #fff4e8;
-  --color\/cream\/300: #fffceb;
-
-  /* ── Primitive: Neutral ──────────────────────────────────── */
-  --color\/neutral\/0:    white;
-  --color\/neutral\/200:  #f9fafc;
-  --color\/neutral\/300:  #f4f4f8;
-  --color\/neutral\/400:  #e3e4eb;
-  --color\/neutral\/500:  #cacbd4;
-  --color\/neutral\/600:  #a8a9b2;
-  --color\/neutral\/700:  #717188;
-  --color\/neutral\/800:  #323241;
-  --color\/neutral\/1000: black;
-
-  /* ── Primitive: Pink ─────────────────────────────────────── */
-  --color\/pink\/100: rgba(255,178,218,0.15);
-  --color\/pink\/200: #ffe6f3;
-  --color\/pink\/300: #ffb2da;
-
-  /* ── Primitive: Amber ────────────────────────────────────── */
-  --color\/amber\/100: #fef3c7;
-  --color\/amber\/200: #fde68a;
-  --color\/amber\/300: #fcd34d;
-
-  /* ── Primitive: Green ────────────────────────────────────── */
-  --color\/green\/100: rgba(169,255,62,0.15);
-  --color\/green\/200: #d2ff9a;
-  --color\/green\/300: #a9ff3e;
-
-  /* ── Primitive: Orange ───────────────────────────────────── */
-  --color\/orange\/100: rgba(255,145,77,0.15);
-  --color\/orange\/200: #ffa066;
-  --color\/orange\/300: #ff914d;
+  /* ── Semantic palette ─────────────────────────────────────── */
+  --color\/bg\/canvas: #fffceb;
+  --color\/bg\/surface: #ffffff;
+  --color\/bg\/surface-alt: #fff4e8;
+  --color\/bg\/brand: #092c69;
+  --color\/bg\/accent\/1: #b4eaff;
+  --color\/bg\/accent\/2: #d2ff9a;
+  --color\/bg\/accent\/3: #fde68a;
+  --color\/bg\/accent\/4: #ffe6f3;
+  --color\/bg\/accent\/5: #ffa066;
 
   /* ── Text ────────────────────────────────────────────────── */
-  --text\/primary:    black;
+  --text\/primary:    #000000;
   --text\/secondary:  #323241;
-  --text\/contrast:   #a8a9b2;
-  --text\/invert:     white;
+  --text\/contrast:   #717188;
+  --text\/invert:     #ffffff;
   --text\/text-brand: #092c69;
 
   /* ── Border ──────────────────────────────────────────────── */
-  --border\/primary:   black;
-  --border\/secondary: #092c69;
+  --border\/primary:   #092c69;
+  --border\/secondary: #e3e4eb;
   --border\/accent-1:  #7edaff;
   --border\/accent-2:  #a9ff3e;
   --border\/accent-3:  #fcd34d;
@@ -80,7 +48,7 @@
   --components\/card\/white: white;
   --components\/card\/cream: #fffceb;
   --components\/card\/accent-1: rgba(126,218,255,0.15);
-  --components\/card\/accent-3: #fef3c7;
+  --components\/card\/accent-3: #fde68a;
   --components\/card\/accent-4: rgba(255,178,218,0.15);
 
   /* ── Card-title accents ──────────────────────────────────── */
@@ -96,7 +64,7 @@
   /* ── Highlight ───────────────────────────────────────────── */
   --highlight\/accent-1: rgba(126,218,255,0.15);
   --highlight\/accent-2: rgba(169,255,62,0.15);
-  --highlight\/accent-3: #fef3c7;
+  --highlight\/accent-3: rgba(252,211,77,0.25);
   --highlight\/accent-5: rgba(255,145,77,0.15);
 
   /* ── Surfaces (slides/cards) ─────────────────────────────── */
@@ -137,8 +105,8 @@
 
   /* ── Semantic aliases (component-facing, color-agnostic) ── */
   --theme-color-primary: #092c69;
-  --theme-color-on-primary: white;
-  --theme-color-text-primary: black;
+  --theme-color-on-primary: #ffffff;
+  --theme-color-text-primary: #000000;
   --theme-color-text-secondary: #323241;
   --theme-color-text-muted: #717188;
 
@@ -146,7 +114,7 @@
   --theme-surface-canvas-secondary: #fff4e8;
   --theme-surface-layer-1: rgba(126,218,255,0.15);
   --theme-surface-layer-2: rgba(255,178,218,0.15);
-  --theme-surface-layer-3: #fef3c7;
+  --theme-surface-layer-3: rgba(252,211,77,0.25);
   --theme-surface-layer-4: rgba(126,218,255,0.15);
   --theme-surface-layer-5: rgba(169,255,62,0.15);
   --theme-surface-layer-6: rgba(255,145,77,0.15);

@@ -83,7 +83,7 @@ Read this file **before** building any data object. Every text value must fit wi
 
 | Element | Width | Font | Max chars |
 |---------|-------|------|-----------|
-| Row label (navy pill) | 160px - 24px padding = 136px | 16px Bold | **14 chars** |
+| Row label (brand pill) | 160px - 24px padding = 136px | 16px Bold | **14 chars** |
 | Col1/Col2 description | ~370px - 36px padding = 334px | 16px Medium | **50 chars** (2 lines at line-height 1.45) |
 | Column header chip text | auto | 20px Bold | **15 chars** |
 

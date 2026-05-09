@@ -5,6 +5,12 @@
 const W = 398, H = 175;
 const CX = 199, CY = 87;
 const OUTER_R = 87, MID_R = 62, INNER_R = 40;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  onBrand: "var(--theme-color-on-primary)",
+  accent1Strong: "var(--theme-border-1)",
+  layer1: "var(--theme-surface-layer-1)",
+}
 
 // x positions where annotations start
 const RIGHT_X = 326; // left edge of right-side text blocks
@@ -36,14 +42,14 @@ export default function Onion({
         aria-hidden="true"
       >
         {/* Concentric circles */}
-        <ellipse cx={CX} cy={CY} rx={OUTER_R} ry={OUTER_R} fill="rgba(126,218,255,0.3)" />
-        <ellipse cx={CX} cy={CY} rx={MID_R}   ry={MID_R}   fill="#7edaff" />
-        <ellipse cx={CX} cy={CY} rx={INNER_R} ry={INNER_R} fill="#092c69" />
+        <ellipse cx={CX} cy={CY} rx={OUTER_R} ry={OUTER_R} fill={TOKENS.layer1} />
+        <ellipse cx={CX} cy={CY} rx={MID_R}   ry={MID_R}   fill={TOKENS.accent1Strong} />
+        <ellipse cx={CX} cy={CY} rx={INNER_R} ry={INNER_R} fill={TOKENS.brand} />
 
         {/* Connector lines */}
-        <line x1={CX + OUTER_R} y1={lineYs[0]} x2={RIGHT_X} y2={lineYs[0]} stroke="#092c69" strokeWidth="0.8" />
-        <line x1={CX - OUTER_R} y1={lineYs[1]} x2={LEFT_X}  y2={lineYs[1]} stroke="#092c69" strokeWidth="0.8" />
-        <line x1={CX + OUTER_R} y1={lineYs[2]} x2={RIGHT_X} y2={lineYs[2]} stroke="#092c69" strokeWidth="0.8" />
+        <line x1={CX + OUTER_R} y1={lineYs[0]} x2={RIGHT_X} y2={lineYs[0]} stroke={TOKENS.brand} strokeWidth="0.8" />
+        <line x1={CX - OUTER_R} y1={lineYs[1]} x2={LEFT_X}  y2={lineYs[1]} stroke={TOKENS.brand} strokeWidth="0.8" />
+        <line x1={CX + OUTER_R} y1={lineYs[2]} x2={RIGHT_X} y2={lineYs[2]} stroke={TOKENS.brand} strokeWidth="0.8" />
 
         {/* Value labels inside circles */}
         {[
@@ -56,7 +62,7 @@ export default function Onion({
             x={CX}
             y={y}
             textAnchor="middle"
-            fill="white"
+            fill={TOKENS.onBrand}
             fontFamily="Montserrat, sans-serif"
             fontWeight="700"
             fontSize="13"

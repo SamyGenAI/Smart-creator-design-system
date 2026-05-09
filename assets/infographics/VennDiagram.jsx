@@ -3,13 +3,21 @@
 // Pure SVG — no external image dependencies
 
 const W = 387, H = 296.25;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  onBrand: "var(--theme-color-on-primary)",
+  accent1Strong: "var(--theme-border-1)",
+  accent2: "var(--theme-accent-2)",
+  accent4: "var(--theme-accent-4)",
+  border2: "var(--theme-border-2)",
+}
 
 // Circle centers and radius (all r=84, from Figma inset analysis)
 const R = 84;
 const CIRCLES = [
-  { cx: 202, cy:  84, fill: "#092c69", titleColor: "white", subtitleColor: "white", title: "Viability",    subtitle: "BUSINESS"  },
-  { cx:  84, cy: 135, fill: "#7edaff", titleColor: "white", subtitleColor: "white", title: "Desirability", subtitle: "HUMAN"     },
-  { cx: 185, cy: 212, fill: "#ffb2da", titleColor: "white", subtitleColor: "white", title: "Feasibility",  subtitle: "TECHNICAL" },
+  { cx: 202, cy:  84, fill: TOKENS.brand, titleColor: TOKENS.onBrand, subtitleColor: TOKENS.onBrand, title: "Viability", subtitle: "BUSINESS" },
+  { cx:  84, cy: 135, fill: TOKENS.accent1Strong, titleColor: TOKENS.onBrand, subtitleColor: TOKENS.onBrand, title: "Desirability", subtitle: "HUMAN" },
+  { cx: 185, cy: 212, fill: TOKENS.accent4, titleColor: TOKENS.onBrand, subtitleColor: TOKENS.onBrand, title: "Feasibility", subtitle: "TECHNICAL" },
 ];
 
 // "Innovation" callout: small bordered circle outside the main Venn + connector line
@@ -92,25 +100,25 @@ export default function VennDiagram({
         <line
           x1={INNOVATION.lineX2} y1={INNOVATION.lineY1}
           x2={INNOVATION.lineX1 + INNOVATION.r} y2={INNOVATION.lineY1}
-          stroke="#a9ff3e"
+          stroke={TOKENS.border2}
           strokeWidth="1.5"
         />
         {/* Small dot at intersection point */}
-        <circle cx={INNOVATION.lineX2} cy={INNOVATION.lineY2} r="4" fill="white" stroke="#092c69" strokeWidth="1" />
+        <circle cx={INNOVATION.lineX2} cy={INNOVATION.lineY2} r="4" fill="var(--components\\/card\\/white)" stroke={TOKENS.brand} strokeWidth="1" />
         {/* Callout circle */}
         <circle
           cx={INNOVATION.cx}
           cy={INNOVATION.cy}
           r={INNOVATION.r}
-          fill="white"
-          stroke="#a9ff3e"
+          fill="var(--components\\/card\\/white)"
+          stroke={TOKENS.border2}
           strokeWidth="2"
         />
         <text
           x={INNOVATION.cx}
           y={INNOVATION.cy + 4}
           textAnchor="middle"
-          fill="#092c69"
+          fill={TOKENS.brand}
           fontFamily="Montserrat, sans-serif"
           fontWeight="700"
           fontSize="9.75"

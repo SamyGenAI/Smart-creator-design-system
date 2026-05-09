@@ -1,16 +1,21 @@
-// FrogJumps — 4 ascending semi-circle arcs on a navy baseline
+// FrogJumps — 4 ascending semi-circle arcs on a brand baseline
 // Figma node: 117:951 — 420 × 189px
 // Pure SVG — no external image dependencies
 
 const W = 420, H = 189;
 const BASELINE_Y = 120;
+const TOKENS = {
+  brand: "var(--theme-color-primary)",
+  accent1: "var(--theme-accent-1)",
+  accent1Strong: "var(--theme-border-1)",
+  accent4: "var(--theme-accent-4)",
+}
 
-// Each arc: center-x, arc-radius, color (alternating pink/blue)
 const ARCS = [
-  { cx: 50,  r: 38, fill: "#ffb2da" }, // pink
-  { cx: 128, r: 50, fill: "#b4eaff" }, // blue
-  { cx: 225, r: 60, fill: "#ffb2da" }, // pink
-  { cx: 342, r: 69, fill: "#7edaff" }, // blue
+  { cx: 50,  r: 38, fill: TOKENS.accent4 },
+  { cx: 128, r: 50, fill: TOKENS.accent1 },
+  { cx: 225, r: 60, fill: TOKENS.accent4 },
+  { cx: 342, r: 69, fill: TOKENS.accent1Strong },
 ];
 
 // Upper semi-circle path: arc from left to right, bulge going UP
@@ -45,7 +50,7 @@ export default function FrogJumps({
         <defs>
           {/* Arrowhead marker for vertical connectors */}
           <marker id="fj-arrow" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto">
-            <path d="M0,0 L3,6 L6,0" fill="none" stroke="#092c69" strokeWidth="1" />
+            <path d="M0,0 L3,6 L6,0" fill="none" stroke={TOKENS.brand} strokeWidth="1" />
           </marker>
         </defs>
 
@@ -60,7 +65,7 @@ export default function FrogJumps({
         ))}
 
         {/* Navy baseline bar */}
-        <rect x="0" y={BASELINE_Y} width={W} height="5" rx="2.5" fill="#092c69" />
+        <rect x="0" y={BASELINE_Y} width={W} height="5" rx="2.5" fill={TOKENS.brand} />
 
         {/* Vertical arrow connectors from value text to arc top */}
         {ARCS.map((arc, i) => {
@@ -72,7 +77,7 @@ export default function FrogJumps({
               y1={topY - 16}
               x2={arc.cx}
               y2={topY - 2}
-              stroke="#092c69"
+              stroke={TOKENS.brand}
               strokeWidth="0.8"
               markerEnd="url(#fj-arrow)"
             />
@@ -86,7 +91,7 @@ export default function FrogJumps({
             x={arc.cx}
             y={BASELINE_Y - arc.r - 20}
             textAnchor="middle"
-            fill="#092c69"
+            fill={TOKENS.brand}
             fontFamily="Montserrat, sans-serif"
             fontWeight="700"
             fontSize="13"
@@ -102,7 +107,7 @@ export default function FrogJumps({
             x={arc.cx}
             y={LABEL_Y}
             textAnchor="middle"
-            fill="#092c69"
+            fill={TOKENS.brand}
             fontFamily="Montserrat, sans-serif"
             fontWeight="700"
             fontSize="8"

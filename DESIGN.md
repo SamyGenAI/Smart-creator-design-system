@@ -6,88 +6,59 @@ description: >
   Optimised for AI-assisted generation with Claude Code and Cursor.
 
 colors:
-  # ── Brand ─────────────────────────────────────────────────────────────────
-  navy: "#092c69"
-  primary: "{colors.navy}"
-
-  # ── Blue scale ────────────────────────────────────────────────────────────
-  # Note: blue-100, pink-100, green-100, orange-100, glass-white, indicator-1
-  # use rgba values which are outside the #hex spec — their values are
-  # declared here as comments and emitted into src/index.css by scripts/generate-tokens.mjs.
-  # blue-100: rgba(126,218,255,0.15)  ← alpha, kept in template
-  blue-200: "#c7efff"
-  blue-300: "#b4eaff"
-  blue-400: "#7edaff"
-
-  # ── Cream scale ───────────────────────────────────────────────────────────
-  canvas: "#fffceb"
-  cream-200: "#fff4e8"
-  canvas-secondary: "{colors.cream-200}"
-
-  # ── Neutral scale ─────────────────────────────────────────────────────────
-  neutral-200: "#f9fafc"
-  neutral-300: "#f4f4f8"
-  neutral-400: "#e3e4eb"
-  neutral-500: "#cacbd4"
-  neutral-600: "#a8a9b2"
-  neutral-700: "#717188"
-  neutral-800: "#323241"
-
-  # ── Pink scale ────────────────────────────────────────────────────────────
-  # pink-100: rgba(255,178,218,0.15)  ← alpha, kept in template
-  pink-200: "#ffe6f3"
-  pink-300: "#ffb2da"
-
-  # ── Amber scale ───────────────────────────────────────────────────────────
-  amber-100: "#fef3c7"
-  amber-200: "#fde68a"
-  amber-300: "#fcd34d"
-
-  # ── Green scale ───────────────────────────────────────────────────────────
-  # green-100: rgba(169,255,62,0.15)  ← alpha, kept in template
-  green-200: "#d2ff9a"
-  green-300: "#a9ff3e"
-
-  # ── Orange scale ──────────────────────────────────────────────────────────
-  # orange-100: rgba(255,145,77,0.15)  ← alpha, kept in template
-  orange-200: "#ffa066"
-  orange-300: "#ff914d"
-
-  # ── Component aliases — cards ─────────────────────────────────────────────
-  # surface-accent-1: rgba(126,218,255,0.15)  ← alias of blue-100, kept in template
-  surface-accent-3: "{colors.amber-100}"
-  # surface-accent-4: rgba(255,178,218,0.15)  ← alias of pink-100, kept in template
-
-  # ── Component aliases — accents (section header pills) ────────────────────
-  accent-1: "{colors.blue-300}"
-  accent-2: "{colors.green-200}"
-  accent-3: "{colors.amber-200}"
-  accent-4: "{colors.pink-200}"
-  accent-5: "{colors.orange-200}"
-
-  # ── Component aliases — borders ───────────────────────────────────────────
-  border-accent-1: "{colors.blue-400}"
-  border-accent-2: "{colors.green-300}"
-  border-accent-3: "{colors.amber-300}"
-  border-accent-4: "{colors.pink-300}"
-  border-neutral-1: "{colors.neutral-400}"
-
-  # ── Component micro-tokens ────────────────────────────────────────────────
-  # Dark green stroke used inside the Checklist checkmark SVG.
-  # Change this if you switch to a non-green accent for checklists.
-  check-stroke: "#116F39"
+  bg:
+    canvas: "#fffceb"
+    surface: "#ffffff"
+    surfaceAlt: "#fff4e8"
+    brand: "#092c69"
+    accent:
+      "1": "#b4eaff"
+      "2": "#d2ff9a"
+      "3": "#fde68a"
+      "4": "#ffe6f3"
+      "5": "#ffa066"
+  text:
+    primary: "#000000"
+    secondary: "#323241"
+    muted: "#717188"
+    onBrand: "#ffffff"
+  border:
+    subtle: "#e3e4eb"
+    strong: "{colors.bg.brand}"
+    accent:
+      "1": "#7edaff"
+      "2": "#a9ff3e"
+      "3": "#fcd34d"
+      "4": "#ffb2da"
+      "5": "#ff914d"
+  state:
+    success: "{colors.bg.accent.2}"
+    warning: "{colors.bg.accent.5}"
+    info: "{colors.bg.accent.1}"
+    danger: "{colors.bg.accent.4}"
+  indicator:
+    primary: "{colors.bg.accent.4}"
+  stroke:
+    check: "#116F39"
 
 alphaColors:
-  blue-100: "rgba(126,218,255,0.15)"
-  pink-100: "rgba(255,178,218,0.15)"
-  green-100: "rgba(169,255,62,0.15)"
-  orange-100: "rgba(255,145,77,0.15)"
-  surface-accent-1: "rgba(126,218,255,0.15)"
-  surface-accent-4: "rgba(255,178,218,0.15)"
-  glass-white: "rgba(255,255,255,0.1)"
-  indicator-1: "rgba(255,178,218,0.7)"
-  glass-strong: "rgba(255,255,255,0.92)"
-  glass-default: "rgba(255,255,255,0.55)"
+  bg:
+    accentSoft:
+      "1": "rgba(126,218,255,0.15)"
+      "2": "rgba(169,255,62,0.15)"
+      "3": "rgba(252,211,77,0.25)"
+      "4": "rgba(255,178,218,0.15)"
+      "5": "rgba(255,145,77,0.15)"
+    surfaceAccent:
+      "1": "rgba(126,218,255,0.15)"
+      "4": "rgba(255,178,218,0.15)"
+  overlay:
+    glass:
+      subtle: "rgba(255,255,255,0.1)"
+      default: "rgba(255,255,255,0.55)"
+      strong: "rgba(255,255,255,0.92)"
+    indicator:
+      primary: "rgba(255,178,218,0.7)"
 
 shadows:
   card: "0px 4px 4px 0px rgba(0,0,0,0.25)"
@@ -186,42 +157,42 @@ components:
     backgroundColor: "#ffb2da26"
     rounded: "{rounded.card}"
   surface-accent-3:
-    backgroundColor: "{colors.amber-100}"
+    backgroundColor: "{alphaColors.bg.accentSoft.3}"
     rounded: "{rounded.card}"
   accent-1:
-    backgroundColor: "{colors.accent-1}"
-    textColor: "{colors.navy}"
+    backgroundColor: "{colors.bg.accent.1}"
+    textColor: "{colors.text.primary}"
     rounded: "{rounded.pill}"
     typography: "{typography.body-sm}"
   accent-2:
-    backgroundColor: "{colors.accent-2}"
-    textColor: "{colors.navy}"
+    backgroundColor: "{colors.bg.accent.2}"
+    textColor: "{colors.text.primary}"
     rounded: "{rounded.pill}"
     typography: "{typography.body-sm}"
   accent-3:
-    backgroundColor: "{colors.accent-3}"
-    textColor: "{colors.navy}"
+    backgroundColor: "{colors.bg.accent.3}"
+    textColor: "{colors.text.primary}"
     rounded: "{rounded.pill}"
     typography: "{typography.body-sm}"
   accent-4:
-    backgroundColor: "{colors.accent-4}"
-    textColor: "{colors.navy}"
+    backgroundColor: "{colors.bg.accent.4}"
+    textColor: "{colors.text.primary}"
     rounded: "{rounded.pill}"
     typography: "{typography.body-sm}"
   accent-5:
-    backgroundColor: "{colors.accent-5}"
-    textColor: "{colors.navy}"
+    backgroundColor: "{colors.bg.accent.5}"
+    textColor: "{colors.text.primary}"
     rounded: "{rounded.pill}"
     typography: "{typography.body-sm}"
   glass-card:
-    backgroundColor: "{colors.navy}"
+    backgroundColor: "{colors.bg.brand}"
     rounded: "{rounded.glass}"
   infographic-header:
-    backgroundColor: "{colors.canvas}"
+    backgroundColor: "{colors.bg.canvas}"
     typography: "{typography.hero}"
   infographic-footer:
-    backgroundColor: "{colors.navy}"
-    textColor: "#ffffff"
+    backgroundColor: "{colors.bg.brand}"
+    textColor: "{colors.text.onBrand}"
     rounded: "{rounded.pill}"
     height: 60px
 ---
@@ -232,26 +203,25 @@ A fixed-canvas design system for generating LinkedIn infographics (1080×1350 px
 
 ## Overview
 
-Smart Creator produces **static, fixed-canvas visual content** — not responsive web pages. Every infographic is a 1080×1350 px absolute-positioned canvas with a warm cream background (`canvas` / `#fffceb`) and a subtle square-grid texture at 5% opacity.
+Smart Creator produces **static, fixed-canvas visual content** — not responsive web pages. Every infographic is a 1080×1350 px absolute-positioned canvas with a warm background surface (`color.bg.canvas` / `#fffceb`) and a subtle square-grid texture at 5% opacity.
 
-The visual language is **bold, structured, and vibrant**. Content is organised in bento-grid cells using CSS Grid with `fr` rows. Section headers are navy glass panels; content cards use soft pastel tints. A single Montserrat typeface covers all weight/size needs; Noto Serif appears only for decorative serif display titles.
+The visual language is **bold, structured, and vibrant**. Content is organised in bento-grid cells using CSS Grid with `fr` rows. Section headers use the brand background role (`color.bg.brand`) with glass overlays, and content cards use soft semantic accent tints. A single Montserrat typeface covers all weight/size needs; Noto Serif appears only for decorative serif display titles.
 
 Target audience: B2B professionals sharing insights on LinkedIn. The tone is confident and editorial — not playful, not corporate-dull.
 
 ## Colors
 
-The palette is anchored in a deep navy brand color with a set of bright pastel accent families. Each accent family carries a semantic meaning that agents must respect.
+Color tokens are role-based. Use semantic roles only, never family labels.
 
-- **Navy (`#092c69`):** The primary brand color. Used for section header bars, the footer pill, and key text. All icons placed on primary surfaces must be dark/black SVGs — the `PrimaryGlassSection` component applies `filter: brightness(0) invert(1)` to render them white.
-- **Blue scale (`#c7efff` → `#7edaff`):** Features, capabilities, primary/key content sections. Use `accent-1` (`#b4eaff`) for section title accents and `surface-accent-1` (15% blue tint) for card backgrounds.
-- **Amber scale (`#fef3c7` → `#fcd34d`):** Process, how-it-works, step-by-step sequences. Use `accent-3` (`#fde68a`) for accents, `surface-accent-3` (`#fef3c7`) for card backgrounds.
-- **Green scale (`#d2ff9a` → `#a9ff3e`):** Actions, outcomes, checklists, results. Use `accent-2` (`#d2ff9a`) for accents.
-- **Pink scale (`#ffe6f3` → `#ffb2da`):** Numbered/ranked items. Use `accent-4` (`#ffe6f3`) for accents, `indicator-1` (70% pink tint) for numbered badge backgrounds.
-- **Orange scale (`#ffa066` → `#ff914d`):** Warnings, alternatives, secondary actions. Use `accent-5` (`#ffa066`) for accents.
-- **Cream (`#fffceb`):** The canvas background. All infographics and slides use this as the page background.
-- **Neutrals (`#f9fafc` → `#323241`):** Supporting surfaces, borders, and secondary text.
+- **`color.bg.brand` (`#092c69`):** Primary brand surface for section headers and footer.
+- **`color.bg.canvas` (`#fffceb`):** Base page background for infographics and slides.
+- **`color.bg.surface` / `color.bg.surfaceAlt`:** Secondary container layers.
+- **`color.bg.accent.1..5`:** Semantic accent slots for chips, cards, and section highlights.
+- **`color.text.primary|secondary|muted|onBrand`:** Text contrast roles by surface.
+- **`color.border.subtle|strong` + `color.border.accent.1..5`:** Divider and emphasis borders.
+- **`color.state.success|warning|info|danger`:** State semantics for status-driven UI copy.
 
-> Alpha-channel variants (glass tints for cards and highlights) use `rgba` values which are defined as `blue-100`, `pink-100`, `green-100`, `orange-100`, `glass-white`, and `indicator-1` in the token pipeline. These are not editable via the `colors` YAML block above (rgba is outside the `#hex` spec) but can be changed in `DESIGN.md` (`alphaColors`) and reflected in `src/index.css` via `pnpm tokens:gen`.
+> Alpha-channel variants use semantic keys in `alphaColors` (`bg.accentSoft.*`, `bg.surfaceAccent.*`, `overlay.glass.*`, `overlay.indicator.*`). These can be changed in `DESIGN.md` and reflected in `src/index.css` via `pnpm tokens:gen`.
 
 ## Typography
 
@@ -260,7 +230,7 @@ All text uses **Montserrat**. Noto Serif is reserved for decorative serif displa
 - **Hero / Section header (`hero`, 72px Bold):** Infographic main title. Single line, `whitespace-nowrap`. Maximum ~18 characters at 1080 px width.
 - **Display serif (`title-serif`, Noto Serif 72px Bold):** Decorative alternative title style. Use sparingly.
 - **Title 4xl (`title-4xl`, 56px Bold):** Large section numerals or prominent stat callouts.
-- **Title 2xl (`title-2xl`, 32px Bold):** Primary section header label inside navy bars.
+- **Title 2xl (`title-2xl`, 32px Bold):** Primary section header label inside brand bars.
 - **Subtitle (`subtitle`, 32px Medium Italic):** Infographic subtitle below the hero title. Maximum ~40 characters.
 - **Title XL (`title-xl`, 24px SemiBold):** Secondary section headers and card titles.
 - **Body LG (`body-lg`, 20px SemiBold):** Emphasized list items or key facts.
@@ -299,14 +269,14 @@ Depth is expressed through **background tint layers** rather than heavy shadows.
 - **`shadow-elevation-400`** — `0px 4px 4px -4px + 0px 16px 32px -4px` — prominent floating card
 - **`shadow-elevation-500`** — `0px 4px 4px -4px + 0px 16px 16px -8px` — highest elevation
 
-The primary `PrimaryGlassSection` component also uses a `border: 1px solid rgba(255,255,255,0.1)` (glass-white) inner border to create a frosted-glass premium feel.
+The primary `PrimaryGlassSection` component also uses `alphaColors.overlay.glass.subtle` for an inner frosted-glass border.
 
 ## Shapes
 
 All interactive/container elements follow a consistent radius vocabulary:
 
 - **`rounded-card` (8px):** Standard card radius. Used for `PastelShadowBorderCard`, `BrandBorderSection` family, `Table`, and most content cards.
-- **`rounded-glass-header` (10px):** Header bar of glass-navy sections.
+- **`rounded-glass-header` (10px):** Header bar of glass brand sections.
 - **`rounded-glass` (20px):** Full `PrimaryGlassSection` container radius.
 - **`rounded-pill` (40px):** Chip badges, the `InfographicFooter` pill, and `TextBox` components.
 
@@ -321,31 +291,31 @@ The design system provides these atomic components (all in `components/`):
 | `SquareGridTexture` | SVG background texture | `opacity`, `cellSize` |
 | `InfographicHeader` | Hero title + subtitle | `title`, `highlightWord`, `subtitle` |
 | `PrimaryGlassSection` | Primary header + body container | `title`, `iconSrc`, `className` |
-| `InfographicFooter` | Navy pill footer | `avatarSrc`, `name` |
-| `PastelShadowBorderCard` | Blue glass card with shadow | `text` |
-| `NumberBullet` | Pink numbered list (exactly 3) | `items` |
-| `Checklist` | Green checkmark list | `items` |
+| `InfographicFooter` | Brand pill footer | `avatarSrc`, `name` |
+| `PastelShadowBorderCard` | Accent-tinted glass card with shadow | `text` |
+| `NumberBullet` | Numbered list (exactly 3) | `items` |
+| `Checklist` | Checkmark list | `items` |
 | `IconBullet` | Icon + text rows (exactly 4) | `items`, `accentColor` |
-| `Table` | Amber 3×4 table | `headers`, `rows` |
+| `Table` | Accent 3×4 table | `headers`, `rows` |
 | `Grid8CompanyLogos` | 4×2 logo grid | `logos` |
 | `TextBox` | Small colored pill | `text` |
 | `BrandBorderSection` family | Colored section card with numbered badge | `title`, `number`, `children` |
 
-**Chip/card color semantics** are fixed:
-- Blue chips → features/capabilities
-- Amber chips → process/steps
-- Green chips → actions/outcomes
-- Pink chips → numbered/ranked
-- Orange chips → warnings/alternatives
+**Chip/card accent semantics** are fixed by role:
+- `color.bg.accent.1` → features/capabilities
+- `color.bg.accent.2` → actions/outcomes
+- `color.bg.accent.3` → process/steps
+- `color.bg.accent.4` → numbered/ranked
+- `color.bg.accent.5` → warnings/alternatives
 
 ## Do's and Don'ts
 
-- **Do** use `navy` (`#092c69`) only for section headers, the footer pill, and primary action elements.
+- **Do** use `color.bg.brand` only for section headers, the footer pill, and primary action elements.
 - **Do** always pass dark/black SVG icons to `PrimaryGlassSection` — the component applies `filter: brightness(0) invert(1)`.
 - **Do** read `references/space-budgets.md` before generating content and respect all character limits.
 - **Do** use the bento-grid pattern (CSS Grid with `fr` rows) for all new infographic templates.
 - **Do** use `flex items-center justify-center` on image container divs and `w-full h-full object-contain` on `<img>` tags for logos.
-- **Do** escape forward slashes in Tailwind arbitrary values: `bg-[var(--color\/blue\/500,#092c69)]`.
+- **Do** escape forward slashes in Tailwind arbitrary values: `bg-[var(--color\/bg\/brand,#092c69)]`.
 - **Don't** make the layout responsive — the canvas is always a fixed `1080×1350px`.
 - **Don't** modify token values in `tailwind.config.js` or `src/index.css` directly — edit `DESIGN.md` and run `pnpm tokens:gen`.
 - **Don't** use `display: contents` on image cell wrappers.
