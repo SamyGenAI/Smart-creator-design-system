@@ -1,25 +1,51 @@
 ---
 name: brand-setup
-description: Onboard or rebrand the Smart Creator design system using a website URL (Jina Reader extraction), user-approved colors and fonts, local screenshot vision analysis, then apply answers to DESIGN.md and regenerate CSS tokens. Use when the user runs /setup or @setup, asks to set up branding, personalize the repo for their brand, onboard a new workspace, or make generated infographics and carousels match a new brand.
+description: Onboard or rebrand Smart Creator via Track A (website URL + Jina) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then aspiration vision, design-philosophy.md, DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
 ---
 
 # Brand setup (workspace onboarding)
 
-Run this as a guided, multi-step workflow. Do not skip the Jina extraction step or the screenshot vision step unless the user explicitly opts out of one (then document the gap).
+Run this as a guided workflow. Adapt steps by **track** (see gate below). Always document skips (empty inspiration folder, Track B without Jina, etc.).
 
 Read [references/questionnaire.md](references/questionnaire.md) for the adaptive question flow.
 
+## Track choice (mandatory gate)
+
+Confirm before running Jina or Theme Factory:
+
+| Situation | Track |
+|-----------|--------|
+| User **has** a website URL or settled visual identity to extract | **Track A — URL extraction** |
+| User has **no** website yet **or** says they have **no** visual identity (colors/fonts/logo) yet | **Track B — Theme factory** |
+
+Ask plainly: *Do you already have a site or brand visuals to pull from, or should we start from a Theme Factory preset?*
+
+### Track B — Theme factory path
+
+When Track B applies:
+
+1. Read [`skills/theme-factory/SKILL.md`](../theme-factory/SKILL.md) fully.
+2. Surface [`skills/theme-factory/theme-showcase.pdf`](../theme-factory/theme-showcase.pdf) for the user (open in IDE or OS viewer; **do not** edit the PDF). Use the SKILL’s numbered theme list and wait for explicit **theme # or name**.
+3. If none fit, follow the SKILL section **Create your Own Theme**, then derive hex + fonts from what the user approves (same mapping rules as presets).
+4. Open the preset file under **`skills/theme-factory/themes/*.md`** and map palettes + typography into **`tmp/brand-answers.json`** semantics using **§ Smart Creator — DESIGN.md mapping** inside the theme-factory SKILL.
+5. **Do not** run `scripts/fetch-brand-from-url.mjs` on Track B unless the user later provides a URL. Collect **brand display name + one-line description** by questionnaire instead of trusting `public/brand-data.json` alone (that file may be stale from a template run).
+
+### Track merger
+
+Steps **5 onward** apply to **both** tracks.
+
 ## Prerequisites
 
-- Optional: `JINA_API_KEY` in the environment for higher Jina rate limits (works without a key at lower limits).
-- Use the host product vision (Claude Code / Cursor) on image files under `public/assets/brand-screenshots/`.
+- Optional: `JINA_API_KEY` — **Track A** Jina rate limits (works without a key at lower limits).
+- **Theme factory** — **Track B** (`skills/theme-factory/`).
+- Host vision on `public/assets/brand-screenshots/`, `public/assets/design-inspiration/`, and when present `public/assets/brand-jina/`.
 
-## Workflow (8 steps)
+## Workflow (10 steps plus 5b sub-step)
 
-1. **Website URL**  
-   Ask for the canonical site URL if not already provided.
+1. **Website URL (Track A only)**  
+   Ask for the canonical site URL. **Track B:** skip; note *no URL* in your session notes.
 
-2. **Jina extraction**  
+2. **Jina extraction (Track A only)**  
    Run from the repo root:
    ```bash
    node scripts/fetch-brand-from-url.mjs "<https-url>"
@@ -27,12 +53,13 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
    This writes [public/brand-data.json](public/brand-data.json) (title, description, content preview, screenshot URL, extracted colors, fonts, design patterns, CSS snippet), and also saves downloaded Jina assets under `public/assets/brand-jina/`.
    The script retries automatically when no colors are extracted, and records `attemptsUsed` in the JSON.
 
-3. **Present extraction**  
+3. **Present extraction (Track A only)**  
    Load `public/brand-data.json` and summarize: colors (first batch), fonts, design patterns, screenshot URL, locally saved assets, and `attemptsUsed`.
-   Use locally saved assets first (`savedAssets.screenshot`, `savedAssets.images`) for stable analysis; keep `screenshotUrl` as fallback.
+   Use locally saved assets first (`savedAssets.screenshot`, `savedAssets.images`) for stable analysis; keep `screenshotUrl` as fallback.  
+   **Track B:** skip; instead briefly present the **chosen theme file** (palette + type) and the proposed **semantic token mapping** you will place in `tmp/brand-answers.json`.
 
 4. **User approval / edits**  
-   Confirm or collect corrected values (valid `#hex` only where the pipeline expects hex):
+   Confirm or collect corrected values (valid `#hex` only where the pipeline expects hex). **Track B:** user is approving the **theme-derived** proposal (and `brandName` / `brandDescription` if not from JSON).
   - Brand surface color (`colors.bg.brand`)
   - Canvas / background color (`colors.bg.canvas`)
   - Optional surface roles (`colors.bg.surface`, `colors.bg.surfaceAlt`)
@@ -41,19 +68,38 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
    - Primary sans font and serif display font (`fonts.primary`, `fonts.serif`)
    - Optional: `rounded` overrides (`glass-header`, `glass`, `card`, `pill`) informed by vision + CSS patterns
 
-   If Jina still returned no usable colors after retries, ask the user to paste hex values manually.
+   **Track A:** if Jina still returned no usable colors after retries, ask the user to paste hex values manually.
 
 5. **Branded screenshots**  
-   Ask the user to add representative screenshots (home, marketing, product UI) under `public/assets/brand-screenshots/`. Wait until they confirm files are in place.
+   Ask the user to add representative screenshots (home, marketing, product UI) under `public/assets/brand-screenshots/`. Wait until they confirm files are in place.  
+   **Track B:** if they have nothing to screenshot yet, allow **skip** — document the gap — and lean harder on **`public/assets/design-inspiration/`** (step 5b) plus optional manual logo paste later (`assets/`).
+
+   **5b. Design philosophy — inspiration uploads**  
+   Ask the user: *"Drop screenshots of designs you love (sites, posters, UI, decks, editorial — anything)."* Explain files live in **`public/assets/design-inspiration/`**. Wait until they confirm files are in place (if they reused brand screenshots elsewhere, mirror or copy those files here so aspiration references stay explicit).
 
 6. **Vision pass (host model)**  
-   Read images from both locations (skip hidden or non-image files):
-   - user-provided: `public/assets/brand-screenshots/`
+   Read images from all relevant locations (skip hidden or non-image files). **Track B:** when `public/assets/brand-jina/` is empty, base color/texture notes on **theme markdown + inspiration images** and user answers.
+   - user-provided brand context: `public/assets/brand-screenshots/`
+   - **design aspiration references:** `public/assets/design-inspiration/` (directory may be empty if the user opted out)
    - Jina-downloaded: `public/assets/brand-jina/`
-   Describe: dominant colors, typography feel, corner radii, shadows / elevation, spacing density, glass or gradients. Merge this with `public/brand-data.json` and the user’s edits from step 4.
+   Describe: dominant colors, typography feel, corner radii, shadows / elevation, spacing density, glass or gradients, **composition and mood**. Merge this with the user’s edits from step 4 and **contrast aspiration** from inspiration images (minimal vs maximal, restraint vs kinetic); **Track A:** also fold in `public/brand-data.json`; **Track B:** treat the chosen **theme file** as the primary chromatic baseline when JSON/Jina assets are missing.
 
-7. **Answers JSON**  
-   Write `tmp/brand-answers.json` using this shape (fill from steps 4–6; omit keys the user did not change so `apply-brand-answers` keeps existing `DESIGN.md` values where appropriate):
+7. **`design-philosophy.md` (visual philosophy)**  
+   After the vision pass: write **`design-philosophy.md`** at the **repository root**. This defines an **aesthetic movement**, not infographic templates. Follow the **full authoring contract** in [`skills/design-philosophy/SKILL.md`](../design-philosophy/SKILL.md) (critical understanding → manifesto paragraphs → subtle conceptual DNA → token tie-in). In summary:
+   - **Name the movement** (1–2 words).
+   - **4–6 substantial paragraphs**, each major axis **once**: space/form; color/material; scale/rhythm; composition/balance; visual hierarchy — **manifesto tone**, poetic but executable.
+   - **Craftsmanship**: repeat throughout that work must feel *meticulously crafted*, *master-level*, *painstaking*, *deep expertise* — downstream agents must treat polish as mandatory.
+   - **Visual-first mandate**: downstream pieces express ideas through layout and chromatic/spatial signals; **minimal on-canvas text** — essential labels only, no paragraph blocks inside graphics.
+   - **Subtle reference (optional):** one refined conceptual thread from brand + inspiration, never literal or announced — see design-philosophy skill **§ Subtle reference / conceptual DNA**.
+   - **Closing:** one paragraph mapping the movement to **semantic tokens** (roles + elevation posture, no hex dumps).
+
+   If the user opted out of inspiration files, synthesize from approved tokens + questionnaire only; record the gap in a short front-of-file note.
+
+8. **Generator skill — `skills/design-philosophy/SKILL.md`**  
+   Create or overwrite [`skills/design-philosophy/SKILL.md`](../design-philosophy/SKILL.md) so `@skills/design-philosophy` always loads: (a) the path to repo-root **`design-philosophy.md`** (read it in full when present), (b) cross-links to **Color Contrast & Composition Laws** in `DESIGN.md`, (c) mandatory elevation + 2–3 color economy reminders, (d) `references/space-budgets.md` before layout work. Keep YAML `name: design-philosophy` and a description that mentions the root manifesto.
+
+9. **Answers JSON**  
+   Write `tmp/brand-answers.json` using this shape (fill from steps 4, 6, and 7 when prose needs brand voice; **Track B:** seed colors/fonts from the **theme → DESIGN.md mapping** from step 4; omit keys the user did not change so `apply-brand-answers` keeps existing `DESIGN.md` values where appropriate):
 
    ```json
    {
@@ -96,7 +142,7 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
 
   Only include `colors.semantic` keys you intend to overwrite. `scripts/apply-brand-answers.mjs` deep-merges into `DESIGN.md` front matter.
 
-8. **Apply and validate**  
+10. **Apply and validate**  
    From repo root:
    ```bash
    node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json
@@ -108,6 +154,7 @@ Read [references/questionnaire.md](references/questionnaire.md) for the adaptive
 
 ## Guardrails
 
+- **Theme fonts:** presets often name **DejaVu Sans** (or similar). If not already loaded for the workspace, resolve to nearest **Google Fonts** pairings acceptable to the user, update **`index.html`** imports if needed, and align `fonts.primary` / `fonts.serif` in `brand-answers.json` accordingly.
 - Update `DESIGN.md` only via `scripts/apply-brand-answers.mjs` for the automated merge path. If the user needs tokens not covered by answers (full palette retune), edit `DESIGN.md` manually afterward and re-run `pnpm tokens:gen` and `node scripts/validate-design.mjs`.
 - Do not hand-edit `src/index.css`; regenerate with `pnpm tokens:gen`.
 - If the user gives non-hex color values where hex is required, ask for a valid `#hex`.

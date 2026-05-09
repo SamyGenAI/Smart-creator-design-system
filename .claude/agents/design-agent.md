@@ -18,6 +18,8 @@ You receive a JSON content brief with: `title`, `highlightWord`, `subtitle`, `se
    - `references/space-budgets.md` — vertical budgets and character limits
    - `references/components.md` — component API and constraints
    - `CLAUDE.md` — master rules
+   - `design-philosophy.md` (repo root) **when present** — visual movement + craft posture
+   - Optional deep link: `skills/design-philosophy/SKILL.md` if you need the operational checklist
 
 2. **Choose the layout strategy** — Let the content brief drive the layout. Don't force a grid when a simpler structure fits better.
 
@@ -145,3 +147,28 @@ import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
     ```
 14. **TextBox is a small pill, not a banner.** Default size is `h-[34px] w-[153px]`. Never pass `w-full` or large widths — the text will overflow. Use it for short statements (≤50 chars). For longer body text in PrimaryGlassSection, render a plain `<p>` with the design-system title font token instead.
 15. **Grid row height must fit the default component.** Before assigning fr units, calculate: `51px header + component default height + 24px padding = minimum row px`. Use enough fr units so no row is too short. Reference heights: Checklist=189px (needs ≥264px row), IconBullet=173px (needs ≥248px), NumberBullet=138px (needs ≥213px).
+
+## Color & elevation laws
+
+**COLOR CONTRAST (mandatory)**
+
+- Never place typography or SVG artwork in the **same color family** as its background in a way that collapses legibility (no blue-on-blue, no dark-on-dark, no low-contrast pastels on pastels).
+- **Dark surfaces** (`color.bg.brand` and any fill that reads as dark): use **`color.text.onBrand`** and/or **`color.bg.canvas`** for foreground type and intentional light accents (respect components that already enforce `onBrand`).
+- **Light surfaces** (canvas, surface, surfaceAlt, light pastel accents): use **`color.text.primary`**, **`secondary`**, or **`muted`** — never tinted body copy that merges with the wash behind it.
+
+**PALETTE ECONOMY**
+
+- Cap intentional chromatic focal colors at **two to three semantic roles per piece**: one dominant (usually brand + neutrals), one **sharp accent**, and restraint everywhere else.
+
+**COHESIVE AESTHETIC**
+
+- Prefer **bold commitment** over scattering every accent. **Dominant colors with sharp accents outperform timid, evenly-distributed palettes.** Use semantic CSS variables / Tailwind token classes only (`var(--theme-…)`, `shadow-elevation-*`, `bg-bg-*`, `text-text-*`) for consistency across the composition.
+
+**ELEVATION (mandatory)**
+
+- Every card, bordered section, and major container must expose **at least** `shadow-elevation-100` (or `shadow-card` when that token is the card default). **Never** ship a visibly flat premium card when the system exposes elevation utilities.
+- `PrimaryGlassSection`, wide brand bands, or hero slabs: **`shadow-elevation-400` or `shadow-elevation-500`** (`shadow-slide-primary`, `shadow-card-soft`, or other sanctioned heavy lifts allowed when documented in components).
+
+## Design philosophy intake
+
+When **`design-philosophy.md`** exists at the repo root or [`skills/design-philosophy/SKILL.md`](../../skills/design-philosophy/SKILL.md) directs you to it, **read it before mapping components**. Let the manifesto steer rhythm, spacing drama, dominant vs accent placement, and how aggressively to deploy glass vs solid sections — while still obeying `references/space-budgets.md` and character limits.

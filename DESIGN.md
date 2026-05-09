@@ -322,3 +322,14 @@ The design system provides these atomic components (all in `components/`):
 - **Don't** use more than two font weights in the same visual region.
 - **Don't** mix `rounded-glass` and `rounded-card` radii in the same infographic.
 - **Don't** place the `InfographicHeader` title on more than one line — enforce `whitespace-nowrap`.
+
+## Color Contrast & Composition Laws
+
+Treat these as mandatory for every infographic and slide. **Commit to a cohesive aesthetic.** Use **CSS variables and semantic Tailwind token classes only** (`var(--theme-…)`, `shadow-elevation-*`, `bg-bg-*`, `text-text-*`) so contrast and hierarchy stay consistent. **Dominant colors with sharp accents outperform timid, evenly-distributed palettes.**
+
+- **Contrast, not camouflage.** Never stack same-hue relationships that kill readability — e.g. no “blue-on-blue,” no dark typography on dark fills, no light typography on near-white fills without a deliberate, token-safe exception.
+- **Dark surfaces.** On `color.bg.brand` and on any accent or fill that reads as **dark**, use **`color.text.onBrand`** and/or **`color.bg.canvas`** only for typography and graphical emphasis that must pop (respect existing components that bake in `onBrand` behavior).
+- **Light surfaces.** On `color.bg.canvas`, `color.bg.surface`, `color.bg.surfaceAlt`, and pastel / light accents, use **`color.text.primary`** or **`color.text.secondary`** (and **`color.text.muted`** for de-emphasized labels). Do not substitute brand-hue body text that sits uncomfortably close to the background hue.
+- **Palette economy.** Per design piece (one canvas export), limit intentional **chromatic focal colors to two or three semantic roles**: one **dominant** (usually `color.bg.brand` plus canvas/surface neutrals), one **sharp accent** (usually a single accent slot), and neutrals (`canvas` / surface / typography). Alternate accents only when they reinforce contrast and hierarchy — not to “use every accent once.”
+- **Symmetry, balance, structure.** Compose with reversible weight: pair large calm zones with disciplined accent placement; mirror padding and grid rhythm so the layout feels intentional, not scattered.
+- **Mandatory elevation (premium depth).** Every card, pill, and major section container must carry **at least** `shadow-elevation-100` (or `shadow-card` where that is the card token). Primary brand sections and hero surfaces should use **`shadow-elevation-400` or `shadow-elevation-500`** (or `shadow-card-soft` / `shadow-slide-primary` where those are the designated premium lifts for that template). **Never ship a flat, shadowless card** when a raised surface is expected.
