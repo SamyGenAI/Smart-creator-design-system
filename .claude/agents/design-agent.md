@@ -131,8 +131,8 @@ import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
 6. **Test the math.** Before writing, calculate: header ~130px + footer 60px + padding 56px + grid gaps = fixed overhead. Remaining space goes to `fr` rows. Make sure no row gets less than ~100px.
 7. **Use semantic theme tokens only.** For Tailwind arbitrary values, reference `var(--theme-...)` tokens instead of raw color literals.
 8. **Icons must be dark source SVGs.** PrimaryGlassSection applies an inversion filter for on-primary contrast. Never pass pre-inverted icons.
-9. **Infographic shapes** (Pyramid, Target, etc.) are in `assets/infographics/`. Import as React components.
-10. **Illustrations** are in `assets/illustrations/`. Use as `<img>` tags with `object-contain`.
+9. **Illustrations** are in `assets/illustrations/`. Use as `<img>` tags with `object-contain`.
+10. **Do not import legacy infographic shape components.** Build visual blocks with design-system primitives (cards, lists, tables, text callouts, and illustrations) only.
 11. **Use component variety.** Across a multi-section infographic, use at least 3 different inner components (NumberBullet, Checklist, IconBullet, TextBox, Table, illustration, etc.). Repetition of the same component in every section looks cheap.
 12. **NumberBullet text must not wrap.** Items render in absolute-positioned rows with fixed height. If text wraps to two lines, it overlaps the next item. Enforce `whitespace-nowrap` by keeping items under 18 chars — the Copy Agent enforces this limit.
 13. **NEVER override component className with different dimensions.** `Checklist`, `IconBullet`, `NumberBullet`, and `TextBox` use percentage-based absolute positioning tied to their default pixel size. Passing a custom `className` with different `h-[]` or `w-[]` breaks internal layout. Always render them at default size and center with a flex wrapper on the parent if needed:

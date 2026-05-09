@@ -14,7 +14,7 @@ Every component in the design system, with design intent, when to use it, and wh
 9. [InfographicHeader — Title block](#9-infographicheader--title-block)
 10. [New Component Patterns](#10-new-component-patterns)
 11. [Illustrations — Character art](#11-illustrations--character-art)
-12. [Infographic Shapes — SVG diagram components](#12-infographic-shapes--svg-diagram-components)
+12. [Diagram Patterns — Build with primitives](#12-diagram-patterns--build-with-primitives)
 13. [Brand Border Sections — Numbered callout cards](#13-brand-border-sections--numbered-callout-cards)
 
 ---
@@ -243,7 +243,7 @@ Use for conversion funnels, priority pyramids, filtering flows.
 
 ### Pyramid (SVG trapezoids, bottom to top)
 Use for hierarchy, maturity models, priority stacking.
-**Prefer `assets/infographics/Pyramid.jsx`** — see §12 below. Only build from scratch if you need a completely different shape.
+Build with inline JSX and semantic tokens when a hierarchy diagram is needed.
 
 ---
 
@@ -288,54 +288,25 @@ Character illustrations from the Open Peeps / Storyset style. Use to add warmth,
 
 ---
 
-## 12. Infographic Shapes — SVG diagram components
+## 12. Diagram Patterns — Build with primitives
 
-**Path:** `assets/infographics/*.jsx`
+Use inline JSX + semantic tokens to build conceptual diagrams when list/table components are not enough.
 
-Prop-driven React/SVG components for data visualization and conceptual diagrams. These are production-ready — **always prefer these over building geometric shapes from scratch**.
+### Recommended patterns
 
-Import: `import Pyramid from '../assets/infographics/Pyramid.jsx'`
+- **Hierarchy / pyramid:** stacked trapezoids built with `clipPath` or nested boxes
+- **Concentric priorities:** nested circles for focus rings
+- **Venn overlap:** partially overlapping circles with centered labels
+- **Cycle loop:** 3-step circular arrows using absolutely positioned pills and arrow glyphs
+- **Linear process:** 4-step horizontal chips with connectors
+- **Growth staircase:** ascending blocks with one short label per step
 
-### Shape Catalog
+### Guidance
 
-| Component | File | Size | Props | Best for |
-|---|---|---|---|---|
-| **Pyramid** | `Pyramid.jsx` | 410×172.5px | `tiers[3]: { value, label, body }` | Hierarchy, maturity levels, funnel |
-| **Target** | `Target.jsx` | 440×187.5px | `rings[3]: { label, body }` | Focus areas, concentric priorities |
-| **VennDiagram** | `VennDiagram.jsx` | 387×296px | `circles[3]: { title, subtitle }`, `innovation` | Overlapping concepts, intersections |
-| **Loop** | `Loop.jsx` | 419×341px | 3-step cyclic diagram | Feedback loops, iterative processes |
-| **Process** | `Process.jsx` | 390×93.5px | 4-step linear arrows | Sequential workflows, pipelines |
-| **FrogJumps** | `FrogJumps.jsx` | 420×189px | 4 ascending arcs | Progressive steps, milestones |
-| **Growth** | `Growth.jsx` | 607×346px | 3-phase staircase | Growth stages, scaling phases |
-| **Onion** | `Onion.jsx` | 398×175px | 3 concentric layers | Layers of abstraction, depth |
-
-### How to use inside a card
-
-These shapes are larger than typical card interiors. Scale them down with `className`:
-
-```jsx
-<Pyramid
-  className="absolute ml-[20px] mt-[65px] w-[280px] h-[120px]"
-  tiers={[
-    { value: "100K", label: "Awareness", body: "Top-of-funnel reach" },
-    { value: "10K",  label: "Interest",  body: "Engaged prospects" },
-    { value: "1K",   label: "Convert",   body: "Paying customers" },
-  ]}
-/>
-```
-
-**Sizing tips:**
-- Full-width row (Row 2, 977px): use at original size or slightly scaled
-- Half-width card (Row 1/3, ~300px): scale to ~65% of original dimensions
-- The SVG `viewBox` ensures they scale cleanly at any size
-
-**When to pick which shape:**
-- Need to show layers/depth → `Onion` or `Target`
-- Need to show hierarchy/priority → `Pyramid`
-- Need to show a cycle → `Loop`
-- Need to show sequential steps → `Process` or `FrogJumps`
-- Need to show growth over time → `Growth`
-- Need to show overlap between concepts → `VennDiagram`
+- Keep diagrams simple: 3-5 nodes max per visual
+- Use only semantic theme tokens (`var(--theme-...)`), never hardcoded colors
+- Fit diagrams to their card body by reserving header space and testing at final card size
+- Prefer concise labels, then support detail in a nearby paragraph or list
 
 ---
 

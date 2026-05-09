@@ -76,7 +76,7 @@ Delegate to the `qc-agent` subagent to verify the output.
 ## Visual Assets Available
 
 - **Illustrations** (`assets/illustrations/`) — Character SVGs for card bodies
-- **Infographic shapes** (`assets/infographics/`) — Pyramid, Target, VennDiagram, FrogJumps, Growth, Loop, Onion, Process
+- **Design-system primitives** (`components/`) — Lists, cards, tables, chips, and section wrappers for all visual structures
 
 ---
 
