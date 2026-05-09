@@ -1,21 +1,35 @@
 /**
- * Fetch brand signals from a website via Jina Reader (HTML + content + pageshot).
+ * Fetch brand signals from a website via Firecrawl (branding profile + full-page screenshot).
  * Writes public/brand-data.json for the brand-setup workflow.
  *
  * Usage: node scripts/fetch-brand-from-url.mjs https://example.com
- * Env: JINA_API_KEY (optional, higher rate limits when set)
+ * Env: FIRECRAWL_API_KEY (required) — https://www.firecrawl.dev/
+ *
+ * Request: Firecrawl v2 /scrape with `branding` + full-page `screenshot` (and optional helpers below).
  */
 
-import { mkdirSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const DEFAULT_OUT = resolve(ROOT, 'public', 'brand-data.json')
-const DEFAULT_ASSET_DIR = resolve(ROOT, 'public', 'assets', 'brand-jina')
-const JINA_READER = 'https://r.jina.ai/'
+const DEFAULT_ASSET_DIR = resolve(ROOT, 'public', 'assets', 'brand-firecrawl')
+const FIRECRAWL_SCRAPE = 'https://api.firecrawl.dev/v2/scrape'
 const MAX_IMAGE_DOWNLOADS = 12
+
+const envPath = resolve(ROOT, '.env')
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const [key, ...val] = trimmed.split('=')
+    if (key?.trim() && process.env[key.trim()] === undefined) {
+      process.env[key.trim()] = val.join('=').trim()
+    }
+  }
+}
 
 function getTargetUrl(argv) {
   const positional = argv.filter((a) => !a.startsWith('--'))
@@ -27,17 +41,6 @@ function getTargetUrl(argv) {
     throw new Error(`Invalid URL: ${url}`)
   }
   return url
-}
-
-function jinaHeaders(extra = {}) {
-  const headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    ...extra,
-  }
-  const key = process.env.JINA_API_KEY
-  if (key) headers.Authorization = `Bearer ${key}`
-  return headers
 }
 
 function sleep(ms) {
@@ -67,257 +70,130 @@ function extensionFrom(urlLike, contentType) {
   return `.${match[1].toLowerCase() === 'jpeg' ? 'jpg' : match[1].toLowerCase()}`
 }
 
-async function fetchJinaHtml(targetUrl) {
-  const response = await fetch(JINA_READER, {
-    method: 'POST',
-    headers: jinaHeaders({
-      'X-Return-Format': 'html',
-      'X-Timeout': '60',
-    }),
-    body: JSON.stringify({ url: targetUrl }),
-  })
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`Jina Reader (html): ${response.status} ${text}`)
+function normalizeMeta(value) {
+  if (value == null) return ''
+  if (Array.isArray(value)) {
+    return value.map(String).filter(Boolean).join(' ').trim()
   }
-  const json = await response.json()
-  const data = json.data
-  if (typeof data === 'object' && data !== null) {
-    return data.html || data.content || ''
-  }
-  return typeof data === 'string' ? data : ''
-}
-
-async function fetchJinaContent(targetUrl) {
-  const response = await fetch(JINA_READER, {
-    method: 'POST',
-    headers: jinaHeaders({
-      'X-Return-Format': 'content',
-      'X-With-Images-Summary': 'true',
-      'X-With-Links-Summary': 'true',
-      'X-Timeout': '60',
-      'X-Remove-Selector':
-        'script, noscript, iframe, .cookie-banner, .cookie-consent, .popup, .modal, .advertisement, .ads, [data-ad], .tracking, .analytics',
-    }),
-    body: JSON.stringify({ url: targetUrl }),
-  })
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`Jina Reader (content): ${response.status} ${text}`)
-  }
-  const json = await response.json()
-  const data = json.data
-  if (typeof data === 'string') {
-    return {
-      title: '',
-      description: '',
-      url: targetUrl,
-      content: data,
-    }
-  }
-  return { ...data, url: data?.url || targetUrl }
-}
-
-async function fetchJinaScreenshot(targetUrl) {
-  const response = await fetch(JINA_READER, {
-    method: 'POST',
-    headers: jinaHeaders({
-      'X-Return-Format': 'pageshot',
-      'X-Timeout': '30',
-    }),
-    body: JSON.stringify({ url: targetUrl }),
-  })
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`Jina pageshot: ${response.status} ${text}`)
-  }
-  const json = await response.json()
-  return json.data?.screenshotUrl || json.data?.url || ''
+  return String(value).trim()
 }
 
 /**
- * @param {string} html
- * @returns {{ colors: string[], fonts: string[], cssSnippet: string, designPatterns: string[] }}
+ * @param {object | null | undefined} branding
+ * @returns {Record<string, string>}
  */
-function extractStylesFromHtml(html) {
-  if (!html) {
-    return { colors: [], fonts: [], cssSnippet: '', designPatterns: [] }
+function imagesRecordFromBranding(branding) {
+  const images = {}
+  if (!branding) return images
+  if (branding.logo && /^https?:\/\//i.test(branding.logo)) {
+    images.logo = branding.logo
   }
-
-  const colorCounts = new Map()
-  const bumpColor = (raw) => {
-    const key = String(raw).toLowerCase().replace(/\s/g, '')
-    colorCounts.set(key, (colorCounts.get(key) || 0) + 1)
-  }
-
-  const isFilteredColor = (key) => {
-    if (key.startsWith('rgba(') && key.endsWith(',0)')) return true
-    if (!key.startsWith('#')) return false
-    const body = key.slice(1)
-    if (body.length === 3) return body === '000' || body === 'fff'
-    if (body.length === 4) {
-      const rgb = body.slice(0, 3)
-      return rgb === '000' || rgb === 'fff'
-    }
-    if (body.length >= 6) {
-      const rgb6 = body.slice(0, 6)
-      return rgb6 === '000000' || rgb6 === 'ffffff'
-    }
-    return false
-  }
-
-  const fonts = new Set()
-  const designPatterns = new Set()
-
-  const hexPattern = /#(?:[0-9a-fA-F]{3,4}){1,2}\b/g
-  for (const m of html.match(hexPattern) || []) bumpColor(m)
-
-  const rgbPattern =
-    /rgba?\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*[\d.]+)?\s*\)/gi
-  for (const m of html.match(rgbPattern) || []) bumpColor(m)
-
-  const hslPattern =
-    /hsla?\s*\(\s*\d{1,3}\s*,\s*\d{1,3}%?\s*,\s*\d{1,3}%?(?:\s*,\s*[\d.]+)?\s*\)/gi
-  for (const m of html.match(hslPattern) || []) bumpColor(m)
-
-  const cssVarPattern = /--[\w-]+:\s*([^;]+)/gi
-  let cssVarMatch
-  while ((cssVarMatch = cssVarPattern.exec(html)) !== null) {
-    const value = cssVarMatch[1].trim()
-    if (value.match(/#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(/)) {
-      bumpColor(value)
+  if (branding.images && typeof branding.images === 'object') {
+    for (const [k, v] of Object.entries(branding.images)) {
+      if (typeof v === 'string' && /^https?:\/\//i.test(v)) images[k] = v
     }
   }
+  return images
+}
 
-  const fontFamilyPattern = /font-family\s*:\s*([^;}"]+)/gi
-  let fontMatch
-  while ((fontMatch = fontFamilyPattern.exec(html)) !== null) {
-    const fontValue = fontMatch[1].trim().replace(/['"]/g, '')
-    if (fontValue && !fontValue.includes('inherit') && !fontValue.includes('var(')) {
-      fontValue.split(',').forEach((f) => {
-        const cleaned = f.trim()
-        if (
-          cleaned &&
-          ![
-            'sans-serif',
-            'serif',
-            'monospace',
-            'cursive',
-            'fantasy',
-            'system-ui',
-            'ui-sans-serif',
-            'ui-serif',
-            'ui-monospace',
-          ].includes(cleaned.toLowerCase())
-        ) {
-          fonts.add(cleaned)
-        }
-      })
+/**
+ * @param {object | null | undefined} branding
+ * @returns {string[]}
+ */
+function colorsFromBranding(branding) {
+  if (!branding?.colors || typeof branding.colors !== 'object') return []
+  const out = []
+  for (const v of Object.values(branding.colors)) {
+    if (typeof v === 'string' && v.trim()) out.push(v.trim())
+  }
+  return [...new Set(out.map((c) => c.toLowerCase()))]
+}
+
+/**
+ * @param {object | null | undefined} branding
+ * @returns {string[]}
+ */
+function fontsFromBranding(branding) {
+  const out = []
+  if (Array.isArray(branding?.fonts)) {
+    for (const f of branding.fonts) {
+      if (f && typeof f.family === 'string' && f.family.trim()) out.push(f.family.trim())
     }
   }
+  const ff = branding?.typography?.fontFamilies
+  if (ff && typeof ff === 'object') {
+    for (const v of Object.values(ff)) {
+      if (typeof v === 'string' && v.trim()) out.push(v.trim())
+    }
+  }
+  return [...new Set(out)]
+}
 
-  const fontFacePattern = /@font-face\s*\{[^}]*font-family\s*:\s*["']?([^"';}\s]+)["']?/gi
-  let fontFaceMatch
-  while ((fontFaceMatch = fontFacePattern.exec(html)) !== null) {
-    fonts.add(fontFaceMatch[1].trim())
+/**
+ * @param {object | null | undefined} branding
+ * @returns {string[]}
+ */
+function designPatternsFromBranding(branding) {
+  const p = []
+  if (!branding) return p
+  if (branding.colorScheme) p.push(`Color scheme: ${branding.colorScheme}`)
+  const br = branding.spacing?.borderRadius
+  if (br) p.push(`Border radius: ${br}`)
+  if (branding.spacing?.baseUnit != null) p.push(`Spacing base unit: ${branding.spacing.baseUnit}px`)
+  if (branding.animations && typeof branding.animations === 'object' && Object.keys(branding.animations).length) {
+    p.push('Motion / transitions detected')
+  }
+  return p
+}
+
+function typographySnippet(branding) {
+  if (!branding?.typography) return ''
+  try {
+    return JSON.stringify(branding.typography).slice(0, 3000)
+  } catch {
+    return ''
+  }
+}
+
+async function scrapeWithFirecrawl(targetUrl) {
+  const key = process.env.FIRECRAWL_API_KEY
+  if (!key) {
+    throw new Error(
+      'Missing FIRECRAWL_API_KEY in .env. Get an API key at https://www.firecrawl.dev/ and add FIRECRAWL_API_KEY=...'
+    )
   }
 
-  const googleFontsPattern = /fonts\.googleapis\.com\/css[^"']*family=([^"'&]+)/gi
-  let googleMatch
-  while ((googleMatch = googleFontsPattern.exec(html)) !== null) {
-    const fontNames = decodeURIComponent(googleMatch[1]).split('|')
-    fontNames.forEach((name) => {
-      const cleanName = name.split(':')[0].replace(/\+/g, ' ').trim()
-      if (cleanName) fonts.add(cleanName)
-    })
+  const response = await fetch(FIRECRAWL_SCRAPE, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      url: targetUrl,
+      onlyMainContent: false,
+      maxAge: 172800000,
+      parsers: [],
+      formats: ['branding', { type: 'screenshot', fullPage: true }],
+    }),
+  })
+
+  const rawText = await response.text()
+  let json
+  try {
+    json = JSON.parse(rawText)
+  } catch {
+    throw new Error(`Firecrawl: expected JSON (${response.status}): ${rawText.slice(0, 500)}`)
   }
 
-  const googleFontsV2Pattern = /fonts\.googleapis\.com\/css2\?family=([^"'&]+)/gi
-  let googleV2Match
-  while ((googleV2Match = googleFontsV2Pattern.exec(html)) !== null) {
-    const fontPart = decodeURIComponent(googleV2Match[1])
-    fontPart.split('&family=').forEach((part) => {
-      const cleanName = part.split(':')[0].replace(/\+/g, ' ').trim()
-      if (cleanName && cleanName !== 'family') fonts.add(cleanName)
-    })
+  if (!response.ok) {
+    throw new Error(`Firecrawl: ${response.status} ${json?.error || json?.message || rawText.slice(0, 400)}`)
+  }
+  if (json.success === false) {
+    throw new Error(`Firecrawl: ${json.error || json.message || 'scrape failed'}`)
   }
 
-  if (/use\.typekit\.net\/([a-z0-9]+)\.css/i.test(html)) {
-    designPatterns.add('Adobe Fonts (Typekit)')
-  }
-
-  if (html.includes('tailwindcss') || /class="[^"]*(?:flex|grid|p-\d|m-\d|text-\w+-\d|bg-\w+-\d)[^"]*"/.test(html)) {
-    designPatterns.add('Tailwind CSS')
-  }
-  if (html.includes('bootstrap') || /class="[^"]*(?:container|row|col-|btn-|navbar)[^"]*"/.test(html)) {
-    designPatterns.add('Bootstrap')
-  }
-  if (html.includes('chakra') || html.includes('@chakra-ui')) designPatterns.add('Chakra UI')
-  if (html.includes('material-ui') || html.includes('@mui')) designPatterns.add('Material UI')
-  if (html.includes('ant-design') || html.includes('antd')) designPatterns.add('Ant Design')
-  if (html.includes('framer-motion') || html.includes('motion.div')) designPatterns.add('Framer Motion')
-  if (html.includes('gsap') || html.includes('greensock')) designPatterns.add('GSAP')
-  if (html.includes('aos') && html.includes('data-aos')) designPatterns.add('AOS (Animate On Scroll)')
-  if (html.includes('styled-components') || html.includes('sc-')) designPatterns.add('Styled Components')
-  if (html.includes('emotion') || html.includes('css-')) designPatterns.add('Emotion CSS')
-
-  const borderRadiusMatches = html.match(/border-radius\s*:\s*([^;}"]+)/gi) || []
-  const roundedClasses = html.match(/rounded-(?:sm|md|lg|xl|2xl|3xl|full)/g) || []
-  if (borderRadiusMatches.length > 10 || roundedClasses.length > 10) {
-    designPatterns.add('Rounded corners (modern style)')
-  }
-
-  const shadowMatches = html.match(/box-shadow\s*:/gi) || []
-  const shadowClasses = html.match(/shadow-(?:sm|md|lg|xl|2xl)/g) || []
-  if (shadowMatches.length > 5 || shadowClasses.length > 5) {
-    designPatterns.add('Shadow-heavy design')
-  }
-
-  const gradientMatches = html.match(/(?:linear-gradient|radial-gradient)/gi) || []
-  if (gradientMatches.length > 3) designPatterns.add('Gradient usage')
-
-  if (
-    html.includes('dark:') ||
-    html.includes('prefers-color-scheme: dark') ||
-    html.includes('.dark ')
-  ) {
-    designPatterns.add('Dark mode support')
-  }
-
-  if (html.includes('backdrop-filter') || html.includes('backdrop-blur')) {
-    designPatterns.add('Glassmorphism')
-  }
-
-  const styleTagPattern = /<style[^>]*>([\s\S]*?)<\/style>/gi
-  const styleContents = []
-  let styleMatch
-  while ((styleMatch = styleTagPattern.exec(html)) !== null) {
-    styleContents.push(styleMatch[1])
-  }
-
-  const inlineStylePattern = /style\s*=\s*["']([^"']+)["']/gi
-  const inlineStyles = []
-  let inlineMatch
-  while ((inlineMatch = inlineStylePattern.exec(html)) !== null) {
-    inlineStyles.push(inlineMatch[1])
-  }
-
-  const cssSnippet = [...styleContents.slice(0, 2), ...inlineStyles.slice(0, 10)]
-    .join('\n')
-    .substring(0, 3000)
-
-  const rankedColors = [...colorCounts.entries()]
-    .filter(([k]) => !isFilteredColor(k))
-    .sort((a, b) => b[1] - a[1])
-    .map(([k]) => k)
-    .slice(0, 30)
-
-  return {
-    colors: rankedColors,
-    fonts: Array.from(fonts).slice(0, 15),
-    cssSnippet,
-    designPatterns: Array.from(designPatterns),
-  }
+  return json.data || {}
 }
 
 async function downloadAsset(assetUrl, outDir, baseName) {
@@ -340,19 +216,74 @@ async function downloadAsset(assetUrl, outDir, baseName) {
   }
 }
 
+/**
+ * @param {string} outDir
+ * @param {string | null | undefined} screenshotField URL or data: URI from Firecrawl
+ * @returns {Promise<string | null>}
+ */
+async function saveScreenshot(outDir, screenshotField) {
+  if (!screenshotField) return null
+  if (screenshotField.startsWith('data:')) {
+    const m = screenshotField.match(/^data:image\/(\w+);base64,(.+)$/s)
+    if (m) {
+      const buf = Buffer.from(m[2], 'base64')
+      const ext = m[1].toLowerCase() === 'jpeg' ? 'jpg' : m[1].toLowerCase()
+      const outPath = resolve(outDir, `website-screenshot.${ext}`)
+      writeFileSync(outPath, buf)
+      return outPath
+    }
+    return null
+  }
+  return downloadAsset(screenshotField, outDir, 'website-screenshot')
+}
+
 async function fetchOnce(targetUrl) {
-  const [rawHtml, contentData, screenshot] = await Promise.all([
-    fetchJinaHtml(targetUrl).catch((err) => {
-      console.warn('[fetch-brand-from-url] HTML fetch failed:', err?.message || err)
-      return ''
-    }),
-    fetchJinaContent(targetUrl),
-    fetchJinaScreenshot(targetUrl).catch((err) => {
-      console.warn('[fetch-brand-from-url] Screenshot fetch failed:', err?.message || err)
-      return ''
-    }),
-  ])
-  return { rawHtml, contentData, screenshot, extracted: extractStylesFromHtml(rawHtml) }
+  const data = await scrapeWithFirecrawl(targetUrl)
+  const branding = data.branding || null
+  const meta = data.metadata && typeof data.metadata === 'object' ? data.metadata : {}
+
+  const title = normalizeMeta(meta.title)
+  const description = normalizeMeta(meta.description)
+  const screenshotRemote =
+    typeof data.screenshot === 'string' && data.screenshot.trim() ? data.screenshot.trim() : ''
+
+  const colors = colorsFromBranding(branding)
+  const fonts = fontsFromBranding(branding)
+  const designPatterns = designPatternsFromBranding(branding)
+
+  const images = imagesRecordFromBranding(branding)
+
+  const metaLines = [title, description].filter(Boolean)
+  const personality = branding?.personality
+  let personalityLine = ''
+  if (personality && typeof personality === 'object') {
+    try {
+      personalityLine = JSON.stringify(personality)
+    } catch {
+      personalityLine = ''
+    }
+  }
+  const contentPreview = [metaLines.join('\n\n'), personalityLine].filter(Boolean).join('\n\n').slice(0, 8000)
+
+  const links = {}
+  if (branding?.logo && /^https?:\/\//i.test(branding.logo)) {
+    links.logo = branding.logo
+  }
+
+  return {
+    raw: data,
+    branding,
+    title,
+    description,
+    contentPreview,
+    images,
+    links,
+    screenshotUrl: screenshotRemote || null,
+    colors,
+    fonts,
+    designPatterns,
+    cssSnippet: typographySnippet(branding),
+  }
 }
 
 async function fetchWithRetries(targetUrl, maxAttempts = 3) {
@@ -360,7 +291,7 @@ async function fetchWithRetries(targetUrl, maxAttempts = 3) {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const result = await fetchOnce(targetUrl)
     last = result
-    if (result.extracted.colors.length > 0) {
+    if (result.colors.length > 0) {
       if (attempt > 1) {
         console.log(`[fetch-brand-from-url] Colors found on retry ${attempt}/${maxAttempts}`)
       }
@@ -369,7 +300,7 @@ async function fetchWithRetries(targetUrl, maxAttempts = 3) {
     if (attempt < maxAttempts) {
       const waitMs = 800 * attempt
       console.warn(
-        `[fetch-brand-from-url] No colors detected (attempt ${attempt}/${maxAttempts}). Retrying in ${waitMs}ms...`
+        `[fetch-brand-from-url] No branded colors detected (attempt ${attempt}/${maxAttempts}). Retrying in ${waitMs}ms...`
       )
       await sleep(waitMs)
     }
@@ -384,24 +315,34 @@ async function main() {
   mkdirSync(resolve(ROOT, 'public'), { recursive: true })
   mkdirSync(assetDir, { recursive: true })
 
-  const { contentData, screenshot, extracted, attemptsUsed } = await fetchWithRetries(targetUrl, 3)
+  const {
+    raw,
+    branding,
+    title,
+    description,
+    contentPreview,
+    images,
+    links,
+    screenshotUrl,
+    colors,
+    fonts,
+    designPatterns,
+    cssSnippet,
+    attemptsUsed,
+  } = await fetchWithRetries(targetUrl, 3)
 
   const savedAssets = {
     screenshot: null,
     images: [],
   }
 
-  if (screenshot) {
-    const screenshotPath = await downloadAsset(screenshot, assetDir, 'website-screenshot')
+  if (screenshotUrl) {
+    const screenshotPath = await saveScreenshot(assetDir, screenshotUrl)
     if (screenshotPath) savedAssets.screenshot = toPublicRelative(screenshotPath)
   }
 
   const imageCandidates = Array.from(
-    new Set(
-      Object.values(contentData.images || {}).filter(
-        (value) => typeof value === 'string' && /^https?:\/\//i.test(value)
-      )
-    )
+    new Set(Object.values(images).filter((u) => typeof u === 'string' && /^https?:\/\//i.test(u)))
   ).slice(0, MAX_IMAGE_DOWNLOADS)
 
   for (let i = 0; i < imageCandidates.length; i += 1) {
@@ -412,22 +353,27 @@ async function main() {
   const payload = {
     fetchedAt: new Date().toISOString(),
     attemptsUsed,
+    source: 'firecrawl',
     url: targetUrl,
-    title: contentData.title || '',
-    description: contentData.description || '',
-    contentPreview: (contentData.content || '').slice(0, 8000),
-    images: contentData.images || {},
-    links: contentData.links || {},
-    screenshotUrl: screenshot || null,
+    title,
+    description,
+    contentPreview,
+    images,
+    links,
+    screenshotUrl,
     savedAssets,
-    colors: extracted.colors,
-    fonts: extracted.fonts,
-    designPatterns: extracted.designPatterns,
-    cssSnippet: extracted.cssSnippet,
+    brandingProfile: branding,
+    colors,
+    fonts,
+    designPatterns,
+    cssSnippet,
   }
 
   writeFileSync(outPath, JSON.stringify(payload, null, 2), 'utf8')
   console.log(`Wrote ${outPath}`)
+  if (raw && typeof raw === 'object' && !branding) {
+    console.warn('[fetch-brand-from-url] No branding object in response — check Firecrawl plan and URL.')
+  }
 }
 
 main().catch((err) => {

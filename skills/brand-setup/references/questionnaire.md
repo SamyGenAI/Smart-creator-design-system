@@ -14,23 +14,23 @@
 ## Track gate (always)
 
 1. Ask: *Do you already have a website URL or settled visual identity (logo, fonts, palette) we can mirror?*
-   - **Yes** → **Track A** — continue with URL + Jina; follow “After Jina” below starting at URL confirm.
+   - **Yes** → **Track A** — continue with URL + Firecrawl scrape; follow “After URL scrape” below starting at URL confirm.
    - **No / not yet / starting blank** → **Track B** — run [`skills/theme-factory/SKILL.md`](../../theme-factory/SKILL.md): show [`theme-showcase.pdf`](../../theme-factory/theme-showcase.pdf), wait for preset # or **Create your Own Theme**, load `themes/*.md`, map to DESIGN tokens per SKILL **§ Smart Creator — DESIGN.md mapping**. Collect `brandName` + tagline verbally; screenshots step may be skipped.
 
 ---
 
-Use `public/brand-data.json` as starting point (**Track A** only — verify it was produced by the current user's URL run, not a leftover from the template repo). Track B may bypass Jina entirely—do not insist on canonical URL.
+Use `public/brand-data.json` as starting point (**Track A** only — verify it was produced by the current user's URL run, not a leftover from the template repo). Track B may bypass URL extraction entirely—do not insist on canonical URL.
 
 Ask only what is missing, ambiguous, or needs confirmation.
 Prefer visual references in this order:
 
-1. `public/assets/brand-jina/` (auto-saved from Jina, **Track A**)
+1. `public/assets/brand-firecrawl/` (auto-saved from `fetch-brand-from-url.mjs`, **Track A**)
 2. `public/assets/brand-screenshots/` (user-provided)
 3. `public/assets/design-inspiration/` (designs the user *aspires to*, especially important on **Track B**)
 
-## After Jina (`public/brand-data.json`)
+## After URL scrape (`public/brand-data.json`)
 
->**Track B:** reuse the questionnaire items below except **§1 Confirm URL**. Source answers from **Theme Factory presets** + user edits instead of Jina payloads.
+>**Track B:** reuse the questionnaire items below except **§1 Confirm URL**. Source answers from **Theme Factory presets** + user edits instead of scraped payloads.
 
 1. **Confirm URL** (**Track A only**)  
    "We extracted data from: [url]. Is this the right site?"
@@ -59,7 +59,7 @@ Prefer visual references in this order:
 - **Track B — no URL pipeline:** derive palette/fonts from **`skills/theme-factory/themes/*.md`** (or a net-new markdown theme you author for **Create your Own Theme**), then confirmations — do not block on `public/brand-data.json`.
 - Empty or tiny `colors`: check `attemptsUsed` in `public/brand-data.json`. If attempts are low or uncertain, re-run the fetch once; if still empty, ask for pasted brand hex values (primary, background, accents).
 - Empty `fonts`: ask for primary and serif names explicitly.
-- No `screenshotUrl`: run vision on local assets in `public/assets/brand-jina/` and user-provided files under `public/assets/brand-screenshots/` and `public/assets/design-inspiration/`; rely more on user input when needed.
+- No `screenshotUrl`: run vision on local assets in `public/assets/brand-firecrawl/` and user-provided files under `public/assets/brand-screenshots/` and `public/assets/design-inspiration/`; rely more on user input when needed.
 
 ## Before writing `tmp/brand-answers.json`
 

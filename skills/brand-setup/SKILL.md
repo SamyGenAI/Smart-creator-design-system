@@ -1,17 +1,17 @@
 ---
 name: brand-setup
-description: Capture creator first+last name, replace template placeholder Your Full Name, place assets/avatar/avatar-profile.png, then onboard Smart Creator via Track A (website URL + Jina) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then aspiration vision, design-philosophy.md, DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
+description: Capture creator first+last name, replace template placeholder Your Full Name, place assets/avatar/avatar-profile.png, then onboard Smart Creator via Track A (website URL + Firecrawl scrape) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then aspiration vision, design-philosophy.md, DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
 ---
 
 # Brand setup (workspace onboarding)
 
-Run this as a guided workflow. Adapt steps by **track** (see gate below). Always document skips (empty inspiration folder, Track B without Jina, etc.).
+Run this as a guided workflow. Adapt steps by **track** (see gate below). Always document skips (empty inspiration folder, Track B without URL scrape, etc.).
 
-Read [references/questionnaire.md](references/questionnaire.md) for the adaptive question flow and the **Done checklist**.
+Read [references/questionnaire.md](references/questionnaire.md) for the adaptive question flow. Before sign-off, run **Questions asked (agent sign-off checklist)** at the end of this file, then the questionnaire **Done checklist** for files and commands.
 
 ## Track choice (mandatory gate)
 
-Confirm before running Jina or Theme Factory:
+Confirm before running Firecrawl or Theme Factory:
 
 | Situation | Track |
 |-----------|--------|
@@ -60,9 +60,9 @@ When Track B applies:
 
 ## Prerequisites
 
-- Optional: `JINA_API_KEY` — **Track A** Jina rate limits (works without a key at lower limits).
+- **Track A:** `FIRECRAWL_API_KEY` in `.env` — required for `scripts/fetch-brand-from-url.mjs`. User obtains a key at [https://www.firecrawl.dev/](https://www.firecrawl.dev/) (dashboard).
 - **Theme factory** — **Track B** (`skills/theme-factory/`).
-- Host vision on `public/assets/brand-screenshots/`, `public/assets/design-inspiration/`, and when present `public/assets/brand-jina/`.
+- Host vision on `public/assets/brand-screenshots/`, `public/assets/design-inspiration/`, and when present `public/assets/brand-firecrawl/`.
 
 > **Warning — stale template data:** `public/brand-data.json` ships with placeholder values from the template repo. Always verify it was produced by the current user's URL extraction run before trusting it. On Track B, ignore this file entirely and collect brand name / description verbally.
 
@@ -73,16 +73,16 @@ When Track B applies:
 1. **Website URL (Track A only)**  
    Ask for the canonical site URL. **Track B:** skip; note *no URL* in your session notes.
 
-2. **Jina extraction (Track A only)**  
-   Run from the repo root:
+2. **Firecrawl extraction (Track A only)**  
+   Ensure `.env` contains `FIRECRAWL_API_KEY` ([Firecrawl](https://www.firecrawl.dev/)). Run from the repo root:
    ```bash
    node scripts/fetch-brand-from-url.mjs "<https-url>"
    ```
-   This writes [public/brand-data.json](public/brand-data.json) (title, description, content preview, screenshot URL, extracted colors, fonts, design patterns, CSS snippet), and also saves downloaded Jina assets under `public/assets/brand-jina/`.
-   The script retries automatically when no colors are extracted, and records `attemptsUsed` in the JSON.
+   This writes [public/brand-data.json](public/brand-data.json) (title, description, content preview, screenshot URL, colors, fonts, design patterns, typography snippet, optional full `brandingProfile`), and saves downloaded assets under `public/assets/brand-firecrawl/`.
+   The script retries automatically when no branded colors are extracted, and records `attemptsUsed` in the JSON.
 
 3. **Present extraction (Track A only)**  
-   Load `public/brand-data.json` and summarize: colors (first batch), fonts, design patterns, screenshot URL, locally saved assets, and `attemptsUsed`.
+   Load `public/brand-data.json` and summarize: colors (first batch), fonts, design patterns, screenshot URL, locally saved assets, `brandingProfile` highlights if present, and `attemptsUsed`.
    Use locally saved assets first (`savedAssets.screenshot`, `savedAssets.images`) for stable analysis; keep `screenshotUrl` as fallback.  
    **Track B:** skip; instead briefly present the **chosen theme file** (palette + type) and the proposed **semantic token mapping** you will place in `tmp/brand-answers.json`.
 
@@ -96,7 +96,7 @@ When Track B applies:
   - Primary sans font and serif display font (`fonts.primary`, `fonts.serif`)
   - Optional: `rounded` overrides (`glass-header`, `glass`, `card`, `pill`) informed by vision + CSS patterns
 
-   **Track A:** if Jina still returned no usable colors after retries, ask the user to paste hex values manually.
+   **Track A:** if extraction still returned no usable colors after retries, ask the user to paste hex values manually.
 
 5. **Branded screenshots**  
    Ask the user to add representative screenshots (home, marketing, product UI) under `public/assets/brand-screenshots/`. Wait until they confirm files are in place.  
@@ -106,12 +106,12 @@ When Track B applies:
    Ask the user: *"Drop screenshots of designs you love (sites, posters, UI, decks, editorial — anything)."* Explain files live in **`public/assets/design-inspiration/`**. Wait until they confirm files are in place (if they reused brand screenshots elsewhere, mirror or copy those files here so aspiration references stay explicit). This step is optional but strongly recommended — skipping it narrows the vision pass to extracted data and user answers alone.
 
 7. **Vision pass (host model)**  
-   Read images from all relevant locations (skip hidden or non-image files). **Track B:** when `public/assets/brand-jina/` is empty, base color/texture notes on **theme markdown + inspiration images** and user answers.
+   Read images from all relevant locations (skip hidden or non-image files). **Track B:** when `public/assets/brand-firecrawl/` is empty or unused, base color/texture notes on **theme markdown + inspiration images** and user answers.
    - user-provided brand context: `public/assets/brand-screenshots/`
    - **design aspiration references:** `public/assets/design-inspiration/` (directory may be empty if the user opted out)
-   - Jina-downloaded: `public/assets/brand-jina/`
+   - script-saved captures: `public/assets/brand-firecrawl/`
 
-   Describe: dominant colors, typography feel, corner radii, shadows / elevation, spacing density, glass or gradients, **composition and mood**. Merge this with the user's edits from step 4 and **contrast aspiration** from inspiration images (minimal vs maximal, restraint vs kinetic); **Track A:** also fold in `public/brand-data.json`; **Track B:** treat the chosen **theme file** as the primary chromatic baseline when JSON/Jina assets are missing.
+   Describe: dominant colors, typography feel, corner radii, shadows / elevation, spacing density, glass or gradients, **composition and mood**. Merge this with the user's edits from step 4 and **contrast aspiration** from inspiration images (minimal vs maximal, restraint vs kinetic); **Track A:** also fold in `public/brand-data.json`; **Track B:** treat the chosen **theme file** as the primary chromatic baseline when JSON or scrape assets are missing.
 
 8. **Philosophy files**  
    After the vision pass, write **both** files in one pass:
@@ -196,10 +196,46 @@ When Track B applies:
   ```bash
   node scripts/fetch-brand-from-url.mjs "<https-url>"
   ```
-- Prefer local assets saved by the script (`public/assets/brand-jina/`) for consistent vision analysis.
+- Prefer local assets saved by the script (`public/assets/brand-firecrawl/`) for consistent vision analysis.
 
 ## Follow-up for the user
 
 - Profile / avatar image: **`assets/avatar/avatar-profile.png`** (required for footer and slide defaults; confirmed during Creator identity & avatar).
 - Icons and logos under `assets/` as needed for templates.
 - See [references/questionnaire.md](references/questionnaire.md) **Done checklist** to verify nothing was skipped.
+
+## Questions asked (agent sign-off checklist)
+
+Before closing onboarding, confirm you **posed or explicitly confirmed** each item below. Use **N/A** and one line of session notes for track-skipped rows. Do not check a box if you only assumed the answer without asking.
+
+**Everyone**
+
+- [ ] **Track gate** — *Do you already have a site or brand visuals to pull from, or should we start from a Theme Factory preset?* (or equivalent plain wording)
+- [ ] **First name** — *What is your first name (as you want it to appear)?*
+- [ ] **Last name** — *What is your last name (as you want it to appear)?*
+- [ ] **Avatar** — Asked for a square-friendly headshot (PNG/JPG) for **`assets/avatar/avatar-profile.png`**, **or** user explicitly deferred (note deferral; remind at sign-off)
+
+**Track A — URL extraction**
+
+- [ ] **Canonical site URL** — asked before running `fetch-brand-from-url.mjs`
+- [ ] **Post-scrape** — *We extracted data from: [url]. Is this the right site?* (or equivalent) after `public/brand-data.json` reflects this run
+- [ ] **Palette & type approval** — user confirmed or corrected proposed colors, accents, text roles, fonts, and optional radii (or supplied manual hex if extraction was weak)
+
+**Track B — Theme factory**
+
+- [ ] **Theme choice** — user picked a **theme # or name** from the showcase (or completed **Create your Own Theme** per `skills/theme-factory/SKILL.md`)
+- [ ] **Brand naming** — **brand display name** and **one-line description** collected from the user (do not rely on template `public/brand-data.json`)
+- [ ] **Theme-derived tokens** — user approved or corrected the proposed semantic mapping before `tmp/brand-answers.json`
+
+**Both tracks (after identity)**
+
+- [ ] **Branded screenshots** — asked to add files under `public/assets/brand-screenshots/` and waited for confirmation **or** documented an approved skip (common on Track B)
+- [ ] **Design inspiration** — asked for drops under `public/assets/design-inspiration/` **or** documented opt-out / empty folder
+- [ ] **Brand sentence** — **Track A:** confirmed or corrected **brand name + one-line description** from extraction; **Track B:** already covered above
+
+**Handoff**
+
+- [ ] User reminded about **`assets/avatar/avatar-profile.png`** if still missing
+- [ ] Optional **icons / logos** under `assets/` mentioned if relevant
+
+Then run the **Done checklist** in [references/questionnaire.md](references/questionnaire.md) for file and script completion (replace placeholder, JSON, `pnpm tokens:gen`, validation).

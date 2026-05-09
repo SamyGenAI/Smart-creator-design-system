@@ -72,14 +72,16 @@ cp .env.example .env
 ```
 BRANDFETCH_API_KEY=
 LOGO_DEV_API_KEY=
+FIRECRAWL_API_KEY=
 ```
 
 | Key | What it does | Where to get it | Required? |
 |---|---|---|---|
 | `BRANDFETCH_API_KEY` | Fetches company **wordmark SVGs** (e.g. "Notion" logotype) via `node scripts/fetch-logo.mjs notion.com` | [brandfetch.com/developers](https://brandfetch.com/developers) — free tier available | Optional — only if you use wordmarks in your designs |
 | `LOGO_DEV_API_KEY` | Fetches square **app-icon PNGs** (64×64) via `node scripts/fetch-app-logo.mjs notion.com` | [logo.dev](https://www.logo.dev/) — free tier available | Optional — only if you use app icons |
+| `FIRECRAWL_API_KEY` | Powers **`node scripts/fetch-brand-from-url.mjs`** during `/setup` (Track A): scrape **branding** + full-page **screenshot** for `public/brand-data.json` | [firecrawl.dev](https://www.firecrawl.dev/) — sign up and copy an API key from the dashboard | Required for **Track A** URL extraction; not used on Theme Factory-only onboarding |
 
-> You can build infographics without either key. They only exist so Claude can auto-download brand assets when you reference a company.
+> You can build infographics without the logo keys. For brand onboarding from a live website (`/setup` Track A), add **Firecrawl** so the fetch script can run.
 
 ### 3. Agent compatibility (Cursor + Claude Code)
 
@@ -140,8 +142,8 @@ The agent will first ask whether you have an existing website or visual identity
 
 ### Track A — you have a website or existing brand visuals
 
-1. Provide your site URL
-2. Claude runs `node scripts/fetch-brand-from-url.mjs <url>` → saves `public/brand-data.json` (colors, fonts, screenshot, design patterns)
+1. Provide your site URL and ensure **`FIRECRAWL_API_KEY`** is set in `.env` ([Firecrawl](https://www.firecrawl.dev/) dashboard).
+2. Claude runs `node scripts/fetch-brand-from-url.mjs <url>` → Firecrawl returns **branding** + **screenshot** → saves `public/brand-data.json` (colors, fonts, screenshot, design patterns, optional `brandingProfile`)
 3. Claude presents the extraction; you approve or correct hex values and font names
 4. Place brand screenshots in `public/assets/brand-screenshots/`
 5. Drop designs you admire in `public/assets/design-inspiration/` (used to write the visual philosophy)
