@@ -1,8 +1,10 @@
 # Smart Creator Design System
 
-A Claude-Code-driven workflow for generating **on-brand LinkedIn infographics, carousels, and slide decks** from plain-English prompts — then pushing them to Figma for final polish, or exporting them straight to `.pptx`.
+A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.pptx`**.
 
-Instead of designing in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and a team of Claude subagents write the copy, lay out the design using fixed tokens/components, QC the result, and hand you a pixel-perfect React preview you can push to Figma with one MCP call.
+**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. For slide decks (16:9 YouTube/keynote format), the export path is `.pptx` via `pnpm export-slides`.
+
+Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and a team of Claude subagents write the copy, lay out the design using fixed tokens/components, QC the result, and hand you the final artifact.
 
 ![Smart Creator Design System demo](public/smart-creator-design-system-GIF.gif)
 
@@ -10,13 +12,15 @@ Instead of designing in Figma from scratch every time, you describe what you wan
 
 ## What you can generate
 
-| Format | Canvas | Output |
+| Format | Canvas | Ships to |
 |---|---|---|
-| **Infographic** | 1080×1350px | React JSX → Figma via MCP |
-| **Carousel** | 1080×1350px × N slides | React JSX → Figma via MCP |
-| **Slide deck** | 1280×720px × N slides | `.pptx` via `pnpm export-slides` |
+| **Infographic** | 1080×1350px | **Figma** (via MCP push) |
+| **Carousel** | 1080×1350px × N slides | **Figma** (via MCP push) |
+| **Slide deck** | 1280×720px × N slides | **`.pptx`** (via `pnpm export-slides`) |
 
 All three formats share the same token set (colors, fonts, shadows) and component library, so everything stays on-brand by construction.
+
+> **Figma MCP is strongly recommended** for infographics and carousels — it's what the system is built around. Slide decks don't require Figma; they export directly to PowerPoint-compatible `.pptx`.
 
 ---
 
@@ -25,17 +29,18 @@ All three formats share the same token set (colors, fonts, shadows) and componen
 ```
 User topic
    ↓
-copy-agent     → writes content, counts characters, assigns hierarchy
+copy-agent       → writes content, counts characters, assigns hierarchy
    ↓
 (you approve the brief)
    ↓
-design-agent   → picks components, calculates layout, writes JSX
+design-agent     → picks components, calculates layout, writes JSX
    ↓
-qc-agent       → verifies overflow, char limits, colors, structure
+qc-agent         → verifies overflow, char limits, colors, structure
    ↓
-pnpm dev       → preview in browser
+pnpm dev         → preview in browser
    ↓
-Figma MCP  OR  pnpm export-slides   → ship
+   ├── infographic / carousel  →  Figma MCP push  →  edit & publish in Figma
+   └── slide deck              →  pnpm export-slides  →  .pptx file
 ```
 
 The rules, tokens, component APIs, and character budgets live in `CLAUDE.md` + `references/`, so Claude never invents styles — it only chooses from the existing design system.
@@ -129,20 +134,30 @@ After installing dependencies, start a **new** chat and run:
 - **Claude Code:** `/setup`
 - **Cursor Agent:** `@setup`
 
-The onboarding workflow will:
-1. Ask for your website URL
-2. Run `node scripts/fetch-brand-from-url.mjs <url>`
-3. Save extraction data to `public/brand-data.json`
-4. Ask you to approve or edit colors/fonts
-5. Ask you to place brand screenshots in `public/assets/brand-screenshots/`
-6. Analyze screenshots with host vision
-7. Write `tmp/brand-answers.json`
-8. Apply and validate brand tokens:
+The agent will first ask whether you have an existing website or visual identity. Your answer determines which track it follows:
+
+### Track A — you have a website or existing brand visuals
+
+1. Provide your site URL
+2. Claude runs `node scripts/fetch-brand-from-url.mjs <url>` → saves `public/brand-data.json` (colors, fonts, screenshot, design patterns)
+3. Claude presents the extraction; you approve or correct hex values and font names
+4. Place brand screenshots in `public/assets/brand-screenshots/`
+5. Drop designs you admire in `public/assets/design-inspiration/` (used to write the visual philosophy)
+6. Claude analyzes all images and writes `design-philosophy.md` + updates `skills/design-philosophy/SKILL.md`
+7. Claude writes `tmp/brand-answers.json` and applies it:
    - `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
    - `pnpm tokens:gen`
    - `node scripts/validate-design.mjs`
 
-Result: your local clone is re-skinned to the new brand and ready for infographic/carousel/slide generation.
+### Track B — you have no website or settled visual identity yet
+
+1. Claude opens `skills/theme-factory/theme-showcase.pdf` — pick a preset by number or name (or describe your own)
+2. The chosen theme is mapped to semantic tokens; you approve colors and fonts
+3. Provide a brand name and one-line description verbally
+4. Drop designs you admire in `public/assets/design-inspiration/` (optional but recommended)
+5. Claude writes `design-philosophy.md`, `tmp/brand-answers.json`, and applies the brand — same final commands as Track A
+
+**Both tracks produce the same artifacts:** updated `DESIGN.md`, regenerated `src/index.css`, and a `design-philosophy.md` that guides every subsequent generation.
 
 ### Export a deck to `.pptx`
 

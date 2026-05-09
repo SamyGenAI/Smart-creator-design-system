@@ -8,7 +8,7 @@
 
 ---
 
-Use `public/brand-data.json` as starting point (**Track A**). Track B may bypass Jina entirely—do not insist on canonical URL.
+Use `public/brand-data.json` as starting point (**Track A** only — verify it was produced by the current user's URL run, not a leftover from the template repo). Track B may bypass Jina entirely—do not insist on canonical URL.
 
 Ask only what is missing, ambiguous, or needs confirmation.
 Prefer visual references in this order:
