@@ -34,6 +34,10 @@ In `components/` (repo root). Compose what fits; write raw CSS or new JSX for on
 
 You may write new section layouts as plain JSX with Tailwind classes. There is no rule against it.
 
+## Sections as mini-designs
+
+Each section is its own mini design: pick its own inner pattern (icon-bullets, checklist, mini-SVG diagram, comparison strip, persona rows, …) and its own treatment (`BrandBorderSectionBase` theme or `PrimaryGlassSection`).
+
 ## Tokens & brand (no literals in JSX)
 
 The system is **brand-agnostic**. Chroma and typefaces are owned only by **`DESIGN.md`** (YAML front matter) and the artifacts derived from it:

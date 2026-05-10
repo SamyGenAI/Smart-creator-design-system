@@ -5,7 +5,7 @@
 import SquareGridTexture from './SquareGridTexture.jsx'
 
 /** Default texture opacity — infographic spec (slides use SquareGridTexture with higher opacity). */
-export const INFOGRAPHIC_TEXTURE_OPACITY = 0.05
+export const INFOGRAPHIC_TEXTURE_OPACITY = 0.7
 
 export default function InfographicCanvas({
   children,
