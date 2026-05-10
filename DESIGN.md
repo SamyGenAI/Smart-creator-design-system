@@ -197,139 +197,38 @@ components:
     height: 60px
 ---
 
-# Smart Creator Design System
+# Human-readable design rules
 
-A fixed-canvas design system for generating LinkedIn infographics (1080×1350 px) and slide decks (1280×720 px) with Claude Code and Cursor.
+Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`), **slide 1280×720** (`SquareGridTexture` at higher opacity — see slide skill). Colors, typography, radii, and shadows in the YAML above feed **Tailwind** via `tailwind.config.js`. Runtime **CSS variables** for components live in `src/index.css` — edit that file directly for theme tweaks.
 
-## Overview
+## Colors (roles)
 
-Smart Creator produces **static, fixed-canvas visual content** — not responsive web pages. Every infographic is a 1080×1350 px absolute-positioned canvas with a warm background surface (`color.bg.canvas` / `#fffceb`) and a subtle square-grid texture at 5% opacity.
+| Role | Use |
+|---|---|
+| `colors.bg.brand` | Headers, footer bar, primary chrome |
+| `colors.bg.canvas` | Page / InfographicCanvas fill |
+| `colors.bg.accent.1..5` | Meaningful accents (chips, tiers) |
+| `colors.text.*` / `colors.text.onBrand` | Contrast pairs |
+| `alphaColors.overlay.glass.*` | Glass frosts |
 
-The visual language is **bold, structured, and vibrant**. Content is organised in bento-grid cells using CSS Grid with `fr` rows. Section headers use the brand background role (`color.bg.brand`) with glass overlays, and content cards use soft semantic accent tints. A single Montserrat typeface covers all weight/size needs; Noto Serif appears only for decorative serif display titles.
+Composition: **few strong colors**; respect contrast (see `.claude/agents/design-agent.md` + `skills/infographics-designer/SKILL.md`).
 
-Target audience: B2B professionals sharing insights on LinkedIn. The tone is confident and editorial — not playful, not corporate-dull.
+## Typography (see YAML `typography`)
 
-## Colors
-
-Color tokens are role-based. Use semantic roles only, never family labels.
-
-- **`color.bg.brand` (`#092c69`):** Primary brand surface for section headers and footer.
-- **`color.bg.canvas` (`#fffceb`):** Base page background for infographics and slides.
-- **`color.bg.surface` / `color.bg.surfaceAlt`:** Secondary container layers.
-- **`color.bg.accent.1..5`:** Semantic accent slots for chips, cards, and section highlights.
-- **`color.text.primary|secondary|muted|onBrand`:** Text contrast roles by surface.
-- **`color.border.subtle|strong` + `color.border.accent.1..5`:** Divider and emphasis borders.
-- **`color.state.success|warning|info|danger`:** State semantics for status-driven UI copy.
-
-> Alpha-channel variants use semantic keys in `alphaColors` (`bg.accentSoft.*`, `bg.surfaceAccent.*`, `overlay.glass.*`, `overlay.indicator.*`). These can be changed in `DESIGN.md` and reflected in `src/index.css` via `pnpm tokens:gen`.
-
-## Typography
-
-All text uses **Montserrat**. Noto Serif is reserved for decorative serif display titles only.
-
-- **Hero / Section header (`hero`, 72px Bold):** Infographic main title. Single line, `whitespace-nowrap`. Maximum ~18 characters at 1080 px width.
-- **Display serif (`title-serif`, Noto Serif 72px Bold):** Decorative alternative title style. Use sparingly.
-- **Title 4xl (`title-4xl`, 56px Bold):** Large section numerals or prominent stat callouts.
-- **Title 2xl (`title-2xl`, 32px Bold):** Primary section header label inside brand bars.
-- **Subtitle (`subtitle`, 32px Medium Italic):** Infographic subtitle below the hero title. Maximum ~40 characters.
-- **Title XL (`title-xl`, 24px SemiBold):** Secondary section headers and card titles.
-- **Body LG (`body-lg`, 20px SemiBold):** Emphasized list items or key facts.
-- **Body MD (`body-md`, 18px Medium):** Comfortable body text; default for longer descriptions.
-- **Body (`body`, 16px Regular):** Standard body copy and comparison row text.
-- **Body SM (`body-sm`, 14px Medium):** Default for list items inside cards (checklist, icon-bullet, number-bullet). Text size is adaptive: minimum 12px, maximum 18px, preserving hierarchy — card body < card title < section title < header.
-- **Caption (`caption`, 12px Medium):** Metadata, footnotes, and fine print.
-
-Both Montserrat and Noto Serif are loaded from Google Fonts in `index.html`.
+Montserrat everywhere for product work; optional Noto for display. Titles may wrap (~2 lines on the infographic header); no fixed character cap.
 
 ## Layout
 
-The canvas is **fixed at 1080×1350 px** — this is not a responsive web layout. All sizes are in `px`, never `%` or `rem`.
+Infographic: **981px** inner column, **22px** vertical rhythm, **`flex-none` header/footer**. Prefer CSS Grid layouts sized for content (bento typical, not mandatory).
 
-### Infographic (1080×1350 px)
-- Outer canvas: `1080×1350px` with `background: canvas` and `SquareGridTexture` at 5% opacity
-- Inner content column: `981px` centered
-- Row gap: `22px`
-- All layout uses **CSS Grid bento-grid pattern** with `fr` rows, `flex-none` header/footer, `flex-1` grid body
-- The legacy inline-grid pattern (`Infographic.jsx`) is deprecated; all new templates use the bento-grid approach
+## Elevation — token names (`shadows` in YAML)
 
-### Slide deck (1280×720 px)
-- Canvas: `1280×720px` with `background: canvas` and `SquareGridTexture` at 60% opacity
-- Font: Montserrat only (same families, different opacity on texture)
-
-### Spacing scale
-`xs` (4px) → `sm` (8px) → `md` (16px) → `lg` (22px / row gap) → `xl` (28px / canvas vertical padding)
-
-## Elevation & Depth
-
-Depth is expressed through **background tint layers** rather than heavy shadows. Cards float above the canvas using a combination of tinted backgrounds and a soft drop shadow.
-
-- **`shadow-card`** — `0px 4px 4px 0px rgba(0,0,0,0.25)` — standard card elevation
-- **`shadow-elevation-100`** — `0px 1px 4px 0px rgba(12,12,13,0.05)` — subtle lift
-- **`shadow-elevation-200`** — double 1px/4px spread — medium surface lift
-- **`shadow-elevation-400`** — `0px 4px 4px -4px + 0px 16px 32px -4px` — prominent floating card
-- **`shadow-elevation-500`** — `0px 4px 4px -4px + 0px 16px 16px -8px` — highest elevation
-
-The primary `PrimaryGlassSection` component also uses `alphaColors.overlay.glass.subtle` for an inner frosted-glass border.
-
-## Shapes
-
-All interactive/container elements follow a consistent radius vocabulary:
-
-- **`rounded-card` (8px):** Standard card radius. Used for `PastelShadowBorderCard`, `BrandBorderSection` family, `Table`, and most content cards.
-- **`rounded-glass-header` (10px):** Header bar of glass brand sections.
-- **`rounded-glass` (20px):** Full `PrimaryGlassSection` container radius.
-- **`rounded-pill` (40px):** Chip badges, the `InfographicFooter` pill, and `TextBox` components.
-
-Never mix rounded and sharp corners in the same composition. All section cards in a single infographic should use the same radius family.
+Use `shadow-elevation-*` / `shadow-card` classes mapped from tokens — every card-grade surface lifts.
 
 ## Components
 
-The design system provides these atomic components (all in `components/`):
+Primitives live under `components/` (see `skills/infographics-designer/SKILL.md`). Chips: accent **1** features · **2** outcomes · **3** process · **4** ranked · **5** caution.
 
-| Component | Description | Key prop(s) |
-|---|---|---|
-| `SquareGridTexture` | SVG background texture | `opacity`, `cellSize` |
-| `InfographicHeader` | Hero title + subtitle | `title`, `highlightWord`, `subtitle` |
-| `PrimaryGlassSection` | Primary header + body container | `title`, `iconSrc`, `className` |
-| `InfographicFooter` | Brand pill footer | `avatarSrc`, `name` |
-| `PastelShadowBorderCard` | Accent-tinted glass card with shadow | `text` |
-| `NumberBullet` | Numbered list (exactly 3) | `items` |
-| `Checklist` | Checkmark list | `items` |
-| `IconBullet` | Icon + text rows (exactly 4) | `items`, `accentColor` |
-| `Table` | Accent 3×4 table | `headers`, `rows` |
-| `Grid8CompanyLogos` | 4×2 logo grid | `logos` |
-| `TextBox` | Small colored pill | `text` |
-| `BrandBorderSection` family | Colored section card with numbered badge | `title`, `number`, `children` |
+## Mandatory don’ts
 
-**Chip/card accent semantics** are fixed by role:
-- `color.bg.accent.1` → features/capabilities
-- `color.bg.accent.2` → actions/outcomes
-- `color.bg.accent.3` → process/steps
-- `color.bg.accent.4` → numbered/ranked
-- `color.bg.accent.5` → warnings/alternatives
-
-## Do's and Don'ts
-
-- **Do** use `color.bg.brand` only for section headers, the footer pill, and primary action elements.
-- **Do** always pass dark/black SVG icons to `PrimaryGlassSection` — the component applies `filter: brightness(0) invert(1)`.
-- **Do** read `references/space-budgets.md` before generating content and respect all character limits.
-- **Do** use the bento-grid pattern (CSS Grid with `fr` rows) for all new infographic templates.
-- **Do** use `flex items-center justify-center` on image container divs and `w-full h-full object-contain` on `<img>` tags for logos.
-- **Do** escape forward slashes in Tailwind arbitrary values: `bg-[var(--color\/bg\/brand,#092c69)]`.
-- **Don't** make the layout responsive — the canvas is always a fixed `1080×1350px`.
-- **Don't** modify token values in `tailwind.config.js` or `src/index.css` directly — edit `DESIGN.md` and run `pnpm tokens:gen`.
-- **Don't** use `display: contents` on image cell wrappers.
-- **Don't** use more than two font weights in the same visual region.
-- **Don't** mix `rounded-glass` and `rounded-card` radii in the same infographic.
-- **Don't** place the `InfographicHeader` title on more than one line — enforce `whitespace-nowrap`.
-
-## Color Contrast & Composition Laws
-
-Treat these as mandatory for every infographic and slide. **Commit to a cohesive aesthetic.** Use **CSS variables and semantic Tailwind token classes only** (`var(--theme-…)`, `shadow-elevation-*`, `bg-bg-*`, `text-text-*`) so contrast and hierarchy stay consistent. **Dominant colors with sharp accents outperform timid, evenly-distributed palettes.**
-
-- **Contrast, not camouflage.** Never stack same-hue relationships that kill readability — e.g. no “blue-on-blue,” no dark typography on dark fills, no light typography on near-white fills without a deliberate, token-safe exception.
-- **Dark surfaces.** On `color.bg.brand` and on any accent or fill that reads as **dark**, use **`color.text.onBrand`** and/or **`color.bg.canvas`** only for typography and graphical emphasis that must pop (respect existing components that bake in `onBrand` behavior).
-- **Light surfaces.** On `color.bg.canvas`, `color.bg.surface`, `color.bg.surfaceAlt`, and pastel / light accents, use **`color.text.primary`** or **`color.text.secondary`** (and **`color.text.muted`** for de-emphasized labels). Do not substitute brand-hue body text that sits uncomfortably close to the background hue.
-- **Palette economy.** Per design piece (one canvas export), limit intentional **chromatic focal colors to two or three semantic roles**: one **dominant** (usually `color.bg.brand` plus canvas/surface neutrals), one **sharp accent** (usually a single accent slot), and neutrals (`canvas` / surface / typography). Alternate accents only when they reinforce contrast and hierarchy — not to “use every accent once.”
-- **Symmetry, balance, structure.** Compose with reversible weight: pair large calm zones with disciplined accent placement; mirror padding and grid rhythm so the layout feels intentional, not scattered.
-- **Mandatory elevation (premium depth).** Every card, pill, and major section container must carry **at least** `shadow-elevation-100` (or `shadow-card` where that is the card token). Primary brand sections and hero surfaces should use **`shadow-elevation-400` or `shadow-elevation-500`** (or `shadow-card-soft` / `shadow-slide-primary` where those are the designated premium lifts for that template). **Never ship a flat, shadowless card** when a raised surface is expected.
+No responsive breakpoints · Do not put raw hex into `tailwind.config.js` theme (use YAML here) · No `display:contents` on asset cells · Escaped Tailwind refs: `--color\\/bg\\/brand`.

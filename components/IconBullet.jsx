@@ -10,7 +10,7 @@
  *
  * Note: pass a different semantic accent variable when needed.
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
 const FONT_BODY = "var(--font\\/family\\/body)"
@@ -44,7 +44,7 @@ export default function IconBullet({
 
   return (
     <div
-      className={className || "h-[173px] relative w-[319px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="icon-bullet"
       data-node-id="28:384"
     >

@@ -7,7 +7,7 @@
  *   items       string[]  — array of 3 text strings
  *   className   string    — overrides dimensions/positioning
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
 const FONT_TITLE = "var(--font\\/family\\/title)"
@@ -24,7 +24,7 @@ export default function NumberBullet({ items = ["xxxxxxx", "xxxxxx", "xxxxxx"], 
 
   return (
     <div
-      className={className || "h-[138px] relative w-[179px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="number-bullet"
       data-node-id="49:279"
     >

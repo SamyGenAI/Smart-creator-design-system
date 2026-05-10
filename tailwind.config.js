@@ -1,12 +1,11 @@
 /**
  * tailwind.config.js
  *
- * Design tokens are sourced from DESIGN.md — do NOT edit color, typography,
- * rounded, or shadow values here directly.
- * To change the visual identity: edit DESIGN.md, then run `pnpm tokens:gen`.
+ * Theme extension (colors, typography, radii, shadows) is parsed from DESIGN.md
+ * for Tailwind utilities. For runtime CSS variables used in components, edit
+ * `src/index.css` directly.
  *
- * Non-token values (canvas dimensions, grid overrides) remain hardcoded below
- * because they are infographic-canvas constraints, not design tokens.
+ * Non-token values (canvas dimensions, grid overrides) remain hardcoded below.
  */
 
 import { parseDesignMd } from './scripts/parse-design-md.mjs'

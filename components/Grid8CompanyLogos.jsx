@@ -40,7 +40,7 @@ export default function Grid8CompanyLogos({
 
   return (
     <div
-      className={className || "h-[112px] relative w-[272px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="grid-8-company-logos"
       data-node-id="51:342"
     >

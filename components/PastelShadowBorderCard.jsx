@@ -6,7 +6,7 @@
  *   text        string   — text content inside the card
  *   className   string   — overrides dimensions/positioning
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 const SURFACE_LAYER_1 = "var(--theme-surface-layer-1)"
 const BORDER_1 = "var(--theme-border-1)"
@@ -17,7 +17,7 @@ const FONT_BODY = "var(--font\\/family\\/body)"
 export default function PastelShadowBorderCard({ text = "xxx", className }) {
   return (
     <div
-      className={className || "h-[161px] relative w-[381px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="pastel-shadow-border-card"
       data-node-id="52:382"
     >

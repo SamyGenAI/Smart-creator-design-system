@@ -126,7 +126,7 @@ When Track B applies:
 
    If the user opted out of inspiration files, synthesize from approved tokens + questionnaire only; record the gap in a short front-of-file note.
 
-   **b) Update [`skills/design-philosophy/SKILL.md`](../design-philosophy/SKILL.md)** so `@skills/design-philosophy` always loads: (a) the path to repo-root **`design-philosophy.md`** (read it in full when present), (b) cross-links to **Color Contrast & Composition Laws** in `DESIGN.md`, (c) mandatory elevation + 2–3 color economy reminders, (d) `references/space-budgets.md` before layout work. Keep YAML `name: design-philosophy` and a description that mentions the root manifesto.
+   **b) Update [`skills/design-philosophy/SKILL.md`](../design-philosophy/SKILL.md)** so `@skills/design-philosophy` always loads: (a) the path to repo-root **`design-philosophy.md`** (read it in full when present), (b) cross-links to **Color Contrast & Composition Laws** in `DESIGN.md`, (c) mandatory elevation + 2–3 color economy reminders, (d) [`skills/infographics-designer/SKILL.md`](../infographics-designer/SKILL.md) for infographic canvas when layout work touches infographics. Keep YAML `name: design-philosophy` and a description that mentions the root manifesto.
 
 9. **Answers JSON**  
    Write `tmp/brand-answers.json` using this shape (fill from steps 4, 7, and 8 when prose needs brand voice; **Track B:** seed colors/fonts from the **theme → DESIGN.md mapping** from step 4; omit keys the user did not change so `apply-brand-answers` keeps existing `DESIGN.md` values where appropriate):
@@ -176,11 +176,12 @@ When Track B applies:
     From repo root:
     ```bash
     node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json
-    pnpm tokens:gen
     node scripts/validate-design.mjs
     ```
 
-    Report: which areas changed (brand name, description, colors, fonts, radii), whether `pnpm tokens:gen` succeeded, and validation result.
+    Then **sync** any changed semantic colors into `src/index.css` (`:root` CSS variables) so runtime components match `DESIGN.md`.
+
+    Report: which areas changed (brand name, description, colors, fonts, radii), whether validation succeeded, and that `src/index.css` was updated if palette roles changed.
 
 ## Guardrails
 
@@ -188,8 +189,8 @@ When Track B applies:
   ```html
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
   ```
-- Update `DESIGN.md` only via `scripts/apply-brand-answers.mjs` for the automated merge path. If the user needs tokens not covered by answers (full palette retune), edit `DESIGN.md` manually afterward and re-run `pnpm tokens:gen` and `node scripts/validate-design.mjs`.
-- Do not hand-edit `src/index.css`; regenerate with `pnpm tokens:gen`.
+- Update `DESIGN.md` only via `scripts/apply-brand-answers.mjs` for the automated merge path. If the user needs tokens not covered by answers (full palette retune), edit `DESIGN.md` manually afterward, run `node scripts/validate-design.mjs`, and mirror the changes into `src/index.css`.
+- **`src/index.css`** holds runtime CSS variables — edit it when brand colors change (there is no codegen step).
 - If the user gives non-hex color values where hex is required, ask for a valid `#hex`.
 - Keep `design/` output-only; onboarding must not edit generated designs.
 - If color extraction is empty, run the script again once manually before asking for manual palette values:
@@ -238,4 +239,4 @@ Before closing onboarding, confirm you **posed or explicitly confirmed** each it
 - [ ] User reminded about **`assets/avatar/avatar-profile.png`** if still missing
 - [ ] Optional **icons / logos** under `assets/` mentioned if relevant
 
-Then run the **Done checklist** in [references/questionnaire.md](references/questionnaire.md) for file and script completion (replace placeholder, JSON, `pnpm tokens:gen`, validation).
+Then run the **Done checklist** in [references/questionnaire.md](references/questionnaire.md) for file and script completion (replace placeholder, JSON, `src/index.css` sync, validation).

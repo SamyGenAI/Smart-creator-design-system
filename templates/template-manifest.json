@@ -1,21 +1,4 @@
 {
-  "infographics": {
-    "infographic": {
-      "componentPath": "templates/infographics/InfographicTemplate.jsx",
-      "componentExport": "InfographicTemplate",
-      "outputSuffix": "Infographic"
-    },
-    "comparison": {
-      "componentPath": "templates/infographics/ComparisonInfographicTemplate.jsx",
-      "componentExport": "ComparisonInfographicTemplate",
-      "outputSuffix": "Infographic"
-    },
-    "bento-cowork": {
-      "componentPath": "templates/infographics/BentoCoworkInfographicTemplate.jsx",
-      "componentExport": "BentoCoworkInfographicTemplate",
-      "outputSuffix": "Infographic"
-    }
-  },
   "carousels": {
     "linkedin": {
       "componentPath": "templates/carousels/LinkedInCarouselTemplate.jsx",

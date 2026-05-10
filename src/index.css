@@ -1,14 +1,11 @@
-/* ⚠️  Auto-generated from DESIGN.md — do not edit directly.
-   Run `pnpm tokens:gen` to regenerate from DESIGN.md.
-   Source: scripts/generate-tokens.mjs */
+/* Design token CSS variables — edit this file directly (source of truth). */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /*
-  Design token CSS variables.
-  Source: DESIGN.md (edit there, then run `pnpm tokens:gen`).
+  Semantic palette and theme aliases consumed by `components/` and `design/`.
 */
 :root {
   /* ── Semantic palette ─────────────────────────────────────── */
@@ -42,10 +39,10 @@
   /* ── Background ──────────────────────────────────────────── */
   --components\/background\/primary:   #fffceb;
   --components\/background\/secondary: #fff4e8;
-  --components\/background\/white:     white;
+  --components\/background\/white:     #ffffff;
 
   /* ── Card ────────────────────────────────────────────────── */
-  --components\/card\/white: white;
+  --components\/card\/white: #ffffff;
   --components\/card\/cream: #fffceb;
   --components\/card\/accent-1: rgba(126,218,255,0.15);
   --components\/card\/accent-3: #fde68a;

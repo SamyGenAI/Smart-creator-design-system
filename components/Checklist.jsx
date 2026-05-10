@@ -9,7 +9,7 @@
  *   items       string[]  — list text items (2–4)
  *   className   string    — overrides dimensions/positioning
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 const ACCENT_2 = "var(--theme-accent-2)"
 const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
@@ -41,7 +41,7 @@ export default function Checklist({ title = null, items = ["xxx", "xxx", "xxx"],
 
   return (
     <div
-      className={className || "h-[189px] relative w-[236px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="Checklist"
       data-node-id="28:283"
     >

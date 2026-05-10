@@ -158,11 +158,18 @@ export default function ${componentName}() {
 
 function main() {
   const args = parseArgs(process.argv.slice(2))
+
+  if (args.type === 'infographics') {
+    throw new Error(
+      'Infographics are not generated from templates. Add design/infographics/<Name>Infographic.jsx using InfographicCanvas + components/ (see skills/infographics-designer/SKILL.md), register in src/App.jsx.',
+    )
+  }
+
   const required = ['type', 'template', 'name', 'data']
   for (const key of required) {
     if (!args[key]) {
       throw new Error(
-        `Missing --${key}. Usage: pnpm generate:design -- --type infographics --template infographic --name MyTopic --data ./brief.json`,
+        `Missing --${key}. Usage: pnpm generate:design -- --type carousels --template linkedin --name MyTopic --data ./brief.json`,
       )
     }
   }
@@ -196,8 +203,7 @@ function main() {
   const modeKey = args['mode-key'] || slugify(args.name)
   const label = args.label || args.name
 
-  if (args.type === 'infographics' || args.type === 'carousels') {
-    const runtimeType = args.type === 'infographics' ? 'infographic' : 'carousel'
+  if (args.type === 'carousels') {
     writeInfographicOrCarouselOutput({
       outputType: args.type,
       outputFileName,
@@ -209,7 +215,7 @@ function main() {
     updateAppRegistry({
       modeKey,
       label,
-      runtimeType,
+      runtimeType: 'carousel',
       componentName: outputFileName,
       outputType: args.type,
       outputFileName,

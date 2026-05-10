@@ -8,11 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "design:validate": "node scripts/validate-design.mjs",
-    "tokens:gen": "node scripts/generate-tokens.mjs",
+    "infographic:validate": "node scripts/validate-infographic-canvas.mjs",
+    "infographic:lint": "node scripts/lint-infographic-tokens.mjs",
     "templates:check": "node scripts/check-template-boundaries.mjs",
     "brand:apply": "node scripts/apply-brand-answers.mjs",
     "generate:design": "node scripts/generate-design-output.mjs",
-    "preflight": "pnpm design:validate && pnpm tokens:gen && pnpm templates:check",
     "export-slides": "node scripts/export-slides.mjs",
     "screenshot": "node scripts/screenshot.mjs"
   },

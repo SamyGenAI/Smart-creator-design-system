@@ -13,7 +13,7 @@
  *   titleStyle     {object}  — inline style overrides for the title (e.g. fontSize, letterSpacing)
  *   subtitleStyle  {object}  — inline style overrides for the subtitle
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  *
  * Example:
  *   <InfographicHeader

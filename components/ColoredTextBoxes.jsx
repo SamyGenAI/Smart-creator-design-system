@@ -8,7 +8,7 @@
  *   colors      string[4] — individual colors per box (overrides `color`)
  *   className   string    — overrides dimensions/positioning
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 const ACCENT_2 = "var(--theme-accent-2)"
 
@@ -26,7 +26,7 @@ export default function ColoredTextBoxes({
 
   return (
     <div
-      className={className || "h-[98px] relative w-[172px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="4-colored-text-boxes"
       data-node-id="51:372"
     >

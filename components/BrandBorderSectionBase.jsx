@@ -9,8 +9,7 @@
  *   - primary, accent, support, success
  *
  *
- * All color values are read from DESIGN.md-driven CSS variables.
- * Edit DESIGN.md and run `pnpm tokens:gen` to change theme colors.
+ * Colors from CSS variables in `src/index.css`.
  */
 const BORDER_SECTION_THEME_STYLES = {
   primary: {
@@ -53,7 +52,7 @@ const BORDER_SECTION_VARIANT_STYLES = {
 }
 
 const COLOR_ON_PRIMARY = 'var(--theme-color-on-primary)'
-const COLOR_NEUTRAL_STRONG = 'var(--color\\/neutral\\/1000)'
+const COLOR_NEUTRAL_STRONG = 'var(--theme-color-text-primary)'
 const COLOR_TEXT_PRIMARY = 'var(--theme-color-text-primary)'
 const FONT_TITLE = 'var(--font\\/family\\/title)'
 
@@ -62,8 +61,8 @@ export default function BrandBorderSectionBase({
   variant = "solid",
   title = "xxx",
   number = "1",
-  widthClass = "w-[415px]",
-  heightClass = "h-[195px]",
+  widthClass,
+  heightClass,
   rootName = "brand-border-section",
   nodeIds = {},
   children = null,
@@ -72,12 +71,12 @@ export default function BrandBorderSectionBase({
   const themeStyles = BORDER_SECTION_THEME_STYLES[theme] || BORDER_SECTION_THEME_STYLES.primary
   const variantStyles = BORDER_SECTION_VARIANT_STYLES[variant] || BORDER_SECTION_VARIANT_STYLES.solid
 
+  const sizeClasses = [widthClass, heightClass].filter(Boolean).join(" ")
+  const defaultOuterClass = `content-stretch flex flex-col gap-[10px] items-start relative rounded-glass overflow-hidden min-h-0 min-w-0 ${sizeClasses || "h-full w-full"}`
+
   return (
     <div
-      className={
-        className ||
-        `content-stretch flex flex-col gap-[10px] ${heightClass} items-start relative rounded-glass ${widthClass} overflow-hidden`
-      }
+      className={className || defaultOuterClass}
       style={
         className
           ? undefined

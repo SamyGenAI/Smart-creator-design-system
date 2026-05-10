@@ -4,7 +4,7 @@ import { resolve } from 'path'
 const ROOT = process.cwd()
 const TEMPLATES_DIR = resolve(ROOT, 'templates')
 
-const REQUIRED_TEMPLATE_DIRS = ['infographics', 'carousels', 'pptx-slides']
+const REQUIRED_TEMPLATE_DIRS = ['carousels', 'pptx-slides']
 const ALLOWED_ROOT_ENTRIES = new Set([...REQUIRED_TEMPLATE_DIRS, 'template-manifest.json'])
 
 function fail(message) {

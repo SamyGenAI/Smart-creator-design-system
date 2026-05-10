@@ -1,6 +1,6 @@
 ---
 name: design-philosophy
-description: Loads repo-root design-philosophy.md — a visual-philosophy manifesto for the brand aesthetic movement — plus operative contrast/elevation/token rules for generators. Invoked via @skills/design-philosophy during infographic/carousel/slide work after brand-setup. Not a layout spec; pairing with DESIGN.md + references/components.md is required.
+description: Loads repo-root design-philosophy.md — a visual-philosophy manifesto for the brand aesthetic movement — plus operative contrast/elevation/token rules for generators. Invoked via @skills/design-philosophy during infographic/carousel/slide work after brand-setup. Not a layout spec; pairing with DESIGN.md and skills/infographics-designer/SKILL.md is required.
 ---
 
 # Design philosophy (visual aesthetic movement)
@@ -71,7 +71,7 @@ Final paragraph maps the movement onto **semantic roles**: dominant `color.bg.br
 ## Consumers — before layout
 
 1. **Read** repo-root [`design-philosophy.md`](../../design-philosophy.md) **in full** when it exists. If missing, rely on [`DESIGN.md`](../../DESIGN.md) (Overview + **Color Contrast & Composition Laws**) and note the gap.
-2. **Read** [`references/space-budgets.md`](../../references/space-budgets.md) before grid math or copy density.
+2. **Read** [`skills/infographics-designer/SKILL.md`](../infographics-designer/SKILL.md) for infographic canvas and layout conventions when doing infographic work.
 3. Obey [**CLAUDE.md**](../../CLAUDE.md) globally.
 
 ### Operative laws (always)

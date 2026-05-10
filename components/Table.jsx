@@ -8,9 +8,9 @@
  *   rows        string[3][3] — 3 data rows × 3 columns
  *   className   string       — overrides dimensions/positioning
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
-const COLOR_STROKE = "var(--color\\/neutral\\/1000)"
+const COLOR_STROKE = "var(--theme-color-text-primary)"
 const COLOR_TEXT_PRIMARY = "var(--theme-color-text-primary)"
 const ACCENT_3 = "var(--theme-accent-3)"
 const SURFACE_LAYER_3 = "var(--theme-surface-layer-3)"
@@ -53,7 +53,7 @@ export default function Table({
 
   return (
     <div
-      className={className || "h-[133px] relative w-[390px]"}
+      className={className || "relative min-h-0 h-full w-full min-w-0"}
       data-name="Table"
       data-node-id="47:1203"
     >

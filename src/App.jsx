@@ -2,10 +2,12 @@ import { useState } from 'react'
 import McKinseyCarousel from '../design/carousels/McKinseyCarousel.jsx'
 import ScheduleTasksCarousel from '../design/carousels/ScheduleTasksCarousel.jsx'
 import OpenClawCarousel from '../design/carousels/OpenClawCarousel.jsx'
+import LeadSearchCarousel from '../design/carousels/LeadSearchCarousel.jsx'
+import LinkedInCarousel from '../design/carousels/LinkedInCarousel.jsx'
 import IgentivVSLSlides from '../design/pptx-slides/IgentivVSLSlides.jsx'
 import { SLIDE_DATA as igentivVSLData } from '../design/pptx-slides/IgentivVSLSlides.data.js'
-import ClaudeCoworkSetupChecklist from '../design/infographics/ClaudeCoworkSetupChecklist.jsx'
-import AIHypeCycleInfographic from '../design/infographics/AIHypeCycleInfographic.jsx'
+import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWinsInfographic.jsx'
+import NotionAIPipelineInfographic from '../design/infographics/NotionAIPipelineInfographic.jsx'
 
 // ── MODES registry ────────────────────────────────────────────────────────────
 // When the slide-agent generates a new deck it adds an entry here.
@@ -21,14 +23,14 @@ import AIHypeCycleInfographic from '../design/infographics/AIHypeCycleInfographi
 //   },
 
 const MODES = {
-  'ai-hype-cycle': {
-    label: 'AI Hype Cycle',
-    component: AIHypeCycleInfographic,
+  'notion-ai-pipeline': {
+    label: 'Notion AI Pipeline',
+    component: NotionAIPipelineInfographic,
     type: 'infographic',
   },
-  'claude-cowork-setup': {
-    label: 'Claude Cowork Setup',
-    component: ClaudeCoworkSetupChecklist,
+  'claude-design-wins': {
+    label: 'Claude Design — 5 Wins',
+    component: ClaudeDesignWinsInfographic,
     type: 'infographic',
   },
   igentivVSL: {
@@ -50,6 +52,16 @@ const MODES = {
   openclaw: {
     label: 'OpenClaw 24/7 Agent Carousel',
     component: OpenClawCarousel,
+    type: 'carousel',
+  },
+  leadSearch: {
+    label: 'Lead Search Carousel',
+    component: LeadSearchCarousel,
+    type: 'carousel',
+  },
+  linkedIn: {
+    label: 'LinkedIn Carousel',
+    component: LinkedInCarousel,
     type: 'carousel',
   },
 }
@@ -186,6 +198,8 @@ export default function App() {
 
   const entry = MODES[activeMode]
   const isSlides = entry?.type === 'slides'
+  /** Must be PascalCase for JSX — `<entry.component />` is parsed as a DOM element, not a component. */
+  const ActiveDesign = entry?.component
 
   function switchMode(key) {
     setActiveMode(key)
@@ -246,11 +260,11 @@ export default function App() {
           slideIndex={slideIndex}
           setSlideIndex={setSlideIndex}
         />
-      ) : (
+      ) : ActiveDesign ? (
         <div style={{ padding: '40px', overflowX: 'auto' }}>
-          <entry.component />
+          <ActiveDesign />
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

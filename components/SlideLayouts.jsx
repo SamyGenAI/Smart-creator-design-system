@@ -15,8 +15,7 @@
 import SlideCard from './SlideCard.jsx'
 import SquareGridTexture from './SquareGridTexture.jsx'
 
-// ── Constants — all values sourced from DESIGN.md CSS variables ──────────────
-// Edit DESIGN.md and run `pnpm tokens:gen` to change these.
+// ── Constants — values align with DESIGN.md / `src/index.css` tokens ─────────
 
 const CANVAS_W = 1280
 const CANVAS_H = 720

@@ -4,7 +4,7 @@ A Claude-Code-driven workflow that generates **on-brand graphic designs** — in
 
 **Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. For slide decks (16:9 YouTube/keynote format), the export path is `.pptx` via `pnpm export-slides`.
 
-Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and a team of Claude subagents write the copy, lay out the design using fixed tokens/components, QC the result, and hand you the final artifact.
+Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and Claude lays out the design using tokens and `components/`, then you preview in the browser and optionally push to Figma or export slides.
 
 ![Smart Creator Design System demo](public/smart-creator-design-system-GIF.gif)
 
@@ -29,13 +29,9 @@ All three formats share the same token set (colors, fonts, shadows) and componen
 ```
 User topic
    ↓
-copy-agent       → writes content, counts characters, assigns hierarchy
-   ↓
-(you approve the brief)
-   ↓
-design-agent     → picks components, calculates layout, writes JSX
-   ↓
-qc-agent         → verifies overflow, char limits, colors, structure
+Infographics: design-agent (`skills/infographics-designer/SKILL.md`) → JSX in design/infographics/
+Carousels:    carousel-copy-agent → design → QC
+Slides:       slide-agent
    ↓
 pnpm dev         → preview in browser
    ↓
@@ -43,7 +39,7 @@ pnpm dev         → preview in browser
    └── slide deck              →  pnpm export-slides  →  .pptx file
 ```
 
-The rules, tokens, component APIs, and character budgets live in `CLAUDE.md` + `references/`, so Claude never invents styles — it only chooses from the existing design system.
+The rules, tokens, and layout guidance live in **`skills/infographics-designer/SKILL.md`** (infographics), **`CLAUDE.md`**, and **`DESIGN.md`**.
 
 ---
 
@@ -92,7 +88,7 @@ This repo supports both entry points for onboarding and generation:
 | **Claude Code (in VS Code or terminal)** | Run `/setup` in a new conversation |
 | **Cursor Agent** | Reference `@setup` in chat |
 
-Both paths run the same `brand-setup` skill workflow and produce the same artifacts (`public/brand-data.json`, `tmp/brand-answers.json`, updated `DESIGN.md`, regenerated `src/index.css`).
+Both paths run the same `brand-setup` skill workflow and produce the same artifacts (`public/brand-data.json`, `tmp/brand-answers.json`, updated `DESIGN.md`, and `src/index.css` kept in sync with the palette).
 
 ### 4. Claude Code MCP servers
 
@@ -125,7 +121,7 @@ Inside Claude Code, just describe what you want:
 - **Carousel:** `/carousel` then describe the topic
 - **Slide deck:** `/slides` then describe the deck
 
-Claude will run the copy → design → QC pipeline, drop a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`), and register it in `src/App.jsx`. Refresh the browser to see it.
+Claude will add a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`) and register it in `src/App.jsx`. Infographics follow **`skills/infographics-designer/SKILL.md`** + **`design-agent`** in one pass; carousels/slides may use their template agents. Refresh the browser to see it.
 
 ---
 
@@ -150,8 +146,8 @@ The agent will first ask whether you have an existing website or visual identity
 6. Claude analyzes all images and writes `design-philosophy.md` + updates `skills/design-philosophy/SKILL.md`
 7. Claude writes `tmp/brand-answers.json` and applies it:
    - `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
-   - `pnpm tokens:gen`
    - `node scripts/validate-design.mjs`
+   - Sync updated colors into `src/index.css` when the palette changed
 
 ### Track B — you have no website or settled visual identity yet
 
@@ -161,7 +157,7 @@ The agent will first ask whether you have an existing website or visual identity
 4. Drop designs you admire in `public/assets/design-inspiration/` (optional but recommended)
 5. Claude writes `design-philosophy.md`, `tmp/brand-answers.json`, and applies the brand — same final commands as Track A
 
-**Both tracks produce the same artifacts:** updated `DESIGN.md`, regenerated `src/index.css`, and a `design-philosophy.md` that guides every subsequent generation.
+**Both tracks produce the same artifacts:** updated `DESIGN.md`, aligned `src/index.css` (manual sync for CSS variables), and a `design-philosophy.md` that guides every subsequent generation.
 
 ### Export a deck to `.pptx`
 
@@ -185,11 +181,10 @@ This is the important part: **the whole system is driven by a few files.** Swap 
 
 `DESIGN.md` front matter is the source of truth for colors, typography, spacing, radii, and component aliases.
 
-Run these commands after updates:
+Run after `DESIGN.md` updates:
 
 ```bash
 pnpm design:validate
-pnpm tokens:gen
 ```
 
 For first-time onboarding, use the setup skill in chat (`skills/brand-setup/SKILL.md`) and apply answers with:
@@ -198,33 +193,26 @@ For first-time onboarding, use the setup skill in chat (`skills/brand-setup/SKIL
 pnpm brand:apply -- --input tmp/brand-answers.json
 ```
 
-### B. Generated token artifact
+### B. Runtime tokens → `src/index.css`
 
-- `src/index.css` (generated)
-
-Never edit it directly; regenerate from `DESIGN.md`.
+- `src/index.css` — **source of truth** for CSS variables consumed by `components/` and infographic JSX. Edit directly; keep roughly in sync with `DESIGN.md` when you change the brand palette.
 
 ### C. Components → `components/`
 
-The building blocks Claude composes from: `InfographicHeader`, `PastelShadowBorderCard`, `NumberBullet`, `Checklist`, `IconBullet`, `Table`, `PrimaryGlassSection`, `SlideCard`, etc. Each is ~50–100 lines of JSX with fixed sizing.
+The building blocks Claude composes from: `InfographicHeader`, `PastelShadowBorderCard`, `NumberBullet`, `Checklist`, `IconBullet`, `Table`, `PrimaryGlassSection`, `SlideCard`, etc.
 
-If you want new layouts, add a component here and document its API in `references/components.md` (that's the spec the design-agent reads).
+If you want new layouts, add a component here and describe usage inline or in **`skills/infographics-designer/SKILL.md`** when it is a recurring pattern.
 
 ### D. Templates (source) → `templates/`
 
 Templates are grouped by output type:
 
-- `templates/infographics/`
 - `templates/carousels/`
 - `templates/pptx-slides/`
 
-`templates/` is **source-only**. Generation must start from these files.
+Carousel and slide **`pnpm generate:design`** flows still originate from templates. Infographics **do not** — add files under [`design/infographics/`](design/infographics/).
 
-### E. Character budgets → `references/space-budgets.md`
-
-How many characters fit in each cell at each font size. If you change component sizes, update this file so the copy-agent counts correctly.
-
-### F. Assets → `assets/`
+### E. Assets → `assets/`
 
 ```
 assets/
@@ -238,7 +226,7 @@ assets/
 
 During `@setup`, add your portrait as `assets/avatar/avatar-profile.png` (square-friendly headshot) so infographics, carousels, and slide exports resolve the avatar.
 
-### E. Output folder (generated) → `design/`
+### F. Output folder (generated) → `design/`
 
 `design/` is **output-only**:
 
@@ -246,19 +234,19 @@ During `@setup`, add your portrait as `assets/avatar/avatar-profile.png` (square
 - `design/carousels/`
 - `design/pptx-slides/`
 
-Use the standard generator to create new outputs from templates:
+**Carousels and slides:**
 
 ```bash
-pnpm generate:design -- --type infographics --template infographic --name MyTopic --data tmp/brief.json
+pnpm generate:design -- --type carousels --template linkedin --name MyTopic --data tmp/brief.json
 ```
 
-This writes files in `design/` and auto-registers the mode in `src/App.jsx`.
+**Infographics:** create `design/infographics/<Name>Infographic.jsx` with [`components/InfographicCanvas.jsx`](components/InfographicCanvas.jsx) and any components you need from [`components/`](components/); register in `src/App.jsx` (see [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md)).
 
-### F. Agent rules → `CLAUDE.md` + `.claude/agents/*.md`
+### G. Agent rules → `CLAUDE.md` + `.claude/agents/*.md`
 
 `CLAUDE.md` is the master prompt every subagent respects. If your brand has specific voice rules ("always use active voice", "never use emojis", "always end with a CTA"), add them here.
 
-The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, etc.) define each step's job.
+Agent files under `.claude/agents/` define specialized flows (`design-agent` for infographics, carousel/slide agents for those formats).
 
 ---
 
@@ -267,16 +255,15 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 ```
 .
 ├── CLAUDE.md                 ← master rules for Claude Code
-├── .claude/agents/           ← subagent definitions (copy/design/qc/slide/carousel)
-├── skills/                   ← /infographic, /carousel, /slides skills
-├── references/               ← components.md · space-budgets.md
+├── .claude/agents/           ← subagent definitions (design / slide / carousel)
+├── skills/                   ← includes `infographics-designer/SKILL.md` (read first for 1080×1350)
+├── references/               ← optional notes (not required for infographics)
 ├── DESIGN.md                 ← all design tokens (front matter)
 ├── tailwind.config.js        ← consumes tokens from DESIGN.md
 ├── components/               ← reusable JSX components
-├── templates/                ← source templates only
-│   ├── infographics/
+├── templates/                ← source templates (carousels + pptx-slides)
 │   ├── carousels/
-│   └── pptx-slides/
+│   ├── pptx-slides/
 │   └── template-manifest.json
 ├── design/                   ← generated work, grouped by type
 │   ├── infographics/         ←   1080×1350 single-canvas pieces
@@ -317,11 +304,11 @@ The individual agent files (`copy-agent.md`, `design-agent.md`, `qc-agent.md`, e
 | `pnpm dev` | Start Vite preview server |
 | `pnpm build` | Production build |
 | `pnpm design:validate` | Validate `DESIGN.md` schema and token references |
-| `pnpm tokens:gen` | Regenerate `src/index.css` from `DESIGN.md` |
 | `pnpm templates:check` | Enforce template folder boundaries |
-| `pnpm preflight` | Run design validation, token generation, and template checks |
+| `pnpm infographic:validate` | All infographics import `InfographicCanvas` |
+| `pnpm infographic:lint` | Flag `#hex` / `rgb()` / arbitrary `#[...]` in `design/infographics/` (optional check) |
 | `pnpm brand:apply -- --input tmp/brand-answers.json` | Merge setup answers into `DESIGN.md` |
-| `pnpm generate:design -- --type ... --template ... --name ... --data ...` | Generate `design/*` output from `templates/*` and register it in `src/App.jsx` |
+| `pnpm generate:design ...` | Carousel/slide scaffold from `templates/*` + registry update (infographics excluded) |
 | `pnpm export-slides [Name]` | Export a slide deck to `design/pptx-slides/output/[Name]Slides.pptx` |
 | `pnpm screenshot <mode-key>` | Take a QC screenshot of a generated piece |
 | `node scripts/fetch-logo.mjs domain.com` | Download wordmark SVG from Brandfetch |

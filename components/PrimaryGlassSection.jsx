@@ -7,9 +7,9 @@
  *   iconSrc     string   — URL/path for the 35×35 freehand icon in header
  *   iconAlt     string   — alt text for the icon
  *   children    node     — content rendered inside the card body
- *   className   string   — overrides width/height/positioning (required for layout)
+ *   className   string   — outer layout (width/height/positioning); defaults to full-size flex stretch when omitted
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 const COLOR_ON_PRIMARY = "var(--theme-color-on-primary)"
 const COLOR_PRIMARY = "var(--theme-color-primary)"
@@ -17,12 +17,10 @@ const SURFACE_GLASS = "var(--theme-surface-glass-soft)"
 const SHADOW_CARD = "var(--theme-shadow-card)"
 const FONT_TITLE = "var(--font\\/family\\/title)"
 const BASE_CLASS = "border-3 border-solid content-stretch flex flex-col gap-[10px] items-start relative rounded-glass"
-const DEFAULT_SIZE_CLASS = "h-[225px] w-[308px]"
-
 export default function PrimaryGlassSection({ title = "xxx", iconSrc = null, iconAlt = "", children, className, titleSize = "32px" }) {
   return (
     <div
-      className={`${BASE_CLASS} ${className || DEFAULT_SIZE_CLASS}`}
+      className={`${BASE_CLASS} ${className ?? "min-h-0 h-full w-full min-w-0"}`}
       style={{ borderColor: COLOR_ON_PRIMARY, backgroundColor: SURFACE_GLASS, boxShadow: SHADOW_CARD }}
       data-name="primary-glass-section"
       data-node-id="22:324"

@@ -1,98 +1,109 @@
 ---
 name: infographics-designer
-description: Design and generate LinkedIn infographics (1080x1350px) using the Smart Creator Design System. Use when the user asks to create, design, or build a LinkedIn infographic, visual post, or graphic. Triggers on requests like "make an infographic about...", "create a LinkedIn post about...", "design a visual on...", "build an infographic for...", or any visual content creation for LinkedIn.
+description: LinkedIn infographics (1080×1350). Canvas, components, tokens, layout, render — content-driven, single-pass.
 ---
 
-# Infographics Designer — Copy-First Workflow
+# Smart Creator Infographic Skill
 
-This skill uses **three specialized agents** in sequence. Content drives layout — never the other way around.
+Produce 1080×1350 LinkedIn infographics in React, rendered to PNG via Playwright. Optional Figma push.
 
+## Canvas
+
+- Size: **1080 × 1350px**, fixed
+- Inner column: 981px centered
+- Background: canvas token (`InfographicCanvas` uses `bg-bg-canvas`) + `SquareGridTexture` at **5%**
+- Footer: 60px fixed
+- Header: flexible — allow 2-line title wrap, use `clamp()` for font sizing
+- Row gap: 22px between sibling rows
+- Card gap within a row: 17px standard, adjust to taste
+
+## Components
+
+In `components/` (repo root). Compose what fits; write raw CSS or new JSX for one-off layouts.
+
+- `InfographicCanvas` — root wrapper with grid texture
+- `InfographicHeader` / `InfographicFooter` — title block + 60px footer bar
+- `BrandBorderSectionBase` — bordered section card with numbered header pill
+- `PrimaryGlassSection` — frosted glass panel with brand header bar
+- `IconBullet` — icon + text rows (up to 4)
+- `NumberBullet` — numbered rows with indicator badges
+- `Checklist` — checkmark rows
+- `TextBox` — small accent pill / label
+- `Table`, `ColoredTextBoxes`, `PastelShadowBorderCard`, `Grid8CompanyLogos` — structured content blocks
+- `components/archetypes/*` — optional section patterns (callout, comparison, steps, etc.)
+
+You may write new section layouts as plain JSX with Tailwind classes. There is no rule against it.
+
+## Tokens & brand (no literals in JSX)
+
+The system is **brand-agnostic**. Chroma and typefaces are owned only by **`DESIGN.md`** (YAML front matter) and the artifacts derived from it:
+
+| Layer | Role |
+|--------|------|
+| **`DESIGN.md`** | Single source for **#hex** in the repo: `colors.*`, `typography.*`, `shadows.*`, `rounded.*`, etc. Consumed by `tailwind.config.js` (Tailwind theme) and must stay consistent with runtime CSS variables. |
+| **`src/index.css`** | `:root` **CSS variables** (`--theme-*`, `--color/*`, `--font/*`, …) used by `components/` and infographic JSX. After brand onboarding, **sync** variables when the palette changes (see [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) — `apply-brand-answers`, validation, Done checklist). |
+| **`design/infographics/*.jsx`** | **Must not** contain `#hex`, `rgb()`, `hsl()`, named colors, or hardcoded `fontFamily: 'Some Font'`. Use Tailwind token classes (`bg-bg-canvas`, `text-text-primary`, …) and/or `var(--theme-…)`, `var(--color/…)`, `var(--font/family/title)` (escape slashes in Tailwind arbitrary values per `CLAUDE.md`). |
+
+**Rebranding / new brand:** Use **`skills/brand-setup/SKILL.md`** (`/setup`, `@setup`): Track A (site + Firecrawl) or Track B (Theme Factory) → `tmp/brand-answers.json` → `node scripts/apply-brand-answers.mjs` → align **`src/index.css`** with the updated semantic roles → `pnpm design:validate`. Do not embed one-off brand colors in infographic files.
+
+## Icons and illustrations
+
+- Reusable icons: `assets/icons/*.svg` — prefer **`currentColor`** so `fill`/`stroke` inherit from CSS color.
+- Reusable illustrations: `assets/illustrations/*.svg` — tokenize fills/strokes with `var(--theme-…)` / `var(--color/…)` where possible.
+- **Inline SVG** in infographic JSX: every `fill`, `stroke`, and `color` must use **tokens** (`var(--theme-…)`, etc.) — same rule as the rest of the canvas. No literal chroma.
+
+## Image-to-infographic workflow
+
+When given a reference image and a new topic:
+
+1. Identify the reference's structure: section count, columns, header treatment, footer
+2. Identify each section's inner pattern (numbered list, table, icon grid, callout, etc.)
+3. Map each pattern to an existing component, or write a new CSS class
+4. Swap the reference's color treatment for **semantic** tokens (Tailwind classes from `DESIGN.md` theme and/or `var(--…)` from `src/index.css`) — never copy hex from the reference into JSX
+5. Write the JSX in one pass
+6. Render: `pnpm dev`, inspect, adjust if needed
+
+## Title and typography
+
+- Faces and sizes come from **`DESIGN.md`** `typography.*` (Tailwind `fontSize` / `fontFamily` keys from `tailwind.config.js`, and/or `var(--font\\/family\\/title)`, `var(--font\\/family\\/body)` from `src/index.css`). Do not hardcode font family names in infographic JSX.
+- Title: allow up to 2 lines. Use `text-balance` and `clamp()` for font size. No character limit.
+- Subtitle: optional, smaller, italic.
+- Body: short lines, line-height 1.35–1.45.
+
+## Layout
+
+- Use CSS Grid for multi-card rows: `grid-template-columns: 1fr 1fr`
+- Use `grid-auto-rows: 1fr` so cards equalize automatically
+- Cards stretch to row height — don't set heights manually
+- Empty space inside a card is a signal to recompose, not to pad
+
+## Render
+
+```bash
+pnpm dev
+# Then render to PNG via Playwright:
+python render.py [InfographicName]
 ```
-User topic → Copy Agent → Design Agent → QC Agent → Done
+
+Output: 1080×1350 PNG at 2x device pixel ratio.
+
+## Figma push (optional)
+
+```bash
+python push_to_figma.py [InfographicName]
 ```
 
----
+Pushes the design to Figma via MCP. Run on demand, not on every change.
 
-## Step 1 — Copy Agent
+## What this skill does NOT enforce
 
-Delegate to the `copy-agent` subagent with the user's topic.
+- No character caps per component
+- No pixel math for row heights
+- No fill ratio checks before render
+- No "every section must use a different visual treatment"
+- No pre-flight planning headers
+- No multi-agent handoff
 
-**Input:** The user's topic/prompt (e.g. "5 levels of AI autonomy in business")
+## Agent
 
-**Output:** A structured JSON content brief with:
-- `title`, `highlightWord`, `subtitle`
-- `sections[]` — each with `id`, `heading`, `type`, `number`, `body`
-- `charReport` — character counts vs. limits for every text field
-
-**What it does:**
-- Writes publication-ready copy (concise, punchy, LinkedIn-style)
-- Counts characters against hard limits
-- Assigns section types (`intro`, `numbered`, `cta`, `visual`, etc.)
-- Ensures 6–10 sections max (bento grid capacity)
-
-**Present the copy brief to the user and wait for approval before proceeding.**
-
----
-
-## Step 2 — Design Agent
-
-Delegate to the `design-agent` subagent with the approved content brief.
-
-**Input:** The approved JSON content brief from Step 1
-
-**Output:**
-- `design/infographics/[Name]Infographic.jsx` — complete bento grid template
-- Updated `src/App.jsx` — imports the new design with demo data
-
-**What it does:**
-- Maps section types to components (PrimaryGlassSection, BrandBorderSectionBase, etc.)
-- Calculates grid rows and `fr` weights based on content density
-- Alternates semantic accent variants (theme-defined sequence)
-- Writes the JSX using the mandatory bento grid pattern (flex-none header/footer, flex-1 grid)
-
----
-
-## Step 3 — QC Agent
-
-Delegate to the `qc-agent` subagent to verify the output.
-
-**Input:** The path to the design file created in Step 2
-
-**Output:** A QC report with PASS/FAIL for each check:
-1. Footer visibility (flex-none, always visible)
-2. Canvas dimensions (1080×1350px)
-3. Header (char limits, highlightWord match)
-4. Grid structure (fr units, flex-1)
-5. Section headings (char limits)
-6. Color alternation (no adjacent same-color)
-7. Content density (no dead space, no overflow)
-8. Component usage (design system components only)
-9. Imports and file structure
-
-**If QC fails:** Fix the issues identified in the report, then re-run QC. Repeat until all checks pass.
-
----
-
-## Visual Assets Available
-
-- **Illustrations** (`assets/illustrations/`) — Character SVGs for card bodies
-- **Design-system primitives** (`components/`) — Lists, cards, tables, chips, and section wrappers for all visual structures
-
----
-
-## After QC Passes
-
-1. Run `pnpm dev` and verify visually in the browser
-2. If the user wants to push to Figma, call `mcp__figma__generate_figma_design` (push-to-edit flow)
-
----
-
-## Core Design Laws (Skill-Specific)
-
-1. **Never use plain bullets or dashes.** Every list item needs a visual anchor.
-2. **Every card must feel full.** ≤15% empty space target.
-3. **Color signals meaning.** Use semantic accent tiers from theme tokens (e.g. primary/accent/support/success) based on section intent.
-4. **Section headers use action verbs.** "Create Files" not "Files".
-5. **Empty bodies stay empty.** No placeholder content or dashed borders.
-6. **All templates use the bento grid pattern.** Legacy inline-grid is deprecated.
-7. **Follow global operational rules from `CLAUDE.md`.** This includes Figma push behavior/account scope and image containment rules.
+Use **`.claude/agents/design-agent.md`** or **`.cursor/agents/design-agent.md`** for the one-pass infographic workflow (read this skill first, then implement `design/infographics/[Name]Infographic.jsx` + `src/App.jsx`).

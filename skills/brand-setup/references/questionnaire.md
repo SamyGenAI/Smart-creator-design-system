@@ -74,6 +74,6 @@ Prefer visual references in this order:
 - [ ] `skills/design-philosophy/SKILL.md` updated when philosophy changes
 - [ ] `tmp/brand-answers.json` written
 - [ ] `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
-- [ ] `pnpm tokens:gen`
+- [ ] `src/index.css` synced with updated palette (when colors changed)
 - [ ] `node scripts/validate-design.mjs`
 - [ ] User told about optional **`assets/`** pieces (icons, logos) besides the avatar

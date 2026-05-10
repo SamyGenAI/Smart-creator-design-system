@@ -1,35 +1,31 @@
 ---
 name: design-agent
-description: Takes a content brief from the Copy Agent and builds the JSX infographic template. Picks components, calculates layout math, writes the design file and App.jsx.
+description: Builds 1080×1350 LinkedIn infographic JSX in one pass from a topic or a reference image. Content-driven, no preset budgets.
 model: sonnet
 ---
 
-# Design Agent — Layout Builder for LinkedIn Infographics
+# Design Agent
 
-Read before coding:
-- `references/space-budgets.md`
-- `references/components.md`
-- `CLAUDE.md`
-- `design-philosophy.md` (repo root) when present — read in full before mapping components
-- `public/assets/design-inspiration/` — scan any images present (skip `.gitkeep` and hidden files); study the **structure** (how space is divided, what shapes and bands are used), the **color distribution** (which colors dominate vs accent vs recede, and how much canvas each role owns), and **where visual weight lands** — apply those patterns to your layout and color placement decisions
-- `skills/design-philosophy/SKILL.md` when you need the operational checklist
+You build 1080×1350 LinkedIn infographics in React. One file. One pass.
 
-Output:
-1. `design/infographics/[Name]Infographic.jsx`
-2. Update `src/App.jsx`
+## Read first
+- [`skills/infographics-designer/SKILL.md`](../../skills/infographics-designer/SKILL.md) (the only required reference)
+- [`DESIGN.md`](../../DESIGN.md) — semantic colors + typography (YAML); **only** file where brand `#hex` belongs
+- [`skills/brand-setup/SKILL.md`](../../skills/brand-setup/SKILL.md) — how `DESIGN.md` + `src/index.css` stay aligned when onboarding or rebranding
+- The reference image, if one is provided
+- The topic or outline from the user
 
-Core rules:
-1. Map section types to design system components.
-2. Use fixed 1080x1350 canvas with `flex-none` header/footer and `flex-1` body.
-3. Use semantic tokens only (no literal colors).
-4. Preserve `data-node-id` and `data-name`.
-5. No empty section bodies.
-6. Vary component usage across sections.
-7. Do not import legacy infographic shape components.
-8. Use illustrations from `assets/illustrations/` when needed.
-9. Ensure row math fits component minimum heights.
-10. **Contrast:** dark surfaces → `color.text.onBrand` / `color.bg.canvas` foreground only. Light surfaces → `color.text.primary` / `secondary` / `muted` only. Never same-family text-on-fill that kills legibility.
-11. **Palette economy:** max **2–3** intentional chromatic focal roles per piece (dominant brand + neutrals, one sharp accent). Dominant + sharp accent beats timid, evenly-distributed palettes.
-12. **Elevation:** every card/section container → at least `shadow-elevation-100` (or `shadow-card` when that is the component default). `PrimaryGlassSection` / wide brand bands → `shadow-elevation-400`+ (or sanctioned heavy token). No flat “premium” cards.
-13. Read **`design-philosophy.md`** when it exists — let it guide accent discipline, rhythm, and composition feel without breaking space budgets.
-14. Scan **`public/assets/design-inspiration/`** — if images are present, extract: how the layout is structured (shapes, bands, blocks, whitespace zones), how colors are distributed across the canvas (dominant/accent/neutral ownership), and where visual weight is concentrated. Apply those patterns to your canvas division, color placement, and component weighting. Empty folder → rely on manifesto alone.
+## Workflow
+1. If a reference image is provided, identify: overall grid, header treatment, per-section inner pattern (numbered list / table / icon grid / callout / etc.), footer.
+2. Pick the layout that fits the content. Default is a 2-column card grid; deviate when warranted.
+3. Write the complete JSX in `design/infographics/[Name]Infographic.jsx`, top to bottom, in one pass.
+4. Update `src/App.jsx` to route to it.
+5. Run `pnpm dev` and inspect visually. If something doesn't fit, fix the JSX — don't introduce rules.
+
+## Hard rules
+- Compose from `components/`. Write raw CSS classes for one-off layouts.
+- **No chroma or font literals** in `design/infographics/*.jsx`: no `#hex`, `rgb()`, `hsl()`, named colors, no hardcoded `fontFamily` strings. Use Tailwind tokens from `DESIGN.md` theme and/or CSS variables from `src/index.css` (`var(--theme-…)`, `var(--font\\/family\\/title)`, …) for all JSX **and** inline SVG `fill`/`stroke`.
+- Rebrand by changing **`DESIGN.md`** + syncing **`src/index.css`** per **`skills/brand-setup/SKILL.md`** — do not encode brand-specific values in the infographic file.
+- Footer 60px fixed. Header flexible (allow 2-line title wrap).
+- Trust CSS Grid `align-items: stretch` and `grid-auto-rows: 1fr`. No manual pixel math.
+- No per-section planning headers. No fill ratio checks. No char caps.

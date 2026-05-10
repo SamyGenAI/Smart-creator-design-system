@@ -10,7 +10,7 @@
  *   shadow      string      — box-shadow override
  *   blur        boolean     — enable backdrop-filter blur (default true, glass variants only)
  *
- * Colors sourced from DESIGN.md CSS variables. Edit DESIGN.md + run `pnpm tokens:gen`.
+ * Colors from CSS variables in `src/index.css`.
  */
 
 const SLIDE_CARD_VARIANTS = {
