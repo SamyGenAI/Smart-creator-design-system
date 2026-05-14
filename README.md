@@ -134,6 +134,8 @@ After installing dependencies, start a **new** chat and run:
 
 The agent will collect your **first and last names** as they should appear on footers and slides, write them once in **`src/creatorIdentity.js`** (single source of truth), and have you supply **`assets/avatar/avatar-profile.png`**. Details: `skills/brand-setup/SKILL.md` (sections **Creator identity & avatar**, then Track A/B).
 
+After onboarding finishes, start a **new conversation** before asking for infographic/carousel/slide generation. This context reset is required for best results and avoids context overload.
+
 The agent will first ask whether you have an existing website or visual identity. Your answer determines which track it follows:
 
 ### Track A — you have a website or existing brand visuals
@@ -142,9 +144,8 @@ The agent will first ask whether you have an existing website or visual identity
 2. Claude runs `node scripts/fetch-brand-from-url.mjs <url>` → Firecrawl returns **branding** + **screenshot** → saves `public/brand-data.json` (colors, fonts, screenshot, design patterns, optional `brandingProfile`)
 3. Claude presents the extraction; you approve or correct hex values and font names
 4. Place brand screenshots in `public/assets/brand-screenshots/`
-5. Drop designs you admire in `public/assets/design-inspiration/` (used to write the visual philosophy)
-6. Claude analyzes all images and writes `design-philosophy.md` + updates `skills/design-philosophy/SKILL.md`
-7. Claude writes `tmp/brand-answers.json` and applies it:
+5. (Optional) Add brand screenshots to `public/assets/brand-screenshots/` for validation
+6. Claude writes `tmp/brand-answers.json` and applies it:
    - `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
    - `node scripts/validate-design.mjs`
    - Sync updated colors into `src/index.css` when the palette changed
@@ -154,10 +155,10 @@ The agent will first ask whether you have an existing website or visual identity
 1. Claude opens `skills/theme-factory/theme-showcase.pdf` — pick a preset by number or name (or describe your own)
 2. The chosen theme is mapped to semantic tokens; you approve colors and fonts
 3. Provide a brand name and one-line description verbally
-4. Drop designs you admire in `public/assets/design-inspiration/` (optional but recommended)
-5. Claude writes `design-philosophy.md`, `tmp/brand-answers.json`, and applies the brand — same final commands as Track A
+4. (Optional) Add screenshots to `public/assets/brand-screenshots/` for validation
+5. Claude writes `tmp/brand-answers.json` and applies the brand — same final commands as Track A
 
-**Both tracks produce the same artifacts:** updated `DESIGN.md`, aligned `src/index.css` (manual sync for CSS variables), and a `design-philosophy.md` that guides every subsequent generation.
+**Both tracks produce the same artifacts:** updated `DESIGN.md` and aligned `src/index.css` (manual sync for CSS variables).
 
 ### Export a deck to `.pptx`
 

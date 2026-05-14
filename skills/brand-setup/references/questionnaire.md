@@ -26,7 +26,6 @@ Prefer visual references in this order:
 
 1. `public/assets/brand-firecrawl/` (auto-saved from `fetch-brand-from-url.mjs`, **Track A**)
 2. `public/assets/brand-screenshots/` (user-provided)
-3. `public/assets/design-inspiration/` (designs the user *aspires to*, especially important on **Track B**)
 
 ## After URL scrape (`public/brand-data.json`)
 
@@ -36,7 +35,7 @@ Prefer visual references in this order:
    "We extracted data from: [url]. Is this the right site?"
 
 2. **Brand + canvas roles**  
-   From `colors` and vision: propose `colors.bg.brand` (primary brand surface) and `colors.bg.canvas` (page background). Ask: "Use these hex values, or paste corrections?"
+   From extracted `colors` and approved brand inputs: propose `colors.bg.brand` (primary brand surface) and `colors.bg.canvas` (page background). Ask: "Use these hex values, or paste corrections?"
 
 3. **Accent roles**  
    From extracted palette + screenshots: propose five accents for cards and section pills (`colors.bg.accent.1` … `colors.bg.accent.5`). Ask for approval or five `#hex` replacements.
@@ -45,12 +44,9 @@ Prefer visual references in this order:
    From `fonts` in JSON + screenshot typography: propose `fonts.primary` and `fonts.serif`. Ask for approval or exact family names (must match how they will appear in CSS / Google Fonts if loaded).
 
 5. **Radii and elevation (optional)**  
-   If vision shows strong patterns: suggest `rounded.glass-header`, `glass`, `card`, `pill`. Ask to confirm or skip (skip keeps existing `DESIGN.md` values).
+   If brand patterns are clear: suggest `rounded.glass-header`, `glass`, `card`, `pill`. Ask to confirm or skip (skip keeps existing `DESIGN.md` values).
 
-6. **Design inspiration (optional but recommended)**  
-   "Share screenshots of designs you love — drop them in `public/assets/design-inspiration/`. I'll use them to build a visual philosophy for your brand (`design-philosophy.md`) that guides every infographic, carousel, and slide."
-
-7. **Brand name and one-line description**  
+6. **Brand name and one-line description**  
    **Track A:** prefer `title` / `description` from `public/brand-data.json`; ask the user to correct if wrong.  
    **Track B:** typically **empty or irrelevant** JSON — ask verbally for brand / project display name + one sentence.
 
@@ -59,7 +55,7 @@ Prefer visual references in this order:
 - **Track B — no URL pipeline:** derive palette/fonts from **`skills/theme-factory/themes/*.md`** (or a net-new markdown theme you author for **Create your Own Theme**), then confirmations — do not block on `public/brand-data.json`.
 - Empty or tiny `colors`: check `attemptsUsed` in `public/brand-data.json`. If attempts are low or uncertain, re-run the fetch once; if still empty, ask for pasted brand hex values (primary, background, accents).
 - Empty `fonts`: ask for primary and serif names explicitly.
-- No `screenshotUrl`: run vision on local assets in `public/assets/brand-firecrawl/` and user-provided files under `public/assets/brand-screenshots/` and `public/assets/design-inspiration/`; rely more on user input when needed.
+- No `screenshotUrl`: run validation from local assets in `public/assets/brand-firecrawl/` and user-provided files under `public/assets/brand-screenshots/`; rely more on user input when needed.
 
 ## Before writing `tmp/brand-answers.json`
 
@@ -70,10 +66,10 @@ Prefer visual references in this order:
 
 - [ ] Creator **first + last name** captured and written to `src/creatorIdentity.js` (see **Creator identity & avatar** in `skills/brand-setup/SKILL.md`); repo search confirms no stale literal creator name remains in runtime assets
 - [ ] Avatar file present at **`assets/avatar/avatar-profile.png`** (or user warned and deferred explicitly)
-- [ ] `design-philosophy.md` at repo root (or explicit user opt-out noted)
-- [ ] `skills/design-philosophy/SKILL.md` updated when philosophy changes
 - [ ] `tmp/brand-answers.json` written
 - [ ] `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
 - [ ] `src/index.css` synced with updated palette (when colors changed)
 - [ ] `node scripts/validate-design.mjs`
 - [ ] User told about optional **`assets/`** pieces (icons, logos) besides the avatar
+- [ ] User explicitly asked to start a **new conversation** after onboarding completion (context reset before generation)
+- [ ] Suggest to the user to try the following commands : **/infographic** or **/carousel**
