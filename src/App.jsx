@@ -8,6 +8,7 @@ import IgentivVSLSlides from '../design/pptx-slides/IgentivVSLSlides.jsx'
 import { SLIDE_DATA as igentivVSLData } from '../design/pptx-slides/IgentivVSLSlides.data.js'
 import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWinsInfographic.jsx'
 import NotionAIPipelineInfographic from '../design/infographics/NotionAIPipelineInfographic.jsx'
+import AiOsInfographic from '../design/infographics/AiOsInfographic.jsx'
 
 // ── MODES registry ────────────────────────────────────────────────────────────
 // When the slide-agent generates a new deck it adds an entry here.
@@ -23,6 +24,11 @@ import NotionAIPipelineInfographic from '../design/infographics/NotionAIPipeline
 //   },
 
 const MODES = {
+  'ai-os': {
+    label: 'What is an AI OS?',
+    component: AiOsInfographic,
+    type: 'infographic',
+  },
   'notion-ai-pipeline': {
     label: 'Notion AI Pipeline',
     component: NotionAIPipelineInfographic,

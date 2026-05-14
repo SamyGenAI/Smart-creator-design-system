@@ -1,8 +1,10 @@
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+
 // design/pptx-slides/IgentivVSLSlides.data.js
 export const SLIDE_DATA = {
   meta: {
     title: 'Igentiv VSL',
-    authorName: 'Samy Chouaf',
+    authorName: CREATOR_DISPLAY_NAME,
   },
   slides: [
     // s1 — Cover (unchanged)
@@ -53,7 +55,7 @@ export const SLIDE_DATA = {
     {
       id: 's6',
       layout: 'end',
-      authorName: 'Samy Chouaf',
+      authorName: CREATOR_DISPLAY_NAME,
     },
   ],
 }

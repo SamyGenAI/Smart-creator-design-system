@@ -1,3 +1,5 @@
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+
 /**
  * LinkedInCarouselTemplate — source template for standard 1080x1350 carousels.
  *
@@ -15,7 +17,7 @@
 
 const CARD_SHADOW = '0px 4px 4px 0px rgba(0,0,0,0.25)'
 
-function Navbar({ authorName = 'Author Name' }) {
+function Navbar({ authorName = CREATOR_DISPLAY_NAME }) {
   return (
     <>
       <p style={{ position: 'absolute', left: 80, top: 26, margin: 0, fontSize: 28, fontWeight: 600, color: '#000' }}>
@@ -74,7 +76,7 @@ function Slide({ authorName, title, subtitle, body }) {
 }
 
 export default function LinkedInCarouselTemplate({ data = {} }) {
-  const authorName = data.authorName || 'Author Name'
+  const authorName = data.authorName || CREATOR_DISPLAY_NAME
   const slides = Array.isArray(data.slides) && data.slides.length > 0
     ? data.slides
     : [{ id: 'cover', title: 'Template title', subtitle: 'Template subtitle', body: 'Template body copy.' }]

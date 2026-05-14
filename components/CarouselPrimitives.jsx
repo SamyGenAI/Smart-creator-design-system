@@ -1,3 +1,5 @@
+import { CREATOR_DISPLAY_NAME } from '../src/creatorIdentity.js'
+
 const DEFAULT_FONT = "var(--font\\/family\\/title, 'Montserrat', sans-serif)"
 const DEFAULT_TEXT = 'var(--theme-color-text-primary)'
 const DEFAULT_BACKGROUND = 'var(--theme-surface-canvas)'
@@ -5,7 +7,7 @@ const DEFAULT_BACKGROUND = 'var(--theme-surface-canvas)'
 export function CarouselNavbarEdge({
   textColor = DEFAULT_TEXT,
   fontFamily = DEFAULT_FONT,
-  leftLabel = 'Your Full Name',
+  leftLabel = CREATOR_DISPLAY_NAME,
   rightLabel = 'Follow',
 }) {
   return (
@@ -34,7 +36,7 @@ export function CarouselNavbarEdge({
 export function CarouselNavbarCentered({
   textColor = DEFAULT_TEXT,
   fontFamily = DEFAULT_FONT,
-  leftLabel = 'Your Full Name',
+  leftLabel = CREATOR_DISPLAY_NAME,
   rightLabel = 'Follow',
 }) {
   return (

@@ -132,7 +132,7 @@ After installing dependencies, start a **new** chat and run:
 - **Claude Code:** `/setup`
 - **Cursor Agent:** `@setup`
 
-The agent will collect your **first and last names** as they should appear on footers and slides, swap the **`Your Full Name`** template placeholder repo-wide with that string, and have you supply **`assets/avatar/avatar-profile.png`**. Details: `skills/brand-setup/SKILL.md` (sections **Creator identity & avatar**, then Track A/B).
+The agent will collect your **first and last names** as they should appear on footers and slides, write them once in **`src/creatorIdentity.js`** (single source of truth), and have you supply **`assets/avatar/avatar-profile.png`**. Details: `skills/brand-setup/SKILL.md` (sections **Creator identity & avatar**, then Track A/B).
 
 The agent will first ask whether you have an existing website or visual identity. Your answer determines which track it follows:
 

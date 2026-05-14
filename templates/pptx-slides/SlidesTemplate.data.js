@@ -1,7 +1,9 @@
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+
 export const SLIDE_DATA_TEMPLATE = {
   meta: {
     title: 'Template Deck Title',
-    authorName: 'Your Name',
+    authorName: CREATOR_DISPLAY_NAME,
   },
   slides: [
     {
@@ -24,7 +26,7 @@ export const SLIDE_DATA_TEMPLATE = {
     {
       id: 's3',
       layout: 'end',
-      authorName: 'Your Name',
+      authorName: CREATOR_DISPLAY_NAME,
     },
   ],
 }

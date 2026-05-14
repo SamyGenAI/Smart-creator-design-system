@@ -1,10 +1,12 @@
+import { CREATOR_DISPLAY_NAME } from '../src/creatorIdentity.js'
+
 /**
  * InfographicFooter — primary brand pill bar at the bottom of every infographic.
  * Figma node: 54:894  (infographic-footer)
  *
  * Props:
  *   avatarSrc   string   — path to profile picture (e.g. "/assets/avatar/avatar-profile.png")
- *   name        string   — display name (default: "Your Full Name" until @setup replaces it)
+ *   name        string   — display name (default from src/creatorIdentity.js)
  *   className   string   — overrides dimensions/positioning
  */
 const COLOR_PRIMARY = "var(--theme-color-primary)"
@@ -14,7 +16,7 @@ const SHADOW_CARD = "var(--theme-shadow-card)"
 
 export default function InfographicFooter({
   avatarSrc = "/assets/avatar/avatar-profile.png",
-  name = "Your Full Name",
+  name = CREATOR_DISPLAY_NAME,
   className,
 }) {
   return (

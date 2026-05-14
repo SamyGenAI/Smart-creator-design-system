@@ -1,4 +1,5 @@
 import { CarouselNavbarCentered, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
 
 /**
  * LinkedIn Carousel — "How to use Claude Code as a non-technical"
@@ -409,7 +410,7 @@ function SlideCTA() {
       }}>
         <img
           src="/assets/avatar/avatar-profile.png"
-          alt="Samy Chouaf"
+          alt={CREATOR_DISPLAY_NAME}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
@@ -448,7 +449,7 @@ function SlideCTA() {
         color: TEXT_PRIMARY,
         margin: 0,
       }}>
-        Samy Chouaf
+        {CREATOR_DISPLAY_NAME}
       </p>
 
       {/* Illustration bottom */}

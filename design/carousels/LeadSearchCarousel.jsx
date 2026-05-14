@@ -1,4 +1,5 @@
 import { CarouselNavbarCentered, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
 
 /**
  * LinkedIn Carousel — "3 Claude Skills for Lead Search"
@@ -204,7 +205,7 @@ function SlideCover() {
       }}>
         <img
           src="/assets/avatar/avatar-profile.png"
-          alt="Samy Chouaf"
+          alt={CREATOR_DISPLAY_NAME}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
@@ -832,7 +833,7 @@ function SlideCTA() {
       }}>
         <img
           src="/assets/avatar/avatar-profile.png"
-          alt="Samy Chouaf"
+          alt={CREATOR_DISPLAY_NAME}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
@@ -863,7 +864,7 @@ function SlideCTA() {
         textAlign: 'center',
         color: BLACK, margin: 0,
       }}>
-        Samy Chouaf
+        {CREATOR_DISPLAY_NAME}
       </p>
 
       <img

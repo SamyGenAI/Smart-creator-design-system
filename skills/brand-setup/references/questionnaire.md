@@ -6,7 +6,7 @@
 
 1. **First name** — ask: *How should your first name appear on footers and bylines?*
 2. **Last name** — ask: *How should your family name appear?*
-3. **Full display string** — use `` `${first} ${last}`.trim() `` everywhere the workspace still shows **`Your Full Name`** — run the global replacement in the **Creator identity & avatar** section of `skills/brand-setup/SKILL.md`.
+3. **Full display string** — use `` `${first} ${last}`.trim() `` and set it through [`src/creatorIdentity.js`](../../../src/creatorIdentity.js) as described in `skills/brand-setup/SKILL.md`.
 4. **Avatar** — confirm a headshot at **`assets/avatar/avatar-profile.png`** (or note deferred upload).
 
 ---
@@ -68,7 +68,7 @@ Prefer visual references in this order:
 
 ## Done checklist
 
-- [ ] Creator **first + last name** captured; **`Your Full Name`** globally replaced with the joined display string (see **Creator identity & avatar** in `skills/brand-setup/SKILL.md`); repo search confirms no stray placeholder
+- [ ] Creator **first + last name** captured and written to `src/creatorIdentity.js` (see **Creator identity & avatar** in `skills/brand-setup/SKILL.md`); repo search confirms no stale literal creator name remains in runtime assets
 - [ ] Avatar file present at **`assets/avatar/avatar-profile.png`** (or user warned and deferred explicitly)
 - [ ] `design-philosophy.md` at repo root (or explicit user opt-out noted)
 - [ ] `skills/design-philosophy/SKILL.md` updated when philosophy changes

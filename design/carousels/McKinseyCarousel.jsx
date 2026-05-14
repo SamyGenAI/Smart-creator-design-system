@@ -1,4 +1,5 @@
 import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
 
 /**
  * LinkedIn Carousel — "How to make McKinsey level slides with AI"
@@ -509,7 +510,7 @@ function SlideCTA() {
       }}>
         <img
           src="/assets/avatar/avatar-profile.png"
-          alt="Samy Chouaf"
+          alt={CREATOR_DISPLAY_NAME}
           style={{ display: 'block', width: '100%', height: '100%' }}
         />
       </div>
@@ -533,7 +534,7 @@ function SlideCTA() {
         lineHeight: '70px', textAlign: 'center',
         color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap',
       }}>
-        Samy Chouaf
+        {CREATOR_DISPLAY_NAME}
       </p>
 
       {/* Illustration */}
