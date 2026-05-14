@@ -20,6 +20,5 @@ export const MODES = {
   mckinsey:            { label: 'McKinsey Carousel',         type: 'carousel',    exportName: 'mckinsey' },
   scheduleTasks:       { label: 'Schedule Tasks Carousel',   type: 'carousel',    exportName: 'scheduleTasks' },
   openclaw:            { label: 'OpenClaw 24/7 Agent Carousel', type: 'carousel', exportName: 'openclaw' },
-  leadSearch:          { label: 'Lead Search Carousel',      type: 'carousel',    exportName: 'leadSearch' },
-  linkedIn:            { label: 'LinkedIn Carousel',         type: 'carousel',    exportName: 'linkedIn' },
+  'ai-operating-system': { label: 'AI Operating System', type: 'carousel', exportName: 'ai-operating-system' },
 }

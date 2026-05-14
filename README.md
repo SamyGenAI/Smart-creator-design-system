@@ -69,6 +69,11 @@ cp .env.example .env
 BRANDFETCH_API_KEY=
 LOGO_DEV_API_KEY=
 FIRECRAWL_API_KEY=
+
+# Figma MCP — optional
+FIGMA_FILE_KEY=
+FIGMA_CAROUSEL_NODE_ID=
+FIGMA_INFOGRAPHIC_NODE_ID=
 ```
 
 | Key | What it does | Where to get it | Required? |
@@ -76,8 +81,11 @@ FIRECRAWL_API_KEY=
 | `BRANDFETCH_API_KEY` | Fetches company **wordmark SVGs** (e.g. "Notion" logotype) via `node scripts/fetch-logo.mjs notion.com` | [brandfetch.com/developers](https://brandfetch.com/developers) — free tier available | Optional — only if you use wordmarks in your designs |
 | `LOGO_DEV_API_KEY` | Fetches square **app-icon PNGs** (64×64) via `node scripts/fetch-app-logo.mjs notion.com` | [logo.dev](https://www.logo.dev/) — free tier available | Optional — only if you use app icons |
 | `FIRECRAWL_API_KEY` | Powers **`node scripts/fetch-brand-from-url.mjs`** during `/setup` (Track A): scrape **branding** + full-page **screenshot** for `public/brand-data.json` | [firecrawl.dev](https://www.firecrawl.dev/) — sign up and copy an API key from the dashboard | Required for **Track A** URL extraction; not used on Theme Factory-only onboarding |
+| `FIGMA_FILE_KEY` | Your Figma file key — the alphanumeric ID in `figma.com/design/<key>/...` | From your Figma file URL | Optional — only needed for Figma push via `/figma` |
+| `FIGMA_CAROUSEL_NODE_ID` | Target page/frame node ID for carousel push | Right-click page in Figma → Copy link → `node-id` param | Optional |
+| `FIGMA_INFOGRAPHIC_NODE_ID` | Target page/frame node ID for infographic push | Right-click page in Figma → Copy link → `node-id` param | Optional |
 
-> You can build infographics without the logo keys. For brand onboarding from a live website (`/setup` Track A), add **Firecrawl** so the fetch script can run.
+> You can build infographics without the logo keys. For brand onboarding from a live website (`/setup` Track A), add **Firecrawl** so the fetch script can run. Figma push is completely optional — you can always download designs as PNG/PDF or `.pptx` from the browser preview instead.
 
 ### 3. Agent compatibility (Cursor + Claude Code)
 
@@ -100,6 +108,12 @@ This project is designed to be driven from **Claude Code** with two MCP servers 
 | **Anthropic / Claude Code CLI** | Orchestrates the subagents in `.claude/agents/` | Required |
 
 Figma MCP setup: [https://help.figma.com/hc/en-us/articles/32132100833559](https://help.figma.com/hc/en-us/articles/32132100833559)
+
+Once connected, add `FIGMA_FILE_KEY`, `FIGMA_CAROUSEL_NODE_ID`, and `FIGMA_INFOGRAPHIC_NODE_ID` to your `.env` (see step 2). The `/setup` onboarding flow will walk you through this.
+
+**No Figma? No problem.** You can skip Figma entirely and download designs directly from the browser preview:
+- **Infographics / carousels** → PNG or PDF via the browser print dialog or a screenshot tool
+- **Slide decks** → `pnpm export-slides [DeckName]` → `.pptx` file
 
 No additional Anthropic API key is needed — Claude Code handles auth.
 
@@ -169,8 +183,10 @@ pnpm export-slides MyDeckName
 
 ### Push an infographic/carousel to Figma
 
-Once you're happy with the preview, ask Claude: `"push this to Figma"`. It will call `mcp__figma__generate_figma_design` and give you a URL to open that triggers the capture.
-Push destination follows the currently authenticated Figma MCP account, so each end user should authenticate MCP with their own Figma account before pushing.
+Once you're happy with the preview, run `/figma` (Claude Code) or `@figma` (Cursor), or just ask Claude: `"push this to Figma"`. Claude will read your `FIGMA_FILE_KEY` and node IDs from `.env`, call `mcp__figma__generate_figma_design`, and give you a URL to open that triggers the capture.
+Push destination follows the currently authenticated Figma MCP account — each user should authenticate MCP with their own Figma account before pushing.
+
+> **First time?** `/setup` includes an optional Figma MCP step that walks you through adding the `.env` keys. If you skipped it, run `/figma` anyway — it will detect missing config and guide you through setup.
 
 ---
 
@@ -291,7 +307,7 @@ Agent files under `.claude/agents/` define specialized flows (`design-agent` for
 - **Vite + React 18** (JSX)
 - **Tailwind CSS v3** (all tokens)
 - **pptxgenjs** for slide export
-- **Playwright** for QC screenshots
+- **Playwright** for Quality Check (QC) screenshots
 - **pnpm** package manager
 - **Claude Code** as the orchestrator (Opus/Sonnet subagents)
 - **Figma Dev Mode MCP** for push-to-edit

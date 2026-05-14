@@ -126,7 +126,6 @@ function SlideCover() {
       </div>
 
       {/* Accent pill behind "slides with AI" */}
-      <AccentPill left={490} top={495} width={530} height={130} radius={30} />
 
       {/* Main title */}
       <div style={{ position: 'absolute', left: 60, top: 230, width: 960 }}>
@@ -165,7 +164,6 @@ function SlideStory1() {
         Most slides confuse instead of convince.
       </p>
 
-      <AccentPill left={160} top={490} width={760} height={110} radius={30} />
 
       <img
         src="/assets/illustrations/notion-style/oc-thinking.svg"
@@ -193,7 +191,6 @@ function SlideStory2() {
         McKinsey consultants cracked the code decades ago.
       </p>
 
-      <AccentPill left={100} top={436} width={880} height={110} radius={30} />
 
       <p style={{
         position: 'absolute',

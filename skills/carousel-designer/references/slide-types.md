@@ -52,18 +52,17 @@ function Slide({ children, nodeId, name, navbar }) {
 
 ### Layout
 ```
-[Navbar]
-[Subtitle pill border box]    top: 44, left: 257, w: 565, h: 101
-[Bold title]                  top: 217, centered, fontSize: 128, fontWeight: 700
-[AccentPill behind title]     top: ~609, full width accent
-[Illustration]                top: 875, centered, ~515×369px
+[Navbar — omit on cover: withNavbar={false}]
+[Subtitle pill border box]    top: 110, centered, w: ~600, h: 76
+[Bold title]                  top: 240, centered, fontSize: 128, fontWeight: 700
+[Illustration]                top: 870, centered, ~500×400px
 ```
 
 ### Key elements
 - **Title:** 128px, title-font bold tier, centered, line-height 130px, max 2 lines
-- **Subtitle:** 64px, title-font medium tier, inside a bordered pill (3px solid semantic text color, borderRadius 30)
-- **AccentPill:** semantic accent token (`var(--theme-accent-1)`), height 130px, left 74, width 957, radius 30 — sits behind bottom of title text
+- **Subtitle:** 40px, title-font medium, inside a bordered pill (3px solid `TEXT_PRIMARY`, borderRadius 30) — no background fill
 - **Illustration:** one `oc-*.svg` from `assets/illustrations/notion-style/`, objectFit contain
+- **No AccentPill** — do not place any colored rectangle behind the title or anywhere on this slide
 
 ### Character limits
 | Field | Max chars | Notes |
@@ -80,16 +79,15 @@ function Slide({ children, nodeId, name, navbar }) {
 ### Layout
 ```
 [Navbar]
-[AccentPill]     behind key phrase, varies by text position
-[Main copy]      top: ~238–500, centered, fontSize: 72, fontWeight: 500
+[Main copy]      top: ~260–280, centered, fontSize: 72–96, fontWeight: 700
 [Optional illustration or decoration]
 ```
 
 ### Key elements
-- Large centered text (72px, 500 weight, lineHeight 100px)
+- Large centered text (72–96px, 700 weight, lineHeight 110px)
 - One strong sentence or two short sentences
 - Optional illustration bottom half if copy is short (≤2 lines)
-- `AccentPill` highlights the most important 2–4 words
+- **No AccentPill** — emphasis belongs in the text weight and color, not a background rectangle
 
 ### Character limits
 | Field | Max chars | Notes |
@@ -113,7 +111,7 @@ function Slide({ children, nodeId, name, navbar }) {
 
 ### Key elements
 - **Step label:** number (`1.`, `2.`, etc.) at 64px/500, minWidth 96px + text at 64px/500
-- **Screenshot placeholder:** `ScreenPlaceholder` component — user replaces with actual screenshot
+- **Screenshot placeholder:** `ScreenPlaceholder` component — **only add when the brief includes `"screenshot": true` or the user explicitly requests placeholders.** By default, omit it. When omitted, place BottomNote directly below the StepLabel (16px gap) and optionally center a relevant illustration in the remaining space.
 - **Bottom note (optional):** elevated surface rounded card (borderRadius 40, padding 28px 40px) with descriptive note at 32px
 
 ```jsx
@@ -144,8 +142,7 @@ function StepLabel({ number, text, top = 217 }) {
 ### Layout option A — Bonus list (icon + label + description rows)
 ```
 [Navbar]
-[AccentPill]         behind title area
-[Title]              top: ~215, fontSize: 64, centered
+[Title]              top: ~163–215, fontSize: 64, centered
 [Feature rows]       top: ~390, flex column, gap: 20, each row: icon + bold label + desc
 ```
 
@@ -196,29 +193,37 @@ Max 5 rows. Each row is ~144px tall.
 ```jsx
 function SlideCTA() {
   return (
-    <div style={{ position: 'relative', width: 1080, height: 1350,
-                  background: 'var(--theme-surface-canvas)', flexShrink: 0, overflow: 'hidden',
-                  fontFamily: "var(--font\\/family\\/title)" }}>
+    <div
+      data-node-id="carousel:cta"
+      data-name="Slide-CTA"
+      style={{ position: 'relative', width: 1080, height: 1350,
+               background: BACKGROUND_PRIMARY, flexShrink: 0, overflow: 'hidden',
+               fontFamily: FONT }}
+    >
       {/* Circular avatar */}
       <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)',
                     top: 260, width: 400, height: 400, borderRadius: '50%',
-                    overflow: 'hidden', boxShadow: 'var(--theme-shadow-card)' }}>
+                    overflow: 'hidden', boxShadow: CARD_SHADOW }}>
         <img src="/assets/avatar/avatar-profile.png"
-             style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+             alt={CREATOR_DISPLAY_NAME}
+             style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
-      <AccentPill left={494} top={814} width={302} height={90} radius={20} />
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)',
-                  top: 720, width: 700, fontSize: 96, fontWeight: 700,
-                  lineHeight: '110px', textAlign: 'center', margin: 0 }}>
+      <p style={{ position: 'absolute', left: 190, top: 730,
+                  width: 700, fontSize: 96, fontWeight: 700,
+                  lineHeight: '110px', textAlign: 'center',
+                  color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap' }}>
         Follow for more
       </p>
-      <p style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)',
-                  top: 980, fontSize: 48, fontWeight: 500, textAlign: 'center', margin: 0 }}>
-        {authorName}
+      <p style={{ position: 'absolute', left: 240, top: 841,
+                  width: 600, fontSize: 48, fontWeight: 500,
+                  lineHeight: '70px', textAlign: 'center',
+                  color: TEXT_PRIMARY, margin: 0, whiteSpace: 'nowrap' }}>
+        {CREATOR_DISPLAY_NAME}
       </p>
       <img src="/assets/illustrations/notion-style/oc-hi-five.svg"
-           style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)',
-                    top: 1090, width: 260, height: 220, objectFit: 'contain' }} />
+           alt=""
+           style={{ position: 'absolute', left: 365, top: 950,
+                    width: 350, height: 296, objectFit: 'contain' }} />
     </div>
   )
 }
@@ -248,17 +253,41 @@ function SlideCTA() {
 
 ---
 
-## 8. Reusable Sub-components
+## 8. Contrast & Overlap Rules
 
-### AccentPill
-```jsx
-function AccentPill({ left, top, width, height = 76, radius = 20 }) {
-  return <div style={{ position: 'absolute', left, top, width, height,
-                       background: 'var(--theme-accent-1)', borderRadius: radius }} />
-}
-```
+These are hard rules enforced by the QC agent. Violations are a FAIL.
 
-### ScreenPlaceholder
+### Contrast
+| Background | Required text color |
+|---|---|
+| `var(--theme-bg-brand)` (navy) | white / `var(--theme-color-on-primary)` |
+| `var(--theme-surface-canvas)` (cream) | `TEXT_PRIMARY` (black) |
+| `var(--theme-color-on-primary)` (white surface) | `TEXT_PRIMARY` (black) |
+| accent-1 … accent-5 (light pastels) | `TEXT_PRIMARY` (black) |
+
+Never write `color: 'white'` on a cream/white/pastel background. Never write `TEXT_PRIMARY` on a navy background.
+
+### No element overlap
+- Minimum **16px gap** between every pair of absolutely-positioned elements.
+- Trace each slide top-to-bottom before finalising `top` values.
+- Canonical step slide stack:
+  1. Navbar 0–83px
+  2. StepLabel `top: 130` (allow 2 lines × 70px = 140px height)
+  3. Tool chip `top: StepLabel_bottom + 16`
+  4. ScreenPlaceholder `top: chip_bottom + 16`, height 500px
+  5. BottomNote `top: placeholder_bottom + 16`, height ≈ 152px
+  6. Check: BottomNote bottom ≤ 1300px
+
+---
+
+## 9. Reusable Sub-components
+
+> **AccentPill is banned.** Never define or use a floating colored rectangle behind text as a highlight. It misaligns and looks broken. Use font weight, token color, or a text-wrapping chip for emphasis instead.
+
+### ScreenPlaceholder (opt-in only)
+
+> **Default: OFF.** Only use when `"screenshot": true` is in the brief or the user explicitly asks for placeholders.
+
 ```jsx
 function ScreenPlaceholder({ top, height = 544, left = 31, width = 1017 }) {
   return (

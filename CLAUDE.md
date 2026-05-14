@@ -3,7 +3,7 @@
 ## What we ship
 LinkedIn infographics (**1080×1350**) and slide decks (**1280×720**): React + tokens in `src/index.css` → optional Figma push (`mcp__figma__generate_figma_design`).
 
-**Figma file:** `GBovqF34FkjgtWPj3wUmO3`
+**Figma file:** read `FIGMA_FILE_KEY` from `.env` (see [`.claude/commands/figma.md`](.claude/commands/figma.md) for setup)
 
 ---
 

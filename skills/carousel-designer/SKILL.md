@@ -32,11 +32,17 @@ Minimum: 7 slides. Maximum: 20 slides.
 
 ---
 
+## Step 0 — Ask for the topic first
+
+**Always ask the user for their carousel topic before doing anything else.** Never choose or infer a topic. Never draft a brief without an explicit topic from the user. Wait for their answer, then proceed.
+
+---
+
 ## Step 1 — Carousel Copy Agent
 
 Delegate to the `carousel-copy-agent` subagent with the user's topic.
 
-**Input:** The user's topic (e.g. "5 AI tools every marketer should use")
+**Input:** The user's topic (provided explicitly by the user — never invented)
 
 **Output:** A structured JSON content brief:
 - `topic`, `authorName` (default "Your Full Name")
@@ -112,7 +118,7 @@ See `references/slide-types.md` for per-slide layout specs and character limits.
 4. **CTA slide is always last.** Circular avatar + "Follow for more" + name.
 5. **Illustrations anchor the cover and CTA.** Step slides use screenshots or minimal decoration.
 6. **AccentPill highlights the key phrase.** One per slide, behind the most important 2-5 words.
-7. **Screen placeholders are valid.** Use `ScreenPlaceholder` for step slides where a screenshot will go.
+7. **Screen placeholders are opt-in.** Only use `ScreenPlaceholder` when the brief includes `"screenshot": true` or the user explicitly asks. By default, step slides show StepLabel + BottomNote only.
 8. **NEVER use em dashes (—).** Replace with a comma instead. Em dashes are banned from all slide copy and code strings.
 9. **Navbar uses flexbox, not pixels.** The Navbar must be a full-width flex container (`justify-content: space-between`) with padding, so **`Your Full Name`** (creator label placeholder until `@setup`) and "Follow" always sit at the extremities and stay inside the slide.
 10. **Cover slide has no Navbar.** Only context, step, wrap-up slides get the navbar. CTA and Cover both skip it.

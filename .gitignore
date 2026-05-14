@@ -2,3 +2,5 @@ node_modules/
 dist/
 .env
 qc-screenshots/
+.claude/settings.local.json
+tmp/

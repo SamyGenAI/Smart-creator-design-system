@@ -154,7 +154,27 @@ When Track B applies:
 
     Report: which areas changed (brand name, description, colors, fonts, radii), whether validation succeeded, and that `src/index.css` was updated if palette roles changed.
 
-8. **Close onboarding**  
+8. **Figma MCP setup (optional)**  
+   Ask the user if they want to push designs directly to Figma:
+
+   > *Would you like to set up Figma push so you can send designs straight to your Figma file? This is optional — you can always download designs as PNG/PDF (infographics & carousels) or `.pptx` (slide decks) from the browser preview instead.*
+
+   **If yes:**
+   1. Install the **Figma Dev Mode MCP** server in Claude Code (see [Figma MCP setup guide](https://help.figma.com/hc/en-us/articles/32132100833559)).
+   2. Open the Figma file you want to push to. Copy the `FIGMA_FILE_KEY` from the URL:
+      `figma.com/design/<FIGMA_FILE_KEY>/your-file-name`
+   3. Navigate to the target pages (e.g. "Carousels", "Infographics"). Right-click each page/frame → **Copy link** → extract the `node-id` param.
+   4. Add to `.env`:
+      ```
+      FIGMA_FILE_KEY=<your-file-key>
+      FIGMA_CAROUSEL_NODE_ID=<carousels-page-node-id>
+      FIGMA_INFOGRAPHIC_NODE_ID=<infographics-page-node-id>
+      ```
+   5. To push a design later, run `/figma` (Claude Code) or `@figma` (Cursor).
+
+   **If no / later:** remind them they can always come back and add these to `.env`, and that `/figma` will walk them through it the first time they run it.
+
+9. **Close onboarding**  
     Ask the user to **start a new conversation** before any generation request.
 
 ## Guardrails
@@ -213,5 +233,6 @@ Before closing onboarding, confirm you **posed or explicitly confirmed** each it
 - [ ] User asked to start a **new conversation** before generation work (context reset)
 - [ ] User reminded about **`assets/avatar/avatar-profile.png`** if still missing
 - [ ] Optional **icons / logos** under `assets/` mentioned if relevant
+- [ ] **Figma MCP** — user opted in (`.env` keys set + MCP installed) **or** explicitly deferred (noted export alternatives: PNG/PDF for infographics & carousels, `.pptx` for slide decks)
 
 Then run the **Done checklist** in [references/questionnaire.md](references/questionnaire.md) for file and script completion (replace placeholder, JSON, `src/index.css` sync, validation).

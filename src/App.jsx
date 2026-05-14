@@ -3,8 +3,7 @@ import pptxgen from 'pptxgenjs'
 import McKinseyCarousel from '../design/carousels/McKinseyCarousel.jsx'
 import ScheduleTasksCarousel from '../design/carousels/ScheduleTasksCarousel.jsx'
 import OpenClawCarousel from '../design/carousels/OpenClawCarousel.jsx'
-import LeadSearchCarousel from '../design/carousels/LeadSearchCarousel.jsx'
-import LinkedInCarousel from '../design/carousels/LinkedInCarousel.jsx'
+import AIOperatingSystemCarousel from '../design/carousels/AIOperatingSystemCarousel.jsx'
 import IgentivVSLSlides from '../design/pptx-slides/IgentivVSLSlides.jsx'
 import { SLIDE_DATA as igentivVSLData } from '../design/pptx-slides/IgentivVSLSlides.data.js'
 import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWinsInfographic.jsx'
@@ -24,8 +23,7 @@ const COMPONENTS = {
   mckinsey: McKinseyCarousel,
   scheduleTasks: ScheduleTasksCarousel,
   openclaw: OpenClawCarousel,
-  leadSearch: LeadSearchCarousel,
-  linkedIn: LinkedInCarousel,
+  'ai-operating-system': AIOperatingSystemCarousel,
 }
 
 const SLIDE_COUNTS = {

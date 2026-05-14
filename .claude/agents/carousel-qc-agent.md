@@ -18,6 +18,7 @@ Read the file to QC, then read:
 1. Confirm the dev server is up (`pnpm dev` — usually port 5173).
 2. Run `pnpm screenshot <mode-key>` where `<mode-key>` is the MODES key for the carousel in `src/App.jsx`. The script captures every slide into `qc-screenshots/<mode-key>-1.png`, `qc-screenshots/<mode-key>-2.png`, … (git-ignored — separate from user-authored content in `public/screenshots/`).
 3. Read each PNG with the Read tool before scoring the visual checks below. Pay attention to: cover (slide 1), step slides (middle), CTA (last).
+4. **After all visual checks are complete, delete every screenshot** with `Remove-Item qc-screenshots\<mode-key>-*.png`. Never leave QC screenshots on disk.
 
 ## QC Checklist
 
@@ -44,11 +45,20 @@ Run every check and report PASS or FAIL with a one-line explanation.
 14. **Wrap-up title ≤ 45 chars**
 15. **Bonus item label ≤ 15 chars, desc ≤ 55 chars** (if list variant)
 
+### Contrast checks (check every slide in the JSX)
+16. **No light text on light background** — white or near-white text must only appear on dark backgrounds (`var(--theme-bg-brand)`, dark overlays). Never on canvas (`#fffceb`), surface (`#ffffff`), or accent backgrounds.
+17. **No dark text on dark background** — `TEXT_PRIMARY` / `TEXT_SECONDARY` must only appear on light backgrounds. Never on `var(--theme-bg-brand)` without switching to white.
+18. **Accent backgrounds use dark text** — all accent chips (`accent-1` through `accent-5`) are light-colored; text on them must be `TEXT_PRIMARY` (black), never white.
+
+### Layout / overlap checks (check the computed positions in the JSX)
+19. **No element overlap** — for each slide, verify that absolutely-positioned elements do not collide. For each pair of stacked elements, check that `top(B) >= top(A) + height(A) + min_gap(8px)`. Flag any chip, label, placeholder, or note that bleeds into another element.
+20. **Content within safe zone** — all content must sit between `top: 110` (below navbar) and `top: 1300`. No element should have `top + height > 1300`.
+
 ### Technical checks
-16. **All slides: width 1080, height 1350** (exact values in style props)
-17. **Root export: flex row with gap 88** (or equivalent)
-18. **No Tailwind classes** — only inline `style={{}}` props
-19. **No broken imports** — all referenced assets exist in `assets/` or use placeholder paths
+21. **All slides: width 1080, height 1350** (exact values in style props)
+22. **Root export: flex row with gap 88** (or equivalent)
+23. **No Tailwind classes** — only inline `style={{}}` props
+24. **No broken imports** — all referenced assets exist in `assets/` or use placeholder paths
 
 ## Output format
 

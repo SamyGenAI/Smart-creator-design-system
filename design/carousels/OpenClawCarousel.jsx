@@ -148,7 +148,6 @@ function SlideCover() {
       </div>
 
       {/* Accent pill behind "10 minutes" */}
-      <AccentPill left={125} top={745} width={830} height={130} radius={30} />
 
       {/* Main title */}
       <div style={{ position: 'absolute', left: 60, top: 260, width: 960 }}>
