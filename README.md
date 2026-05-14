@@ -1,6 +1,6 @@
 # Smart Creator Design System
 
-A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.pptx`**.
+A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.png`**, **`.pdf`**, or **`.pptx`**.
 
 **Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. For slide decks (16:9 YouTube/keynote format), the export path is `.pptx` via `pnpm export-slides`.
 
@@ -14,8 +14,8 @@ Instead of building in Figma from scratch every time, you describe what you want
 
 | Format | Canvas | Ships to |
 |---|---|---|
-| **Infographic** | 1080×1350px | **Figma** (via MCP push) |
-| **Carousel** | 1080×1350px × N slides | **Figma** (via MCP push) |
+| **Infographic** | 1080×1350px | **PNG** or **Figma** (via /figma command) |
+| **Carousel** | 1080×1350px × N slides | **PDF** or **Figma** (via /figma command) |
 | **Slide deck** | 1280×720px × N slides | **`.pptx`** (via `pnpm export-slides`) |
 
 All three formats share the same token set (colors, fonts, shadows) and component library, so everything stays on-brand by construction.
@@ -87,14 +87,15 @@ FIGMA_INFOGRAPHIC_NODE_ID=
 
 > You can build infographics without the logo keys. For brand onboarding from a live website (`/setup` Track A), add **Firecrawl** so the fetch script can run. Figma push is completely optional — you can always download designs as PNG/PDF or `.pptx` from the browser preview instead.
 
-### 3. Agent compatibility (Cursor + Claude Code)
+### 3. Agent compatibility (Claude Code, Cursor, Codex)
 
 This repo supports both entry points for onboarding and generation:
 
 | Tool | How to trigger setup |
 |---|---|
 | **Claude Code (in VS Code or terminal)** | Run `/setup` in a new conversation |
-| **Cursor Agent** | Reference `@setup` in chat |
+| **Cursor Agent** | Reference `/setup` in chat |
+| **Codex** | Mention `setup` in chat |
 
 Both paths run the same `brand-setup` skill workflow and produce the same artifacts (`public/brand-data.json`, `tmp/brand-answers.json`, updated `DESIGN.md`, and `src/index.css` kept in sync with the palette).
 
@@ -129,22 +130,20 @@ Open the URL Vite prints. You'll see a mode bar at the top — each generated in
 
 ## Generating your first piece
 
-Inside Claude Code, just describe what you want:
+Inside Claude Code, just type the following commands and answer the questions :
 
-- **Infographic:** `"Create an infographic comparing Claude Code and Cursor for engineering teams"`
-- **Carousel:** `/carousel` then describe the topic
-- **Slide deck:** `/slides` then describe the deck
+- **Infographic:** `/infographic`
+- **Carousel:** `/carousel`
+- **Slide deck:** `/slides`
 
-Claude will add a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`) and register it in `src/App.jsx`. Infographics follow **`skills/infographics-designer/SKILL.md`** + **`design-agent`** in one pass; carousels/slides may use their template agents. Refresh the browser to see it.
+Claude will add a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`) and register it in `src/App.jsx`.
 
 ---
 
 ## First-time brand onboarding (`/setup`)
 
-After installing dependencies, start a **new** chat and run:
+After installing dependencies, start a **new** chat and run: `/setup`
 
-- **Claude Code:** `/setup`
-- **Cursor Agent:** `@setup`
 
 The agent will collect your **first and last names** as they should appear on footers and slides, write them once in **`src/creatorIdentity.js`** (single source of truth), and have you supply **`assets/avatar/avatar-profile.png`**. Details: `skills/brand-setup/SKILL.md` (sections **Creator identity & avatar**, then Track A/B).
 
