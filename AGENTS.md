@@ -28,9 +28,21 @@ LinkedIn infographics (**1080×1350**) and slide decks (**1280×720**): React + 
 
 ---
 
+## Design brief (pre-flight — all formats)
+
+Before generating any design, run the **design-brief** workflow:
+
+1. Read `skills/design-brief/SKILL.md`
+2. Ask topic, audience, key takeaway, tone, source material + format-specific questions in one message
+3. Draft the structured brief and present for approval
+4. **Do not write any files until the brief is approved**
+5. Route to the correct agent: `design-agent` (infographics) · `carousel-copy-agent` (carousels) · `slide-agent` (slides)
+
+---
+
 ## Infographics workflow
 
-**`design-agent`** (see `.Codex/agents/design-agent.md`) writes JSX in [`design/infographics/*.jsx`](design/infographics/) and updates [`src/App.jsx`](src/App.jsx). Follow [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md).
+**`design-agent`** (see `AGENTS.md` agent list) writes JSX in [`design/infographics/*.jsx`](design/infographics/) and updates [`src/App.jsx`](src/App.jsx). Follow [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md).
 
 ---
 

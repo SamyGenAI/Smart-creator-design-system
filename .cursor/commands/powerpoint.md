@@ -1,12 +1,13 @@
 We're going to create a PowerPoint deck together.
 
-Start by asking me:
-1. **What's the topic?** (if not already provided in the command arguments)
-2. **Do you have any research, notes, or source material?** (article, bullet points, data, paste it or say "no")
+1. Read `DESIGN.md` and `src/index.css` to load the live brand tokens
+2. Read `skills/design-brief/SKILL.md`
+3. Draft a complete visual brief for the topic — slide titles, layout types per slide, narrative arc, token choices, illustrations — using the actual brand tokens. **Do not ask questions first.**
+4. Present the brief and wait for the user to say "approved" or request changes
+5. **Do not write any files until the brief is approved**
 
-Once you have both answers, run the slides workflow with the Cursor slide agent:
-- Use `.cursor/agents/slide-agent.md` to generate the deck files
+Once approved, delegate to the **`slide-agent`** subagent (`.cursor/agents/slide-agent.md`) with the full approved brief. It generates `design/pptx-slides/[Name]Slides.data.js`, `design/pptx-slides/[Name]Slides.jsx`, and updates `src/App.jsx`.
+
+After generation:
 - Preview with `pnpm dev`
 - Export with `pnpm export-slides [DeckName]` when requested
-
-Do not start generating slides until you've collected the topic and asked about research.

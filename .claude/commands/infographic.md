@@ -1,12 +1,9 @@
 We're going to design a LinkedIn infographic together.
 
-Start by asking me:
-1. **What's the topic?** (if not already provided in the command arguments)
-2. **Do you have any research, notes, or source material?** (article, bullet points, data — paste it or say "no")
+1. Read `DESIGN.md` and `src/index.css` to load the live brand tokens
+2. Read `skills/design-brief/SKILL.md`
+3. Draft a complete visual brief for the topic — sections, titles, layout components, token choices, illustrations — using the actual brand tokens. **Do not ask questions first.**
+4. Present the brief and wait for the user to say "approved" or request changes
+5. **Do not write any files until the brief is approved**
 
-Once you have both answers:
-- Read **`skills/infographics-designer/SKILL.md`** and **`.claude/agents/design-agent.md`**
-- Build the infographic in one pass: `design/infographics/[Name]Infographic.jsx` and register in `src/App.jsx`
-- Run `pnpm dev` and adjust layout if needed
-
-Do not start generating anything until you've collected the topic and asked about research.
+Once approved, delegate to the **`design-agent`** subagent (`.claude/agents/design-agent.md`) with the full approved brief. It reads `skills/infographics-designer/SKILL.md` and builds `design/infographics/[Name]Infographic.jsx` + updates `src/App.jsx` in one pass.

@@ -11,6 +11,7 @@ LinkedIn infographics (**1080×1350**) and slide decks (**1280×720**): React + 
 
 | Path | Purpose |
 |---|---|
+| [`skills/design-brief/SKILL.md`](skills/design-brief/SKILL.md) | **Pre-flight brief** — enrich any design prompt before handing off to a design agent |
 | [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md) | Infographic canvas, layout, components, tokens — **primary reference** |
 | [`DESIGN.md`](DESIGN.md) | YAML tokens — **only** place brand `#hex` and font names belong; drives Tailwind via `tailwind.config.js` |
 | [`skills/brand-setup/SKILL.md`](skills/brand-setup/SKILL.md) | Onboarding / rebrand: Track A or B → `DESIGN.md` + sync `src/index.css` |
@@ -25,6 +26,20 @@ LinkedIn infographics (**1080×1350**) and slide decks (**1280×720**): React + 
 | Root | **`InfographicCanvas`** — `bg-bg-canvas` + `SquareGridTexture` at **5%** (never roll your own full-canvas texture) |
 | Inner | **981px** centered · row gap **22px** · header/footer **`flex-none`**, body **`flex-1`** |
 | Position | overlap grid helpers allowed (`col-1`/`row-1` + margins) |
+
+---
+
+## Design brief (pre-flight — all formats)
+
+Before generating any design (infographic, carousel, or slides), run the **design-brief** workflow:
+
+1. Read [`skills/design-brief/SKILL.md`](skills/design-brief/SKILL.md)
+2. Ask topic, audience, key takeaway, tone, source material + format-specific questions in **one message**
+3. Draft the structured brief and present for approval
+4. **Do not write any files until the brief is approved**
+5. Route to the correct agent: `design-agent` (infographics) · `carousel-copy-agent` (carousels) · `slide-agent` (slides)
+
+The `design-brief-agent` (`.claude/agents/design-brief-agent.md`) handles this step end-to-end.
 
 ---
 
@@ -61,6 +76,7 @@ LinkedIn infographics (**1080×1350**) and slide decks (**1280×720**): React + 
 5. **`design/` imports:** `'../../components/...'` from `design/infographics/` (two levels up).
 6. **Figma push:** share capture URL — **never** shell-open browser · remind user auth = their MCP Figma account.
 7. **DESIGN.md:** after YAML changes, Tailwind theme updates on next dev/build; run `pnpm design:validate` if you want YAML checked.
+8. **Do NOT render previews.** Never call `render.py`, `python render.py …`, `curl /api/export/png|pdf`, or any other server/headless render step to "verify" a design. The user runs `pnpm dev` themselves once the design file is written — that is the only inspection step. Stop after writing the JSX + registering in `src/App.jsx`.
 
 ---
 

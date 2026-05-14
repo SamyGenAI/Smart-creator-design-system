@@ -2,23 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { chromium } from 'playwright'
 import sharp from 'sharp'
+import { MODES } from './src/modes.js'
 
 const SIZES = {
   carousel: { width: 1080, height: 1350 },
   infographic: { width: 1080, height: 1350 },
   slides: { width: 1280, height: 720 },
-}
-
-const MODES = {
-  'ai-os': { label: 'What is an AI OS?', type: 'infographic' },
-  'notion-ai-pipeline': { label: 'Notion AI Pipeline', type: 'infographic' },
-  'claude-design-wins': { label: 'Claude Design - 5 Wins', type: 'infographic' },
-  igentivVSL: { label: 'Igentiv VSL', type: 'slides' },
-  mckinsey: { label: 'McKinsey Carousel', type: 'carousel' },
-  scheduleTasks: { label: 'Schedule Tasks Carousel', type: 'carousel' },
-  openclaw: { label: 'OpenClaw 24/7 Agent Carousel', type: 'carousel' },
-  leadSearch: { label: 'Lead Search Carousel', type: 'carousel' },
-  linkedIn: { label: 'LinkedIn Carousel', type: 'carousel' },
 }
 
 function pdfFromJpegs(pages) {

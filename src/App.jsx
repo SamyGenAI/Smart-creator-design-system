@@ -8,20 +8,36 @@ import LinkedInCarousel from '../design/carousels/LinkedInCarousel.jsx'
 import IgentivVSLSlides from '../design/pptx-slides/IgentivVSLSlides.jsx'
 import { SLIDE_DATA as igentivVSLData } from '../design/pptx-slides/IgentivVSLSlides.data.js'
 import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWinsInfographic.jsx'
-import NotionAIPipelineInfographic from '../design/infographics/NotionAIPipelineInfographic.jsx'
 import AiOsInfographic from '../design/infographics/AiOsInfographic.jsx'
+import BulletProofAISystemInfographic from '../design/infographics/BulletProofAISystemInfographic.jsx'
+import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProofAISystemInfographicV2.jsx'
+import { MODES as MODE_REGISTRY } from './modes.js'
 
-const MODES = {
-  'ai-os': { label: 'What is an AI OS?', component: AiOsInfographic, type: 'infographic', exportName: 'ai-os' },
-  'notion-ai-pipeline': { label: 'Notion AI Pipeline', component: NotionAIPipelineInfographic, type: 'infographic', exportName: 'notion-ai-pipeline' },
-  'claude-design-wins': { label: 'Claude Design - 5 Wins', component: ClaudeDesignWinsInfographic, type: 'infographic', exportName: 'claude-design-wins' },
-  igentivVSL: { label: 'Igentiv VSL', component: IgentivVSLSlides, type: 'slides', slideCount: igentivVSLData.slides.length, exportName: 'IgentivVSL' },
-  mckinsey: { label: 'McKinsey Carousel', component: McKinseyCarousel, type: 'carousel', exportName: 'mckinsey' },
-  scheduleTasks: { label: 'Schedule Tasks Carousel', component: ScheduleTasksCarousel, type: 'carousel', exportName: 'scheduleTasks' },
-  openclaw: { label: 'OpenClaw 24/7 Agent Carousel', component: OpenClawCarousel, type: 'carousel', exportName: 'openclaw' },
-  leadSearch: { label: 'Lead Search Carousel', component: LeadSearchCarousel, type: 'carousel', exportName: 'leadSearch' },
-  linkedIn: { label: 'LinkedIn Carousel', component: LinkedInCarousel, type: 'carousel', exportName: 'linkedIn' },
+// Component map — keyed identically to MODE_REGISTRY. Adding a new design
+// requires (1) an entry in src/modes.js and (2) a component here.
+const COMPONENTS = {
+  'bulletproof-ai': BulletProofAISystemInfographic,
+  'bulletproof-ai-v2': BulletProofAISystemInfographicV2,
+  'ai-os': AiOsInfographic,
+  'claude-design-wins': ClaudeDesignWinsInfographic,
+  igentivVSL: IgentivVSLSlides,
+  mckinsey: McKinseyCarousel,
+  scheduleTasks: ScheduleTasksCarousel,
+  openclaw: OpenClawCarousel,
+  leadSearch: LeadSearchCarousel,
+  linkedIn: LinkedInCarousel,
 }
+
+const SLIDE_COUNTS = {
+  igentivVSL: igentivVSLData.slides.length,
+}
+
+const MODES = Object.fromEntries(
+  Object.entries(MODE_REGISTRY).map(([key, meta]) => [
+    key,
+    { ...meta, component: COMPONENTS[key], slideCount: SLIDE_COUNTS[key] },
+  ])
+)
 
 const SLIDE_W = 1280
 const SLIDE_H = 720

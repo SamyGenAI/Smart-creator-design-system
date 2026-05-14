@@ -23,9 +23,10 @@
  */
 
 import { chromium } from 'playwright'
-import { mkdirSync, existsSync, readFileSync } from 'node:fs'
-import { dirname, resolve, join } from 'node:path'
+import { mkdirSync, existsSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MODES } from '../src/modes.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
@@ -34,18 +35,6 @@ const SIZES = {
   carousel: { width: 1080, height: 1350 },
   infographic: { width: 1080, height: 1350 },
   slides: { width: 1280, height: 720 },
-}
-
-function parseModes() {
-  const appSrc = readFileSync(join(ROOT, 'src/App.jsx'), 'utf8')
-  const block = appSrc.match(/const MODES = \{([\s\S]*?)\n\}/)?.[1] ?? ''
-  const modes = {}
-  const entryRe = /['"]?([\w-]+)['"]?\s*:\s*\{[\s\S]*?label:\s*['"]([^'"]+)['"][\s\S]*?type:\s*['"](\w+)['"][\s\S]*?\}/g
-  let m
-  while ((m = entryRe.exec(block)) !== null) {
-    modes[m[1]] = { label: m[2], type: m[3] }
-  }
-  return modes
 }
 
 async function detectPort() {
@@ -65,10 +54,9 @@ async function main() {
     process.exit(1)
   }
 
-  const modes = parseModes()
-  const mode = modes[modeKey]
+  const mode = MODES[modeKey]
   if (!mode) {
-    console.error(`Unknown mode "${modeKey}". Available: ${Object.keys(modes).join(', ')}`)
+    console.error(`Unknown mode "${modeKey}". Available: ${Object.keys(MODES).join(', ')}`)
     process.exit(1)
   }
 
