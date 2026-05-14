@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import pptxgen from 'pptxgenjs'
 import McKinseyCarousel from '../design/carousels/McKinseyCarousel.jsx'
 import ScheduleTasksCarousel from '../design/carousels/ScheduleTasksCarousel.jsx'
 import OpenClawCarousel from '../design/carousels/OpenClawCarousel.jsx'
@@ -10,75 +11,40 @@ import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWins
 import NotionAIPipelineInfographic from '../design/infographics/NotionAIPipelineInfographic.jsx'
 import AiOsInfographic from '../design/infographics/AiOsInfographic.jsx'
 
-// ── MODES registry ────────────────────────────────────────────────────────────
-// When the slide-agent generates a new deck it adds an entry here.
-// type: 'carousel' | 'infographic' | 'slides'
-// slideCount is required for type 'slides' — set to SLIDE_DATA.slides.length
-//
-// Example entry added by agent:
-//   myTopic: {
-//     label: 'My Topic Slides',
-//     component: MyTopicSlides,
-//     type: 'slides',
-//     slideCount: 8,
-//   },
-
 const MODES = {
-  'ai-os': {
-    label: 'What is an AI OS?',
-    component: AiOsInfographic,
-    type: 'infographic',
-  },
-  'notion-ai-pipeline': {
-    label: 'Notion AI Pipeline',
-    component: NotionAIPipelineInfographic,
-    type: 'infographic',
-  },
-  'claude-design-wins': {
-    label: 'Claude Design — 5 Wins',
-    component: ClaudeDesignWinsInfographic,
-    type: 'infographic',
-  },
-  igentivVSL: {
-    label: 'Igentiv VSL',
-    component: IgentivVSLSlides,
-    type: 'slides',
-    slideCount: igentivVSLData.slides.length,
-  },
-  mckinsey: {
-    label: 'McKinsey Carousel',
-    component: McKinseyCarousel,
-    type: 'carousel',
-  },
-  scheduleTasks: {
-    label: 'Schedule Tasks Carousel',
-    component: ScheduleTasksCarousel,
-    type: 'carousel',
-  },
-  openclaw: {
-    label: 'OpenClaw 24/7 Agent Carousel',
-    component: OpenClawCarousel,
-    type: 'carousel',
-  },
-  leadSearch: {
-    label: 'Lead Search Carousel',
-    component: LeadSearchCarousel,
-    type: 'carousel',
-  },
-  linkedIn: {
-    label: 'LinkedIn Carousel',
-    component: LinkedInCarousel,
-    type: 'carousel',
-  },
+  'ai-os': { label: 'What is an AI OS?', component: AiOsInfographic, type: 'infographic', exportName: 'ai-os' },
+  'notion-ai-pipeline': { label: 'Notion AI Pipeline', component: NotionAIPipelineInfographic, type: 'infographic', exportName: 'notion-ai-pipeline' },
+  'claude-design-wins': { label: 'Claude Design - 5 Wins', component: ClaudeDesignWinsInfographic, type: 'infographic', exportName: 'claude-design-wins' },
+  igentivVSL: { label: 'Igentiv VSL', component: IgentivVSLSlides, type: 'slides', slideCount: igentivVSLData.slides.length, exportName: 'IgentivVSL' },
+  mckinsey: { label: 'McKinsey Carousel', component: McKinseyCarousel, type: 'carousel', exportName: 'mckinsey' },
+  scheduleTasks: { label: 'Schedule Tasks Carousel', component: ScheduleTasksCarousel, type: 'carousel', exportName: 'scheduleTasks' },
+  openclaw: { label: 'OpenClaw 24/7 Agent Carousel', component: OpenClawCarousel, type: 'carousel', exportName: 'openclaw' },
+  leadSearch: { label: 'Lead Search Carousel', component: LeadSearchCarousel, type: 'carousel', exportName: 'leadSearch' },
+  linkedIn: { label: 'LinkedIn Carousel', component: LinkedInCarousel, type: 'carousel', exportName: 'linkedIn' },
 }
-
-// ── Slide viewer ──────────────────────────────────────────────────────────────
 
 const SLIDE_W = 1280
 const SLIDE_H = 720
 const SLIDE_GAP = 60
+const waitFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()))
+const waitMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-function SlideViewerWrapper({ Component, slideCount, slideIndex, setSlideIndex }) {
+function downloadBlob(blob, fileName) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
+
+function sanitizeFileName(raw) {
+  return String(raw || 'design').replace(/[^a-z0-9-_]/gi, '-').replace(/-+/g, '-')
+}
+
+function SlideViewerWrapper({ Component, slideCount, slideIndex, setSlideIndex, viewportRef }) {
   const total = slideCount || 1
   const clamp = (i) => Math.max(0, Math.min(total - 1, i))
 
@@ -92,8 +58,8 @@ function SlideViewerWrapper({ Component, slideCount, slideIndex, setSlideIndex }
         gap: 28,
       }}
     >
-      {/* Slide viewport — clips to exactly one slide */}
       <div
+        ref={viewportRef}
         style={{
           width: SLIDE_W,
           height: SLIDE_H,
@@ -116,45 +82,12 @@ function SlideViewerWrapper({ Component, slideCount, slideIndex, setSlideIndex }
         </div>
       </div>
 
-      {/* Prev / counter / next */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 28,
-        }}
-      >
-        <button
-          onClick={() => setSlideIndex(clamp(slideIndex - 1))}
-          disabled={slideIndex === 0}
-          style={navBtnStyle(slideIndex === 0)}
-        >
-          ←
-        </button>
-
-        <span
-          style={{
-            color: 'rgba(255,255,255,0.75)',
-            fontSize: 15,
-            fontWeight: 600,
-            fontFamily: "'Montserrat', sans-serif",
-            minWidth: 60,
-            textAlign: 'center',
-          }}
-        >
-          {slideIndex + 1} / {total}
-        </span>
-
-        <button
-          onClick={() => setSlideIndex(clamp(slideIndex + 1))}
-          disabled={slideIndex >= total - 1}
-          style={navBtnStyle(slideIndex >= total - 1)}
-        >
-          →
-        </button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+        <button onClick={() => setSlideIndex(clamp(slideIndex - 1))} disabled={slideIndex === 0} style={navBtnStyle(slideIndex === 0)}>{'<'}</button>
+        <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: 15, fontWeight: 600, fontFamily: "'Montserrat', sans-serif", minWidth: 60, textAlign: 'center' }}>{slideIndex + 1} / {total}</span>
+        <button onClick={() => setSlideIndex(clamp(slideIndex + 1))} disabled={slideIndex >= total - 1} style={navBtnStyle(slideIndex >= total - 1)}>{'>'}</button>
       </div>
 
-      {/* Dot indicators */}
       <div style={{ display: 'flex', gap: 8 }}>
         {Array.from({ length: total }).map((_, i) => (
           <button
@@ -196,45 +129,122 @@ function navBtnStyle(disabled) {
   }
 }
 
-// ── App ───────────────────────────────────────────────────────────────────────
+function exportBtnStyle(disabled) {
+  return {
+    padding: '12px 18px',
+    borderRadius: 18,
+    border: '1px solid rgba(255,255,255,0.7)',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    background: 'rgba(255,255,255,0.86)',
+    color: '#111111',
+    fontFamily: "'Montserrat', sans-serif",
+    fontWeight: 700,
+    fontSize: 13,
+    backdropFilter: 'blur(12px) saturate(140%)',
+    boxShadow: '0 10px 34px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.8)',
+    opacity: disabled ? 0.55 : 1,
+    transition: 'all 0.16s ease',
+  }
+}
 
 export default function App() {
   const [activeMode, setActiveMode] = useState(Object.keys(MODES)[0])
   const [slideIndex, setSlideIndex] = useState(0)
+  const [exportNotice, setExportNotice] = useState('')
+  const [isExporting, setIsExporting] = useState(false)
+
+  const slideViewportRef = useRef(null)
 
   const entry = MODES[activeMode]
   const isSlides = entry?.type === 'slides'
-  /** Must be PascalCase for JSX — `<entry.component />` is parsed as a DOM element, not a component. */
   const ActiveDesign = entry?.component
 
   function switchMode(key) {
     setActiveMode(key)
     setSlideIndex(0)
+    setExportNotice('')
+  }
+
+  function showNotice(text) {
+    setExportNotice(text)
+    window.setTimeout(() => setExportNotice(''), 3200)
+  }
+
+  function exportLabel() {
+    if (entry?.type === 'infographic') return 'Download PNG'
+    if (entry?.type === 'carousel') return 'Download PDF'
+    if (entry?.type === 'slides') return 'Download PPTX'
+    return 'Download'
+  }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const mode = params.get('mode')
+    if (mode && MODES[mode]) {
+      setActiveMode(mode)
+      setSlideIndex(0)
+    }
+  }, [])
+
+  async function exportFromServer(format) {
+    const mode = encodeURIComponent(activeMode)
+    const res = await fetch(`/api/export/${format}?mode=${mode}`)
+    if (!res.ok) throw new Error(await res.text())
+    const blob = await res.blob()
+    const extension = format === 'png' ? 'png' : 'pdf'
+    downloadBlob(blob, `${sanitizeFileName(entry.exportName)}.${extension}`)
+  }
+
+  async function exportSlidesPptx() {
+    const total = entry.slideCount || 1
+    const current = slideIndex
+    const pptx = new pptxgen()
+    pptx.layout = 'LAYOUT_16x9'
+
+    for (let i = 0; i < total; i += 1) {
+      setSlideIndex(i)
+      await waitFrame()
+      await waitFrame()
+      await waitMs(50)
+
+      const res = await fetch(`/api/export/png?mode=${encodeURIComponent(activeMode)}&slide=${i}&scale=2`)
+      if (!res.ok) throw new Error(await res.text())
+      const pngBlob = await res.blob()
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(pngBlob)
+      })
+
+      const slide = pptx.addSlide()
+      slide.addImage({ data: dataUrl, x: 0, y: 0, w: 13.333, h: 7.5 })
+    }
+
+    setSlideIndex(current)
+    await pptx.writeFile({ fileName: `${sanitizeFileName(entry.exportName)}.pptx` })
+  }
+
+  async function handleExport() {
+    if (!entry || isExporting) return
+    setIsExporting(true)
+    setExportNotice('Preparing download...')
+
+    try {
+      if (entry.type === 'infographic') await exportFromServer('png')
+      else if (entry.type === 'carousel') await exportFromServer('pdf')
+      else if (entry.type === 'slides') await exportSlidesPptx()
+      showNotice('Download started.')
+    } catch (error) {
+      showNotice(`Export failed: ${error?.message || 'Unknown error'}`)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
-    <div
-      style={{
-        background: '#13131f',
-        minHeight: '100vh',
-        fontFamily: "'Montserrat', sans-serif",
-      }}
-    >
-      {/* Mode bar */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          padding: '14px 28px',
-          background: '#0c0c18',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-          overflowX: 'auto',
-        }}
-      >
+    <div style={{ background: '#13131f', minHeight: '100vh', fontFamily: "'Montserrat', sans-serif" }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '14px 28px', background: '#0c0c18', borderBottom: '1px solid rgba(255,255,255,0.07)', position: 'sticky', top: 0, zIndex: 100, overflowX: 'auto' }}>
         {Object.entries(MODES).map(([key, m]) => (
           <button
             key={key}
@@ -258,13 +268,35 @@ export default function App() {
         ))}
       </div>
 
-      {/* Canvas area */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          gap: 12,
+          padding: '12px 28px',
+          background: '#10101b',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          position: 'sticky',
+          top: 58,
+          zIndex: 90,
+        }}
+      >
+        <button onClick={handleExport} disabled={isExporting} style={exportBtnStyle(isExporting)}>
+          {isExporting ? 'Preparing...' : exportLabel()}
+        </button>
+        {exportNotice ? (
+          <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, lineHeight: 1.3 }}>{exportNotice}</div>
+        ) : null}
+      </div>
+
       {isSlides ? (
         <SlideViewerWrapper
           Component={entry.component}
           slideCount={entry.slideCount ?? 1}
           slideIndex={slideIndex}
           setSlideIndex={setSlideIndex}
+          viewportRef={slideViewportRef}
         />
       ) : ActiveDesign ? (
         <div style={{ padding: '40px', overflowX: 'auto' }}>
