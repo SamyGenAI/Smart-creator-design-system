@@ -313,25 +313,6 @@ Agent files under `.claude/agents/` define specialized flows (`design-agent` for
 
 ---
 
-## Scripts reference
-
-| Command | What it does |
-|---|---|
-| `pnpm dev` | Start Vite preview server |
-| `pnpm build` | Production build |
-| `pnpm design:validate` | Validate `DESIGN.md` schema and token references |
-| `pnpm templates:check` | Enforce template folder boundaries |
-| `pnpm infographic:validate` | All infographics import `InfographicCanvas` |
-| `pnpm infographic:lint` | Flag `#hex` / `rgb()` / arbitrary `#[...]` in `design/infographics/` (optional check) |
-| `pnpm brand:apply -- --input tmp/brand-answers.json` | Merge setup answers into `DESIGN.md` |
-| `pnpm generate:design ...` | Carousel/slide scaffold from `templates/*` + registry update (infographics excluded) |
-| `pnpm export-slides [Name]` | Export a slide deck to `design/pptx-slides/output/[Name]Slides.pptx` |
-| `pnpm screenshot <mode-key>` | Take a QC screenshot of a generated piece |
-| `node scripts/fetch-logo.mjs domain.com` | Download wordmark SVG from Brandfetch |
-| `node scripts/fetch-app-logo.mjs domain.com` | Download square app icon from logo.dev |
-
----
-
 ## License
 
 Personal project — fork freely, but brand assets in `assets/` are illustrative only.
