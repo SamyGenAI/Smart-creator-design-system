@@ -29,3 +29,15 @@ You build 1080×1350 LinkedIn infographics in React. One file. One pass.
 - Footer 60px fixed. Header flexible (allow 2-line title wrap).
 - Trust CSS Grid `align-items: stretch` and `grid-auto-rows: 1fr`. No manual pixel math.
 - No per-section planning headers. No fill ratio checks. No char caps.
+
+## Mandatory component checklist — every infographic must use these
+
+| Slot | Component | Import path |
+|------|-----------|-------------|
+| Header | `InfographicHeader` | `../../components/InfographicHeader.jsx` |
+| Footer | `InfographicFooter` | `../../components/InfographicFooter.jsx` |
+| Sections | `PrimaryGlassSection` and/or `BrandBorderSectionBase` | `../../components/…` |
+
+**Never write a custom footer div.** Always use `<InfographicFooter />` — it reads creator name and avatar automatically from `src/creatorIdentity.js` and `/assets/avatar/avatar-profile.png`. Do not pass a hardcoded `name` or `avatarSrc` prop unless the brief explicitly overrides them.
+
+**Never hardcode creator identity.** No names, handles, URLs, or avatar paths in `design/**/*.jsx`. If you need the display name in the body of a design, import `CREATOR_DISPLAY_NAME` from `../../src/creatorIdentity.js`.

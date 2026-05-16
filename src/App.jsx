@@ -10,6 +10,7 @@ import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWins
 import AiOsInfographic from '../design/infographics/AiOsInfographic.jsx'
 import BulletProofAISystemInfographic from '../design/infographics/BulletProofAISystemInfographic.jsx'
 import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProofAISystemInfographicV2.jsx'
+import PitchMistakesInfographic from '../design/infographics/PitchMistakesInfographic.jsx'
 import { MODES as MODE_REGISTRY } from './modes.js'
 
 // Component map — keyed identically to MODE_REGISTRY. Adding a new design
@@ -19,6 +20,7 @@ const COMPONENTS = {
   'bulletproof-ai-v2': BulletProofAISystemInfographicV2,
   'ai-os': AiOsInfographic,
   'claude-design-wins': ClaudeDesignWinsInfographic,
+  'pitch-mistakes': PitchMistakesInfographic,
   igentivVSL: IgentivVSLSlides,
   mckinsey: McKinseyCarousel,
   scheduleTasks: ScheduleTasksCarousel,

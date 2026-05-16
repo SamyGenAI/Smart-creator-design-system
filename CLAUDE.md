@@ -77,6 +77,8 @@ The `design-brief-agent` (`.claude/agents/design-brief-agent.md`) handles this s
 6. **Figma push:** share capture URL — **never** shell-open browser · remind user auth = their MCP Figma account.
 7. **DESIGN.md:** after YAML changes, Tailwind theme updates on next dev/build; run `pnpm design:validate` if you want YAML checked.
 8. **Do NOT render previews.** Never call `render.py`, `python render.py …`, `curl /api/export/png|pdf`, or any other server/headless render step to "verify" a design. The user runs `pnpm dev` themselves once the design file is written — that is the only inspection step. Stop after writing the JSX + registering in `src/App.jsx`.
+9. **No hardcoded creator identity.** Never put a creator name, handle, URL, or avatar path directly in `design/**/*.jsx`. Always use `<InfographicFooter />` (reads from `src/creatorIdentity.js` + `/assets/avatar/avatar-profile.png` automatically). If the body copy needs the display name, import `CREATOR_DISPLAY_NAME` from `src/creatorIdentity.js`. This keeps every design rebrandable in one place.
+10. **Mandatory infographic components.** Every infographic must use `InfographicHeader` for the title block and `InfographicFooter` for the footer — never replace them with custom divs. Section cards must come from `PrimaryGlassSection` or `BrandBorderSectionBase` (or other `components/` primitives) rather than being written from scratch.
 
 ---
 
