@@ -1,9 +1,13 @@
 We're going to design a LinkedIn infographic together.
 
-1. Read `DESIGN.md` and `src/index.css` to load the live brand tokens
-2. Read `skills/design-brief/SKILL.md`
-3. Draft a complete visual brief for the topic — sections, titles, layout components, token choices, illustrations — using the actual brand tokens. **Do not ask questions first.**
-4. Present the brief and wait for the user to say "approved" or request changes
-5. **Do not write any files until the brief is approved**
+Delegate the entire flow to the **`infographic-design-agent`** subagent (`.cursor/agents/infographic-design-agent.md`). It is the single owner of the infographic workflow — it drafts the visual brief, waits for the user to approve, and then writes the JSX.
 
-Once approved, delegate to the **`design-agent`** subagent (`.cursor/agents/design-agent.md`) with the full approved brief. It reads `skills/infographics-designer/SKILL.md` and builds `design/infographics/[Name]Infographic.jsx` + updates `src/App.jsx` in one pass.
+Before drafting, the agent must:
+
+1. Read `skills/infographics-designer/SKILL.md`, `skills/design-brief/SKILL.md`, `DESIGN.md`, and `src/index.css`
+2. Read at least 2 existing infographics under `design/infographics/` end-to-end
+3. Skim the relevant components under `components/`
+
+The agent presents a complete brief, waits for "approved", and then builds `design/infographics/[Name]Infographic.jsx` + registers it in `src/modes.js` and `src/App.jsx` in one pass.
+
+**Do not write any files until the brief is approved.**

@@ -93,7 +93,7 @@ When the user approves (or approves with small edits), hand the **complete brief
 
 | Format | Agent |
 |--------|-------|
-| Infographic | `design-agent` — reads `skills/infographics-designer/SKILL.md`, writes `design/infographics/[Name]Infographic.jsx` |
+| Infographic | `infographic-design-agent` — single agent that owns the brief **and** the build. It reads `skills/infographics-designer/SKILL.md`, prior infographics, and the component library, drafts the brief, waits for approval, and writes `design/infographics/[Name]Infographic.jsx`. When the request is an infographic, you usually just delegate to it directly rather than drafting the brief in-chat. |
 | Carousel | `carousel-copy-agent` → (JSON brief approval) → `carousel-design-agent` → `carousel-qc-agent` |
 | Slides | `slide-agent` — writes `design/pptx-slides/[Name]Slides.data.js` + `.jsx` |
 

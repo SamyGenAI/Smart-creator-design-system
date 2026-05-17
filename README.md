@@ -29,7 +29,7 @@ All three formats share the same token set (colors, fonts, shadows) and componen
 ```
 User topic
    ↓
-Infographics: design-agent (`skills/infographics-designer/SKILL.md`) → JSX in design/infographics/
+Infographics: infographic-design-agent (`skills/infographics-designer/SKILL.md`) → brief → approval → JSX in design/infographics/
 Carousels:    carousel-copy-agent → design → QC
 Slides:       slide-agent
    ↓
@@ -137,6 +137,8 @@ Inside Claude Code, just type the following commands and answer the questions :
 - **Slide deck:** `/slides`
 
 Claude will add a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`) and register it in `src/App.jsx`.
+
+> **Pro tip — prompt precisely and show what "good" looks like.** Frontier Claude models (Opus/Sonnet 4.x) have strong vision capabilities, so the more specific you are *and* the more visual reference you provide, the closer the first generation will be to what you want. Instead of "make a carousel on AI agents", try: "8-slide carousel on AI agent patterns for technical founders, opinionated tone, ends with a hiring CTA — match the layout density of the attached screenshot." Drop reference images directly into chat (competitor designs, mood boards, sketches, even rough Figma exports) — Claude will read composition, hierarchy, spacing, and color emphasis from them and translate that into on-brand JSX using your tokens.
 
 ---
 
@@ -262,7 +264,7 @@ pnpm generate:design -- --type carousels --template linkedin --name MyTopic --da
 
 `CLAUDE.md` is the master prompt every subagent respects. If your brand has specific voice rules ("always use active voice", "never use emojis", "always end with a CTA"), add them here.
 
-Agent files under `.claude/agents/` define specialized flows (`design-agent` for infographics, carousel/slide agents for those formats).
+Agent files under `.claude/agents/` define specialized flows (`infographic-design-agent` for infographics — which owns both the brief and the build — and carousel/slide agents for those formats).
 
 ---
 
@@ -310,6 +312,17 @@ Agent files under `.claude/agents/` define specialized flows (`design-agent` for
 - **pnpm** package manager
 - **Claude Code** as the orchestrator (Opus/Sonnet subagents)
 - **Figma Dev Mode MCP** for push-to-edit
+
+---
+
+## Pro tips for prompting
+
+The system is only as good as the brief you hand it. A few habits that consistently produce on-brand, first-shot designs:
+
+1. **Be precise about intent, not just topic.** State the audience, the *one* takeaway, the tone, the format, and the CTA in a single sentence before invoking a slash command. "Infographic comparing Notion vs Airtable" is weak. "1080×1350 infographic for solo operators choosing their first ops tool — single takeaway: Airtable wins for relational data, Notion wins for docs — neutral tone, no winner declared, footer CTA to my newsletter" is strong.
+2. **Show what "good" looks like — drop in reference images.** Frontier Claude models (Opus/Sonnet 4.x) have strong vision capabilities. Paste screenshots of designs you admire (competitor carousels, magazine spreads, dashboards, Figma mockups, even hand sketches) directly into the chat. Claude reads composition, density, hierarchy, color emphasis, and typography rhythm from images and translates it into JSX using *your* tokens — so you keep your brand while borrowing structure.
+3. **Constrain the layout when you have an opinion.** "3 cards in a row, second card emphasized" or "stat block top-left, illustration top-right, checklist below" cuts iteration time dramatically vs leaving layout open-ended.
+4. **Iterate with diffs, not rewrites.** Once a draft exists, prompt deltas ("swap card 2 and 3", "make the header tighter — match this screenshot's spacing") instead of regenerating from scratch. The system is designed for surgical edits inside the JSX file.
 
 ---
 

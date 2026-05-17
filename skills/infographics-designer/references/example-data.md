@@ -1,6 +1,6 @@
 # Example Data Objects
 
-> **Note:** Infographic JSX templates were removed. Below objects are **historical** shapes for copy/brief ideas only — new work uses the JSON brief + `design-agent` JSX.
+> **Note:** Infographic JSX templates were removed. Below objects are **historical** shapes for copy/brief ideas only — new work uses the JSON brief + `infographic-design-agent` JSX.
 
 Complete, production-ready examples for both infographic templates.
 

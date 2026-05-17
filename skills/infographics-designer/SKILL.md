@@ -110,4 +110,4 @@ Pushes the design to Figma via MCP. Run on demand, not on every change.
 
 ## Agent
 
-Use **`.claude/agents/design-agent.md`** or **`.cursor/agents/design-agent.md`** for the one-pass infographic workflow (read this skill first, then implement `design/infographics/[Name]Infographic.jsx` + `src/App.jsx`).
+Use **`.claude/agents/infographic-design-agent.md`**, **`.cursor/agents/infographic-design-agent.md`**, or **`.codex/agents/infographic-design-agent.md`** for the end-to-end infographic workflow. That agent reads this skill, the prior infographics under `design/infographics/`, and the `components/` library, drafts the visual brief, waits for user approval, and then implements `design/infographics/[Name]Infographic.jsx` + registers it in `src/modes.js` / `src/App.jsx` in a single pass.

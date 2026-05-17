@@ -16,10 +16,10 @@ export const MODES = {
   'bulletproof-ai-v2': { label: 'Bullet-Proof AI System V2', type: 'infographic', exportName: 'bulletproof-ai-system-v2' },
   'ai-os':             { label: 'What is an AI OS?',         type: 'infographic', exportName: 'ai-os' },
   'claude-design-wins':{ label: 'Claude Design - 5 Wins',    type: 'infographic', exportName: 'claude-design-wins' },
-  'pitch-mistakes':    { label: '5 Pitch Mistakes',          type: 'infographic', exportName: 'pitch-mistakes' },
   igentivVSL:          { label: 'Igentiv VSL',               type: 'slides',      exportName: 'IgentivVSL' },
   mckinsey:            { label: 'McKinsey Carousel',         type: 'carousel',    exportName: 'mckinsey' },
   scheduleTasks:       { label: 'Schedule Tasks Carousel',   type: 'carousel',    exportName: 'scheduleTasks' },
   openclaw:            { label: 'OpenClaw 24/7 Agent Carousel', type: 'carousel', exportName: 'openclaw' },
   'ai-operating-system': { label: 'AI Operating System', type: 'carousel', exportName: 'ai-operating-system' },
+  'ai-os-infographic':   { label: 'AI OS Infographic',   type: 'infographic', exportName: 'ai-os-infographic' },
 }

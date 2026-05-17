@@ -211,7 +211,7 @@ Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`), **slide 1280×72
 | `colors.text.*` / `colors.text.onBrand` | Contrast pairs |
 | `alphaColors.overlay.glass.*` | Glass frosts |
 
-Composition: **few strong colors**; respect contrast (see `.claude/agents/design-agent.md` + `skills/infographics-designer/SKILL.md`).
+Composition: **few strong colors**; respect contrast (see `.claude/agents/infographic-design-agent.md` + `skills/infographics-designer/SKILL.md`).
 
 ## Typography (see YAML `typography`)
 

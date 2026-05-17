@@ -36,13 +36,15 @@ Before generating any design, run the **design-brief** workflow:
 2. Ask topic, audience, key takeaway, tone, source material + format-specific questions in one message
 3. Draft the structured brief and present for approval
 4. **Do not write any files until the brief is approved**
-5. Route to the correct agent: `design-agent` (infographics) · `carousel-copy-agent` (carousels) · `slide-agent` (slides)
+5. Route to the correct agent: `infographic-design-agent` (infographics) · `carousel-copy-agent` (carousels) · `slide-agent` (slides)
+
+For **infographics**, the brief step and the build step are owned by the **same** agent — `.codex/agents/infographic-design-agent.md` — so there is no separate brief agent to hand off to.
 
 ---
 
 ## Infographics workflow
 
-**`design-agent`** (see `AGENTS.md` agent list) writes JSX in [`design/infographics/*.jsx`](design/infographics/) and updates [`src/App.jsx`](src/App.jsx). Follow [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md).
+**`infographic-design-agent`** (see `.codex/agents/infographic-design-agent.md`) drafts the brief, waits for approval, then writes JSX in [`design/infographics/*.jsx`](design/infographics/) and updates [`src/App.jsx`](src/App.jsx). It is required to read [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md), prior designs under [`design/infographics/`](design/infographics/), and the [`components/`](components/) library before drafting.
 
 ---
 
