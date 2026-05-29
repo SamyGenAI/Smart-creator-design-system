@@ -148,12 +148,3 @@
   overflow: hidden;
   flex-shrink: 0;
 }
-
-/* Slide canvas — 1024×768px, 4:3 ratio (PowerPoint/Google Slides standard) */
-.slide-canvas {
-  width: 1024px;
-  height: 768px;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-}

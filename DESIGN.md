@@ -145,8 +145,6 @@ spacing:
   canvas-width: 1080px
   canvas-height: 1350px
   canvas-inner: 981px
-  slide-width: 1024px
-  slide-height: 768px
   row-gap: 22px
 
 components:
@@ -199,7 +197,7 @@ components:
 
 # Human-readable design rules
 
-Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`), **slide 1024×768** (4:3 — PowerPoint / Google Slides native; `SquareGridTexture` at higher opacity — see slide skill). Colors, typography, radii, and shadows in the YAML above feed **Tailwind** via `tailwind.config.js`. Runtime **CSS variables** for components live in `src/index.css` — edit that file directly for theme tweaks.
+Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`). **Slide decks** are 4:3 PowerPoint / Google Slides (10×7.5 in via PptxGenJS — see [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md)), not React canvas. Colors, typography, radii, and shadows in the YAML above feed **Tailwind** via `tailwind.config.js`. Runtime **CSS variables** for components live in `src/index.css` — edit that file directly for theme tweaks.
 
 ## Colors (roles)
 

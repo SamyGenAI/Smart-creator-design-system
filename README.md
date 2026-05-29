@@ -134,9 +134,9 @@ Inside Claude Code, just type the following commands and answer the questions :
 
 - **Infographic:** `/infographic`
 - **Carousel:** `/carousel`
-- **Slide deck:** `/slides`
+- **Slide deck:** `/powerpoint`
 
-Claude will add a JSX file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/`, or `design/pptx-slides/`) and register it in `src/App.jsx`.
+Claude will add a file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/` as JSX, or `design/pptx-slides/` as a PptxGenJS `.mjs` script) and register it in `src/modes.js` + `src/App.jsx`.
 
 > **Pro tip — prompt precisely and show what "good" looks like.** Frontier Claude models (Opus/Sonnet 4.x) have strong vision capabilities, so the more specific you are *and* the more visual reference you provide, the closer the first generation will be to what you want. Instead of "make a carousel on AI agents", try: "8-slide carousel on AI agent patterns for technical founders, opinionated tone, ends with a hiring CTA — match the layout density of the attached screenshot." Drop reference images directly into chat (competitor designs, mood boards, sketches, even rough Figma exports) — Claude will read composition, hierarchy, spacing, and color emphasis from them and translate that into on-brand JSX using your tokens.
 
@@ -248,11 +248,13 @@ During `@setup`, add your portrait as `assets/avatar/avatar-profile.png` (square
 - `design/carousels/`
 - `design/pptx-slides/`
 
-**Carousels and slides:**
+**Carousels:**
 
 ```bash
 pnpm generate:design -- --type carousels --template linkedin --name MyTopic --data tmp/brief.json
 ```
+
+**Slide decks:** use `/powerpoint` — the slide-agent writes `design/pptx-slides/<Name>Slides.mjs`, exports `.pptx` + preview photos, and registers a `pptx` mode (see [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md)). Users preview with `pnpm dev` only.
 
 **Infographics:** create `design/infographics/<Name>Infographic.jsx` with [`components/InfographicCanvas.jsx`](components/InfographicCanvas.jsx) and any components you need from [`components/`](components/); register in `src/App.jsx` (see [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md)).
 
@@ -275,15 +277,14 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 ├── DESIGN.md                 ← all design tokens (front matter)
 ├── tailwind.config.js        ← consumes tokens from DESIGN.md
 ├── components/               ← reusable JSX components
-├── templates/                ← source templates (carousels + pptx-slides)
+├── templates/                ← source templates (carousels only)
 │   ├── carousels/
-│   ├── pptx-slides/
 │   └── template-manifest.json
 ├── design/                   ← generated work, grouped by type
 │   ├── infographics/         ←   1080×1350 single-canvas pieces
 │   ├── carousels/            ←   1080×1350 multi-slide carousels
-│   └── pptx-slides/          ←   4:3 slide decks (one [Name]Slides.mjs per deck)
-│       └── output/           ←     exported .pptx files (produced by running each .mjs)
+│   └── pptx-slides/          ←   4:3 decks (one [Name]Slides.mjs + output/*.pptx per deck)
+│       └── output/           ←     editable .pptx deliverables
 ├── src/App.jsx               ← preview app + MODES registry
 ├── scripts/
 │   ├── validate-design.mjs   ← DESIGN.md schema validation

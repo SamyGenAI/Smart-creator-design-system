@@ -1,7 +1,7 @@
 # Smart Creator — Master Rules for Claude Code
 
 ## What we ship
-LinkedIn infographics (**1080×1350**) and slide decks (**1024×768**, 4:3): React + tokens in `src/index.css` → optional Figma push (`mcp__figma__generate_figma_design`).
+LinkedIn infographics (**1080×1350**, React preview) and slide decks (**4:3** `.pptx` via PptxGenJS + photo preview in the app): brand tokens in `DESIGN.md` / `src/index.css` → optional Figma push for infographics (`mcp__figma__generate_figma_design`).
 
 **Figma file:** read `FIGMA_FILE_KEY` from `.env` (see [`.claude/commands/figma.md`](.claude/commands/figma.md) for setup)
 
@@ -54,7 +54,8 @@ For **infographics**, the brief step and the build step are owned by the **same*
 | Output | How to create |
 |---|---|
 | Infographic | **By hand**: `InfographicCanvas` + `components/` + section JSX; **`pnpm generate:design` does not apply** |
-| Carousel / slides | **`pnpm generate:design`** from [`templates/template-manifest.json`](templates/template-manifest.json) |
+| Carousel | **`pnpm generate:design`** from [`templates/template-manifest.json`](templates/template-manifest.json) |
+| Slide deck | **`slide-agent`** → one `design/pptx-slides/[Name]Slides.mjs` per deck (not template codegen) |
 
 ---
 
