@@ -95,7 +95,7 @@ When the user approves (or approves with small edits), hand the **complete brief
 |--------|-------|
 | Infographic | `infographic-design-agent` — single agent that owns the brief **and** the build. It reads `skills/infographics-designer/SKILL.md`, prior infographics, and the component library, drafts the brief, waits for approval, and writes `design/infographics/[Name]Infographic.jsx`. When the request is an infographic, you usually just delegate to it directly rather than drafting the brief in-chat. |
 | Carousel | `carousel-copy-agent` → (JSON brief approval) → `carousel-design-agent` → `carousel-qc-agent` |
-| Slides | `slide-agent` — writes one standalone PptxGenJS Node script at `design/pptx-slides/[Name]Slides.mjs` |
+| Slides | `slide-agent` — `.mjs` script, `.pptx`, slide photos in `public/screenshots/powerpoint/[slug]/`, app registration; user runs `pnpm dev` only |
 
 ---
 

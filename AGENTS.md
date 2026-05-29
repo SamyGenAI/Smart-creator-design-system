@@ -82,10 +82,10 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 Skill: [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md) + [`skills/pptx/pptxgenjs.md`](skills/pptx/pptxgenjs.md) · Agent: `.codex/agents/slide-agent.md` · Tokens: `DESIGN.md` + `src/index.css`.
 
-Each deck is **one standalone PptxGenJS Node script** at `design/pptx-slides/[Name]Slides.mjs`. The script reads brand tokens via `scripts/parse-design-md.mjs` and writes its editable `.pptx` directly to `design/pptx-slides/output/`. The editable `.pptx` IS the deliverable — there is no browser preview.
+Each deck is **one standalone PptxGenJS Node script** at `design/pptx-slides/[Name]Slides.mjs`. The slide-agent also exports **slide photos** to `public/screenshots/powerpoint/[preview-slug]/` (via `skills/pptx/scripts/thumbnail.py`) and registers the deck in `src/modes.js` + `src/App.jsx` (`PptxSlideShow`).
 
 Workflow:
 
-1. `/powerpoint <topic>` — agent reads `DESIGN.md`, `src/index.css`, `skills/pptx/SKILL.md`, `skills/design-brief/SKILL.md`, drafts a brief, waits for approval.
-2. On approval, the `slide-agent` writes one file: `design/pptx-slides/[Name]Slides.mjs`.
-3. The user runs `node "design/pptx-slides/[Name]Slides.mjs"` — output lands in `design/pptx-slides/output/[Name]Slides.pptx` and opens in PowerPoint or Google Slides.
+1. `/powerpoint <topic>` — draft brief (`skills/design-brief/SKILL.md`), wait for approval.
+2. On approval, **`slide-agent`** delivers: `.mjs` script, `.pptx`, slide photos, QA grid, app registration.
+3. User runs **`pnpm dev`** — browse slides in the browser, click **Download PPTX** for the editable file.

@@ -4,7 +4,7 @@ The deck will be produced as a single self-contained PptxGenJS Node script using
 - `skills/pptx/SKILL.md` + `skills/pptx/pptxgenjs.md`
 - The Smart Creator design system (`DESIGN.md` + `src/index.css`)
 
-No JSX preview, no shared layout templates, no browser viewer registration.
+Slide photos for browser preview use `skills/pptx/scripts/thumbnail.py`. The slideshow uses `components/PptxSlideShow.jsx`.
 
 ---
 
@@ -15,18 +15,17 @@ No JSX preview, no shared layout templates, no browser viewer registration.
 5. Present the brief and wait for the user to say "approved" or request changes.
 6. **Do not write any files until the brief is approved.**
 
-Once approved, delegate to the **`slide-agent`** subagent (`.cursor/agents/slide-agent.md`) with the full approved brief. It writes **one** file:
+Once approved, delegate to the **`slide-agent`** subagent (`.claude/agents/slide-agent.md`) with the full approved brief. It delivers:
+
+- `design/pptx-slides/[Name]Slides.mjs`
+- `design/pptx-slides/output/[Name]Slides.pptx`
+- Slide photos in `public/screenshots/powerpoint/[preview-slug]/`
+- Registration in `src/modes.js` + `src/App.jsx`
+
+After the agent finishes, tell the user:
 
 ```
-design/pptx-slides/[Name]Slides.mjs
+pnpm dev
 ```
 
-The script reads brand tokens at runtime via `scripts/parse-design-md.mjs`, lays out every slide directly with PptxGenJS calls (no shared layout helpers, no layout enum), and writes the editable `.pptx` to `design/pptx-slides/output/[Name]Slides.pptx`.
-
-After the agent finishes, tell the user the run command:
-
-```
-node "design/pptx-slides/[Name]Slides.mjs"
-```
-
-That command produces the `.pptx`. The user opens it in PowerPoint or Google Slides.
+Open the slide deck tab, browse slides, click **Download PPTX** for the editable PowerPoint file.

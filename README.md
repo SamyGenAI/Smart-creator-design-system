@@ -2,7 +2,7 @@
 
 A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.png`**, **`.pdf`**, or **`.pptx`**.
 
-**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. Slide decks (4:3 PowerPoint / Google Slides format) take a different path: the slide-agent writes one standalone PptxGenJS script per deck (`design/pptx-slides/[Name]Slides.mjs`) that you run with `node` to produce an editable `.pptx` directly.
+**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. Slide decks (4:3 PowerPoint / Google Slides format) use a PptxGenJS script per deck plus slide photos in `public/screenshots/powerpoint/` for browser preview — run **`pnpm dev`** to browse and download the editable `.pptx`.
 
 Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and Claude lays out the design using tokens and `components/`, then you preview in the browser and optionally push to Figma or export slides.
 
@@ -114,7 +114,7 @@ Once connected, add `FIGMA_FILE_KEY`, `FIGMA_CAROUSEL_NODE_ID`, and `FIGMA_INFOG
 
 **No Figma? No problem.** You can skip Figma entirely and download designs directly from the browser preview:
 - **Infographics / carousels** → PNG or PDF via the browser print dialog or a screenshot tool
-- **Slide decks** → the slide-agent writes one standalone Node script per deck under `design/pptx-slides/`. Run it with `node "design/pptx-slides/[Name]Slides.mjs"` to produce the editable `.pptx` in `design/pptx-slides/output/`.
+- **Slide decks** → open the deck tab in the preview app, browse slide photos, click **Download PPTX** for the editable file in `design/pptx-slides/output/`.
 
 No additional Anthropic API key is needed — Claude Code handles auth.
 

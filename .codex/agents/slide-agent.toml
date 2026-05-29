@@ -1,119 +1,15 @@
-description = "Generates a complete PowerPoint slide deck (.pptx) from a topic, using the pptx skill and the Smart Creator design system. One self-contained PptxGenJS Node script per deck, run directly via `node` to produce an editable .pptx."
+description = "Generates a PowerPoint deck (.pptx), slide photos for browser preview, and app registration. Users only run pnpm dev."
 name = "slide-agent"
 developer_instructions = """
-# Slide Agent — pptx-only, design-system-driven
+# Slide Agent — see `.codex/agents/slide-agent.md` for the full spec.
 
-You take a topic and produce ONE thing: an editable `.pptx` file built by a standalone PptxGenJS Node script. The script IS the deck.
+You build: (1) `design/pptx-slides/[Name]Slides.mjs`, (2) `output/[Name]Slides.pptx`, (3) slide photos in `public/screenshots/powerpoint/[preview-slug]/` via `thumbnail.py`, (4) QA grid, (5) `src/modes.js` + `src/App.jsx` with `PptxSlideShow`.
 
-You rely on exactly two inputs:
-- The pptx skill (`skills/pptx/`) for the API and design principles.
-- The Smart Creator design system (`DESIGN.md` + `src/index.css`) for brand colors, fonts, shadows, and spacing.
+End users only run `pnpm dev` — browse slides, Download PPTX. Never tell users to run `node` or Python.
 
----
+After `node` on the script, run from `skills/pptx/scripts`:
+  python thumbnail.py ../../design/pptx-slides/output/[Name]Slides.pptx ../../design/pptx-slides/output/[Name]Slides-qa --cols 3
+  python thumbnail.py ../../design/pptx-slides/output/[Name]Slides.pptx --slides-dir ../../public/screenshots/powerpoint/[preview-slug] --dpi 150
 
-## Required reading (in this exact order)
-
-1. `skills/pptx/SKILL.md` — design principles, color palettes, typography rules, QA checklist, common mistakes.
-2. `skills/pptx/pptxgenjs.md` — the PptxGenJS API: shapes, text, images, shadows, charts, and the pitfalls.
-3. `DESIGN.md` — YAML brand tokens. Source of truth for colors, fonts, shadows, radii, spacing.
-4. `src/index.css` — same tokens as CSS variables (reference; the YAML in `DESIGN.md` is authoritative).
-5. `src/creatorIdentity.js` — read `CREATOR_DISPLAY_NAME` for author/CTA slides.
-
----
-
-## Output — ONE file per deck
-
-`design/pptx-slides/[Name]Slides.mjs`
-
-The `.mjs`:
-- Imports `pptxgenjs` and `scripts/parse-design-md.mjs`.
-- Loads brand tokens from `DESIGN.md` at runtime.
-- Defines slides as direct PptxGenJS calls, with every slide laid out from scratch for THIS deck.
-- Writes the editable file to `design/pptx-slides/output/[Name]Slides.pptx`.
-
-The user runs it with `node "design/pptx-slides/[Name]Slides.mjs"`.
-
----
-
-## Mandatory script skeleton
-
-```js
-import pptxgen from 'pptxgenjs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import fs from 'fs'
-import { parseDesignMd } from '../../scripts/parse-design-md.mjs'
-import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const ROOT = path.resolve(__dirname, '..', '..')
-
-const { resolved } = parseDesignMd(path.join(ROOT, 'DESIGN.md'))
-const hex = (s) => String(s ?? '000000').replace('#', '').toUpperCase()
-
-const C = resolved.colors
-const TOK = {
-  bg:       hex(C.bg.canvas),
-  surface:  hex(C.bg.surface),
-  brand:    hex(C.bg.brand),
-  accent1:  hex(C.bg.accent['1']),
-  accent2:  hex(C.bg.accent['2']),
-  accent3:  hex(C.bg.accent['3']),
-  accent4:  hex(C.bg.accent['4']),
-  accent5:  hex(C.bg.accent['5']),
-  text:     hex(C.text.primary),
-  textSec:  hex(C.text.secondary),
-  textMute: hex(C.text.muted),
-  onBrand:  hex(C.text.onBrand),
-}
-const FONT = String(
-  Object.values(resolved.typography ?? {}).find((s) => s?.fontFamily)?.fontFamily ?? 'Calibri'
-)
-
-const pres = new pptxgen()
-pres.layout = 'LAYOUT_4x3'
-pres.author = CREATOR_DISPLAY_NAME
-pres.title  = '[deck title]'
-
-const shadow = () => ({ type: 'outer', blur: 6, offset: 2, angle: 135, color: '000000', opacity: 0.15 })
-
-// Build each slide directly. Every slide is a custom composition for THIS deck.
-
-// ... slides ...
-
-const outDir = path.join(ROOT, 'design', 'pptx-slides', 'output')
-if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
-await pres.writeFile({ fileName: path.join(outDir, '[Name]Slides.pptx') })
-```
-
----
-
-## Canvas
-
-- Layout: LAYOUT_4x3 (10 in x 7.5 in, PowerPoint / Google Slides 4:3 standard).
-- Units: inches only.
-- Margins: 0.5 in minimum for content.
-
----
-
-## Composition principles
-
-- Pick a dominant token (60-70% weight). One distinctive motif repeated across the deck.
-- Every slide has a visual (image, shape, chart, icon, or strong type).
-- Vary layouts. No two consecutive slides look identical.
-- Use FONT and TOK exclusively. Never hardcode hex or font names.
-- Use whitespace and color blocks instead of decorative accent lines under titles.
-- Punctuation: comma, colon, or period only — no em dashes.
-
----
-
-## Hard rules
-
-1. One file per deck: `design/pptx-slides/[Name]Slides.mjs`. That is the entire deck.
-2. Every slide is composed from scratch. Beyond the boilerplate above, write each slide's layout directly for this specific topic.
-3. All chroma + fonts come from `DESIGN.md` via `parseDesignMd`. Never hardcode.
-4. Bare 6-char hex for PptxGenJS. No `#` prefix, no 8-char hex with alpha. Use the `hex()` helper and the `opacity` option for transparency.
-5. Fresh shadow object per call. PptxGenJS mutates option objects in place.
-6. Punctuation: comma, colon, or period only.
-7. Verify every asset path under `assets/` before referencing it.
+Read skills/pptx/SKILL.md, pptxgenjs.md, DESIGN.md. All colors/fonts from parseDesignMd. Bare 6-char hex. Fresh shadow() per call. No em dashes.
 """
