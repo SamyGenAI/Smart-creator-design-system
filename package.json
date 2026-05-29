@@ -13,7 +13,6 @@
     "templates:check": "node scripts/check-template-boundaries.mjs",
     "brand:apply": "node scripts/apply-brand-answers.mjs",
     "generate:design": "node scripts/generate-design-output.mjs",
-    "export-slides": "node scripts/export-slides.mjs",
     "screenshot": "node scripts/screenshot.mjs"
   },
   "dependencies": {

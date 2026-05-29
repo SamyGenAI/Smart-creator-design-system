@@ -83,22 +83,16 @@ function updateAppRegistry({
   componentName,
   outputType,
   outputFileName,
-  slideDataAlias,
 }) {
   let appCode = readFileSync(APP_PATH, 'utf8')
 
   const importLines = [
     `import ${componentName} from '../design/${outputType}/${outputFileName}.jsx'`,
   ]
-  if (runtimeType === 'slides' && slideDataAlias) {
-    importLines.push(`import { SLIDE_DATA as ${slideDataAlias} } from '../design/${outputType}/${outputFileName}.data.js'`)
-  }
 
   appCode = insertImports(appCode, importLines)
 
-  const modeEntry = runtimeType === 'slides'
-    ? `  ${modeKey}: {\n    label: '${label}',\n    component: ${componentName},\n    type: 'slides',\n    slideCount: ${slideDataAlias}.slides.length,\n  },`
-    : `  ${modeKey}: {\n    label: '${label}',\n    component: ${componentName},\n    type: '${runtimeType}',\n  },`
+  const modeEntry = `  ${modeKey}: {\n    label: '${label}',\n    component: ${componentName},\n    type: '${runtimeType}',\n  },`
 
   appCode = upsertModeEntry(appCode, modeKey, modeEntry)
   writeFileSync(APP_PATH, appCode, 'utf8')
@@ -129,39 +123,18 @@ export default function ${componentName}() {
   writeFileSync(outputPath, code, 'utf8')
 }
 
-function writeSlidesOutput({
-  outputFileName,
-  componentName,
-  templateImportPath,
-  templateExport,
-  data,
-}) {
-  const outputDir = resolve(ROOT, 'design', 'pptx-slides')
-  mkdirSync(outputDir, { recursive: true })
-
-  const dataPath = resolve(outputDir, `${outputFileName}.data.js`)
-  const jsxPath = resolve(outputDir, `${outputFileName}.jsx`)
-  const serialized = JSON.stringify(data, null, 2)
-
-  writeFileSync(dataPath, `// GENERATED_FROM_TEMPLATE_DATA\nexport const SLIDE_DATA = ${serialized}\n`, 'utf8')
-
-  const jsx = `// GENERATED_FROM_TEMPLATE: ${templateImportPath}
-import ${templateExport} from '../../${templateImportPath}'
-import { SLIDE_DATA } from './${outputFileName}.data.js'
-
-export default function ${componentName}() {
-  return <${templateExport} slideData={SLIDE_DATA} />
-}
-`
-  writeFileSync(jsxPath, jsx, 'utf8')
-}
-
 function main() {
   const args = parseArgs(process.argv.slice(2))
 
   if (args.type === 'infographics') {
     throw new Error(
       'Infographics are not generated from templates. Add design/infographics/<Name>Infographic.jsx using InfographicCanvas + components/ (see skills/infographics-designer/SKILL.md), register in src/App.jsx.',
+    )
+  }
+
+  if (args.type === 'pptx-slides' || args.type === 'slides') {
+    throw new Error(
+      'Slide decks are not generated from templates. Each deck is a standalone PptxGenJS Node script under design/pptx-slides/<Name>Slides.mjs that reads brand tokens via scripts/parse-design-md.mjs (see .cursor/agents/slide-agent.md and skills/pptx/SKILL.md).',
     )
   }
 
@@ -221,28 +194,6 @@ function main() {
       outputFileName,
     })
     console.log(`✓ Generated design/${args.type}/${outputFileName}.jsx from template "${args.template}"`)
-    return
-  }
-
-  if (args.type === 'pptx-slides') {
-    const slideDataAlias = `${baseName.charAt(0).toLowerCase()}${baseName.slice(1)}Data`
-    writeSlidesOutput({
-      outputFileName,
-      componentName: outputFileName,
-      templateImportPath: templateDef.componentPath,
-      templateExport: templateDef.componentExport,
-      data,
-    })
-    updateAppRegistry({
-      modeKey,
-      label,
-      runtimeType: 'slides',
-      componentName: outputFileName,
-      outputType: args.type,
-      outputFileName,
-      slideDataAlias,
-    })
-    console.log(`✓ Generated design/pptx-slides/${outputFileName}.jsx + .data.js from template "${args.template}"`)
     return
   }
 

@@ -1,7 +1,7 @@
 # Smart Creator — Master Rules for Codex
 
 ## What we ship
-LinkedIn infographics (**1080×1350**) and slide decks (**1280×720**): React + tokens in `src/index.css` → optional Figma push (`mcp__figma__generate_figma_design`).
+LinkedIn infographics (**1080×1350**) and slide decks (**1024×768**, 4:3): React + tokens in `src/index.css` → optional Figma push (`mcp__figma__generate_figma_design`).
 
 **Figma file:** read `FIGMA_FILE_KEY` from `.env` (see `.claude/commands/figma.md` for setup)
 
@@ -78,8 +78,14 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 ---
 
-## Slides (1280×720)
+## Slides (PowerPoint / Google Slides 4:3 — `LAYOUT_4x3`, 10 in × 7.5 in)
 
-Skill: [`skills/slides/SKILL.md`](skills/slides/SKILL.md) · Agent: `.Codex/agents/slide-agent.md` · Slide canvas texture per skill (typically **`SquareGridTexture` at ~60%**).
+Skill: [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md) + [`skills/pptx/pptxgenjs.md`](skills/pptx/pptxgenjs.md) · Agent: `.codex/agents/slide-agent.md` · Tokens: `DESIGN.md` + `src/index.css`.
 
-Workflow: slide-agent → `pnpm dev` → `pnpm export-slides [DeckName]` → `.pptx` under [`design/pptx-slides/output/`](design/pptx-slides/output/).
+Each deck is **one standalone PptxGenJS Node script** at `design/pptx-slides/[Name]Slides.mjs`. The script reads brand tokens via `scripts/parse-design-md.mjs` and writes its editable `.pptx` directly to `design/pptx-slides/output/`. The editable `.pptx` IS the deliverable — there is no browser preview.
+
+Workflow:
+
+1. `/powerpoint <topic>` — agent reads `DESIGN.md`, `src/index.css`, `skills/pptx/SKILL.md`, `skills/design-brief/SKILL.md`, drafts a brief, waits for approval.
+2. On approval, the `slide-agent` writes one file: `design/pptx-slides/[Name]Slides.mjs`.
+3. The user runs `node "design/pptx-slides/[Name]Slides.mjs"` — output lands in `design/pptx-slides/output/[Name]Slides.pptx` and opens in PowerPoint or Google Slides.

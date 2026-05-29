@@ -1,13 +1,14 @@
+import fs from 'node:fs'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { chromium } from 'playwright'
 import sharp from 'sharp'
 import { MODES } from './src/modes.js'
+import { ensureAllPptxDecks, ensurePptxDeck, readPptxFile } from './scripts/sync-pptx-previews.mjs'
 
 const SIZES = {
   carousel: { width: 1080, height: 1350 },
   infographic: { width: 1080, height: 1350 },
-  slides: { width: 1280, height: 720 },
 }
 
 function pdfFromJpegs(pages) {
@@ -75,8 +76,57 @@ function exportPlugin() {
   return {
     name: 'playwright-export-api',
     configureServer(server) {
+      ensureAllPptxDecks().catch((err) => {
+        console.warn('[slides] Startup sync:', err.message)
+      })
+
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url || '/', 'http://localhost')
+
+        if (url.pathname === '/api/pptx/slides') {
+          try {
+            const modeKey = url.searchParams.get('mode') || ''
+            const result = await ensurePptxDeck(modeKey)
+            res.statusCode = 200
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify({ slides: result.slideUrls }))
+          } catch (error) {
+            res.statusCode = 500
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify({ error: error?.message || 'Failed to load slides', slides: [] }))
+          }
+          return
+        }
+
+        if (url.pathname === '/api/export/pptx') {
+          try {
+            const modeKey = url.searchParams.get('mode') || ''
+            const mode = MODES[modeKey]
+            if (!mode || mode.type !== 'pptx') {
+              res.statusCode = 400
+              res.end(`Unknown slide deck mode "${modeKey}"`)
+              return
+            }
+            await ensurePptxDeck(modeKey)
+            const pptxPath = readPptxFile(modeKey)
+            const buffer = fs.readFileSync(pptxPath)
+            res.statusCode = 200
+            res.setHeader(
+              'Content-Type',
+              'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            )
+            res.setHeader(
+              'Content-Disposition',
+              `attachment; filename="${mode.exportName || modeKey}.pptx"`,
+            )
+            res.end(buffer)
+          } catch (error) {
+            res.statusCode = 500
+            res.end(`Export failed: ${error?.message || 'Unknown error'}`)
+          }
+          return
+        }
+
         const isApi = url.pathname === '/api/export/png' || url.pathname === '/api/export/pdf'
         if (!isApi) return next()
 
@@ -90,9 +140,12 @@ function exportPlugin() {
           }
 
           const size = SIZES[mode.type]
+          if (!size) {
+            res.statusCode = 400
+            res.end(`Unsupported mode type "${mode.type}" for image/PDF export.`)
+            return
+          }
           const host = req.headers.host || 'localhost:5173'
-          const slide = Number(url.searchParams.get('slide'))
-          const hasSlide = Number.isInteger(slide) && slide >= 0
           const scale = Math.max(1, Math.min(4, Number(url.searchParams.get('scale') || (mode.type === 'infographic' ? '3' : '2'))))
 
           const browser = await chromium.launch()
@@ -118,12 +171,7 @@ function exportPlugin() {
           const locator = page.locator(`div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`)
 
           if (url.pathname === '/api/export/png') {
-            if (hasSlide && mode.type === 'slides') {
-              await page.locator('button[style*="border-radius: 4px"]').nth(slide).click()
-              await page.waitForTimeout(250)
-            }
-            const target = mode.type === 'slides' ? locator.first() : locator.first()
-            const buffer = await target.screenshot({ type: 'png', scale: 'device' })
+            const buffer = await locator.first().screenshot({ type: 'png', scale: 'device' })
             await browser.close()
             res.statusCode = 200
             res.setHeader('Content-Type', 'image/png')

@@ -2,7 +2,7 @@
 
 A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.png`**, **`.pdf`**, or **`.pptx`**.
 
-**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. For slide decks (16:9 YouTube/keynote format), the export path is `.pptx` via `pnpm export-slides`.
+**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. Slide decks (4:3 PowerPoint / Google Slides format) take a different path: the slide-agent writes one standalone PptxGenJS script per deck (`design/pptx-slides/[Name]Slides.mjs`) that you run with `node` to produce an editable `.pptx` directly.
 
 Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and Claude lays out the design using tokens and `components/`, then you preview in the browser and optionally push to Figma or export slides.
 
@@ -16,7 +16,7 @@ Instead of building in Figma from scratch every time, you describe what you want
 |---|---|---|
 | **Infographic** | 1080×1350px | **PNG** or **Figma** (via /figma command) |
 | **Carousel** | 1080×1350px × N slides | **PDF** or **Figma** (via /figma command) |
-| **Slide deck** | 1280×720px × N slides | **`.pptx`** (via `pnpm export-slides`) |
+| **Slide deck** | 10 in × 7.5 in (4:3 — PowerPoint / Google Slides standard) | **`.pptx`** (one standalone PptxGenJS Node script per deck) |
 
 All three formats share the same token set (colors, fonts, shadows) and component library, so everything stays on-brand by construction.
 
@@ -36,7 +36,7 @@ Slides:       slide-agent
 pnpm dev         → preview in browser
    ↓
    ├── infographic / carousel  →  Figma MCP push  →  edit & publish in Figma
-   └── slide deck              →  pnpm export-slides  →  .pptx file
+   └── slide deck              →  pnpm dev  →  preview + Download PPTX
 ```
 
 The rules, tokens, and layout guidance live in **`skills/infographics-designer/SKILL.md`** (infographics), **`CLAUDE.md`**, and **`DESIGN.md`**.
@@ -114,7 +114,7 @@ Once connected, add `FIGMA_FILE_KEY`, `FIGMA_CAROUSEL_NODE_ID`, and `FIGMA_INFOG
 
 **No Figma? No problem.** You can skip Figma entirely and download designs directly from the browser preview:
 - **Infographics / carousels** → PNG or PDF via the browser print dialog or a screenshot tool
-- **Slide decks** → `pnpm export-slides [DeckName]` → `.pptx` file
+- **Slide decks** → the slide-agent writes one standalone Node script per deck under `design/pptx-slides/`. Run it with `node "design/pptx-slides/[Name]Slides.mjs"` to produce the editable `.pptx` in `design/pptx-slides/output/`.
 
 No additional Anthropic API key is needed — Claude Code handles auth.
 
@@ -175,12 +175,11 @@ The agent will first ask whether you have an existing website or visual identity
 
 **Both tracks produce the same artifacts:** updated `DESIGN.md` and aligned `src/index.css` (manual sync for CSS variables).
 
-### Export a deck to `.pptx`
+### Slide decks (PowerPoint)
 
-```bash
-pnpm export-slides MyDeckName
-# → design/pptx-slides/output/MyDeckNameSlides.pptx
-```
+Run `pnpm dev`, open the slide deck tab (e.g. **Claude Code Setup (Slides)**), browse slide photos with the arrows, and click **Download PPTX** for the editable PowerPoint file.
+
+Slide photos are generated automatically and saved under `public/screenshots/powerpoint/` (one image per slide). The browser slideshow reads those files.
 
 ### Push an infographic/carousel to Figma
 
@@ -217,18 +216,15 @@ pnpm brand:apply -- --input tmp/brand-answers.json
 
 ### C. Components → `components/`
 
-The building blocks Claude composes from: `InfographicHeader`, `PastelShadowBorderCard`, `NumberBullet`, `Checklist`, `IconBullet`, `Table`, `PrimaryGlassSection`, `SlideCard`, etc.
+The building blocks Claude composes from: `InfographicHeader`, `InfographicFooter`, `PastelShadowBorderCard`, `NumberBullet`, `Checklist`, `IconBullet`, `Table`, `PrimaryGlassSection`, `BrandBorderSectionBase`, etc.
 
 If you want new layouts, add a component here and describe usage inline or in **`skills/infographics-designer/SKILL.md`** when it is a recurring pattern.
 
 ### D. Templates (source) → `templates/`
 
-Templates are grouped by output type:
+- `templates/carousels/` — source templates for carousels (used by `pnpm generate:design`).
 
-- `templates/carousels/`
-- `templates/pptx-slides/`
-
-Carousel and slide **`pnpm generate:design`** flows still originate from templates. Infographics **do not** — add files under [`design/infographics/`](design/infographics/).
+Infographics and slide decks **do not** use this folder. Infographics are written by hand under [`design/infographics/`](design/infographics/). Slide decks are written by the slide-agent as one standalone PptxGenJS Node script per deck under [`design/pptx-slides/`](design/pptx-slides/), with zero shared template.
 
 ### E. Assets → `assets/`
 
@@ -286,8 +282,8 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 ├── design/                   ← generated work, grouped by type
 │   ├── infographics/         ←   1080×1350 single-canvas pieces
 │   ├── carousels/            ←   1080×1350 multi-slide carousels
-│   └── pptx-slides/          ←   1280×720 slide decks (.data.js + .jsx)
-│       └── output/           ←     exported .pptx files
+│   └── pptx-slides/          ←   4:3 slide decks (one [Name]Slides.mjs per deck)
+│       └── output/           ←     exported .pptx files (produced by running each .mjs)
 ├── src/App.jsx               ← preview app + MODES registry
 ├── scripts/
 │   ├── validate-design.mjs   ← DESIGN.md schema validation
@@ -296,7 +292,7 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 │   ├── check-template-boundaries.mjs ← source/output guardrail
 │   ├── fetch-logo.mjs        ← Brandfetch wordmarks
 │   ├── fetch-app-logo.mjs    ← logo.dev app icons
-│   ├── export-slides.mjs     ← PPTX export
+│   ├── parse-design-md.mjs   ← DESIGN.md loader (used by slide decks for tokens)
 │   └── screenshot.mjs        ← Playwright QC screenshots
 ├── assets/                   ← avatar, icons, logos, textures, illustrations
 ```

@@ -5,12 +5,5 @@
       "componentExport": "LinkedInCarouselTemplate",
       "outputSuffix": "Carousel"
     }
-  },
-  "pptx-slides": {
-    "standard": {
-      "componentPath": "templates/pptx-slides/SlidesTemplate.jsx",
-      "componentExport": "SlidesTemplate",
-      "outputSuffix": "Slides"
-    }
   }
 }
