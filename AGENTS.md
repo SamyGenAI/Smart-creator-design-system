@@ -54,7 +54,7 @@ For **infographics**, the brief step and the build step are owned by the **same*
 |---|---|
 | Infographic | **By hand**: `InfographicCanvas` + `components/` + section JSX; **`pnpm generate:design` does not apply** |
 | Carousel | **`pnpm generate:design`** from [`templates/template-manifest.json`](templates/template-manifest.json) |
-| Slide deck | **`slide-agent`** → one `design/pptx-slides/[Name]Slides.mjs` per deck (not template codegen) |
+| Slide deck | **`slide-agent`** → one `design/pptx-slides/[Name]Slides.mjs` per deck, ports from [`design/pptx-slides/templates/`](design/pptx-slides/templates/) |
 
 ---
 
@@ -79,11 +79,11 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 ---
 
-## Slides (PowerPoint / Google Slides 4:3 — `LAYOUT_4x3`, 10 in × 7.5 in)
+## Slides (PowerPoint / Google Slides 16:9 — `LAYOUT_16x9`, 10 in × 5.625 in)
 
-Skill: [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md) + [`skills/pptx/pptxgenjs.md`](skills/pptx/pptxgenjs.md) · Agent: `.codex/agents/slide-agent.md` · Tokens: `DESIGN.md` + `src/index.css`.
+Skill: [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md) + [`skills/pptx/slide-templates.md`](skills/pptx/slide-templates.md) + [`skills/pptx/pptxgenjs.md`](skills/pptx/pptxgenjs.md) · Agent: `.codex/agents/slide-agent.md` · Templates: [`design/pptx-slides/templates/slideTemplates.html`](design/pptx-slides/templates/slideTemplates.html) · Tokens: `DESIGN.md` + `src/index.css`.
 
-Each deck is **one standalone PptxGenJS Node script** at `design/pptx-slides/[Name]Slides.mjs`. The slide-agent also exports **slide photos** to `public/screenshots/powerpoint/[preview-slug]/` (via `skills/pptx/scripts/thumbnail.py`) and registers the deck in `src/modes.js` + `src/App.jsx` (`PptxSlideShow`).
+Each deck is **one standalone PptxGenJS Node script** at `design/pptx-slides/[Name]Slides.mjs`. Content slides port from the **15-layout template catalog** (`slideTemplates.manifest.json`). The slide-agent also captures **slide photos** to `public/screenshots/powerpoint/[preview-slug]/` via `scripts/screenshot.mjs` (Playwright) and registers the deck in `src/modes.js` + `src/App.jsx` (`PptxSlideShow`).
 
 Workflow:
 

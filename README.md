@@ -2,7 +2,7 @@
 
 A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.png`**, **`.pdf`**, or **`.pptx`**.
 
-**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. Slide decks (4:3 PowerPoint / Google Slides format) use a PptxGenJS script per deck plus slide photos in `public/screenshots/powerpoint/` for browser preview — run **`pnpm dev`** to browse and download the editable `.pptx`.
+**Figma is the primary destination.** Infographics and carousels are rendered as pixel-perfect React previews and pushed to your Figma file in one MCP call, where you can edit layers, swap assets, and publish — no manual layout work. Slide decks (16:9 PowerPoint format) use a PptxGenJS script per deck plus slide photos in `public/screenshots/powerpoint/` for browser preview — run **`pnpm dev`** to browse and download the editable `.pptx`.
 
 Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and Claude lays out the design using tokens and `components/`, then you preview in the browser and optionally push to Figma or export slides.
 
@@ -179,7 +179,7 @@ The agent will first ask whether you have an existing website or visual identity
 
 Run `pnpm dev`, open the slide deck tab (e.g. **Claude Code Setup (Slides)**), browse slide photos with the arrows, and click **Download PPTX** for the editable PowerPoint file.
 
-Slide photos are generated automatically and saved under `public/screenshots/powerpoint/` (one image per slide). The browser slideshow reads those files.
+Slide preview JPGs live under `public/screenshots/powerpoint/` (one file per slide). Capture them with `pnpm screenshot <mode-key> --preview` while `pnpm dev` is running, or commit JPGs exported from PowerPoint. The browser slideshow reads those files.
 
 ### Push an infographic/carousel to Figma
 
@@ -224,7 +224,7 @@ If you want new layouts, add a component here and describe usage inline or in **
 
 - `templates/carousels/` — source templates for carousels (used by `pnpm generate:design`).
 
-Infographics and slide decks **do not** use this folder. Infographics are written by hand under [`design/infographics/`](design/infographics/). Slide decks are written by the slide-agent as one standalone PptxGenJS Node script per deck under [`design/pptx-slides/`](design/pptx-slides/), with zero shared template.
+Infographics are written by hand under [`design/infographics/`](design/infographics/). Slide decks use the **template library** at [`design/pptx-slides/templates/`](design/pptx-slides/templates/) (`slideTemplates.html` + manifest); the slide-agent ports layouts into one PptxGenJS `.mjs` script per deck.
 
 ### E. Assets → `assets/`
 
@@ -254,7 +254,7 @@ During `@setup`, add your portrait as `assets/avatar/avatar-profile.png` (square
 pnpm generate:design -- --type carousels --template linkedin --name MyTopic --data tmp/brief.json
 ```
 
-**Slide decks:** use `/powerpoint` — the slide-agent writes `design/pptx-slides/<Name>Slides.mjs`, exports `.pptx` + preview photos, and registers a `pptx` mode (see [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md)). Users preview with `pnpm dev` only.
+**Slide decks:** use `/powerpoint` — the slide-agent reads [`skills/pptx/slide-templates.md`](skills/pptx/slide-templates.md), ports from `design/pptx-slides/templates/`, writes `design/pptx-slides/<Name>Slides.mjs`, builds `.pptx`, captures preview photos via `pnpm screenshot <mode-key> --preview`, and registers a `pptx` mode. Users preview with `pnpm dev` only.
 
 **Infographics:** create `design/infographics/<Name>Infographic.jsx` with [`components/InfographicCanvas.jsx`](components/InfographicCanvas.jsx) and any components you need from [`components/`](components/); register in `src/App.jsx` (see [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md)).
 
@@ -283,7 +283,7 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 ├── design/                   ← generated work, grouped by type
 │   ├── infographics/         ←   1080×1350 single-canvas pieces
 │   ├── carousels/            ←   1080×1350 multi-slide carousels
-│   └── pptx-slides/          ←   4:3 decks (one [Name]Slides.mjs + output/*.pptx per deck)
+│   └── pptx-slides/          ←   16:9 decks (one [Name]Slides.mjs + output/*.pptx per deck; templates/ for layouts)
 │       └── output/           ←     editable .pptx deliverables
 ├── src/App.jsx               ← preview app + MODES registry
 ├── scripts/

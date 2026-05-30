@@ -134,7 +134,7 @@ function main() {
 
   if (args.type === 'pptx-slides' || args.type === 'slides') {
     throw new Error(
-      'Slide decks are not generated from templates. Each deck is a standalone PptxGenJS Node script under design/pptx-slides/<Name>Slides.mjs that reads brand tokens via scripts/parse-design-md.mjs (see .cursor/agents/slide-agent.md and skills/pptx/SKILL.md).',
+      'Slide decks are not generated from templates/carousels codegen. Each deck is a standalone PptxGenJS Node script under design/pptx-slides/<Name>Slides.mjs that ports layouts from design/pptx-slides/templates/ (see .cursor/agents/slide-agent.md and skills/pptx/slide-templates.md).',
     )
   }
 

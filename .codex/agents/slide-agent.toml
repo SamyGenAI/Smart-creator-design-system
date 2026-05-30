@@ -3,13 +3,13 @@ name = "slide-agent"
 developer_instructions = """
 # Slide Agent — see `.codex/agents/slide-agent.md` for the full spec.
 
-You build: (1) `design/pptx-slides/[Name]Slides.mjs`, (2) `output/[Name]Slides.pptx`, (3) slide photos in `public/screenshots/powerpoint/[preview-slug]/` via `thumbnail.py`, (4) QA grid, (5) `src/modes.js` + `src/App.jsx` with `PptxSlideShow`.
+You build: (1) `design/pptx-slides/[Name]Slides.mjs`, (2) `output/[Name]Slides.pptx`, (3) slide photos in `public/screenshots/powerpoint/[preview-slug]/` via `pnpm screenshot [mode-key] --preview`, (4) QA PNGs in `qc-screenshots/`, (5) `src/modes.js` + `src/App.jsx` with `PptxSlideShow`.
 
 End users only run `pnpm dev` — browse slides, Download PPTX. Never tell users to run `node` or Python.
 
-After `node` on the script, run from `skills/pptx/scripts`:
-  python thumbnail.py ../../design/pptx-slides/output/[Name]Slides.pptx ../../design/pptx-slides/output/[Name]Slides-qa --cols 3
-  python thumbnail.py ../../design/pptx-slides/output/[Name]Slides.pptx --slides-dir ../../public/screenshots/powerpoint/[preview-slug] --dpi 150
+After `node` on the deck script, with `pnpm dev` running in another terminal:
+  pnpm screenshot [mode-key] --preview
+  pnpm screenshot [mode-key]
 
-Read skills/pptx/SKILL.md, pptxgenjs.md, DESIGN.md. All colors/fonts from parseDesignMd. Bare 6-char hex. Fresh shadow() per call. No em dashes.
+Read skills/pptx/SKILL.md, slide-templates.md, pptxgenjs.md, DESIGN.md. All colors/fonts from parseDesignMd. Bare 6-char hex. Fresh shadow() per call. No em dashes.
 """

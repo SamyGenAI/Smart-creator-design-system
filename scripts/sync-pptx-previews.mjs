@@ -1,10 +1,11 @@
 /**
  * Slide deck pipeline (automatic on pnpm dev):
  *   1. Build .pptx from design/pptx-slides/[Name]Slides.mjs
- *   2. Export slide photos → public/screenshots/powerpoint/[slug]/slide-01.jpg …
- *   3. Browser slideshow reads those photos (components/PptxSlideShow.jsx)
+ *   2. Serve slide photos from public/screenshots/powerpoint/[slug]/slide-01.jpg …
+ *   3. If that folder is empty, write branded placeholder JPGs (sharp) until real exports are added
  *
- * Photo export uses skills/pptx/scripts/thumbnail.py (--slides-dir).
+ * Refresh preview JPGs with Playwright: `pnpm dev` + `pnpm screenshot <mode-key> --preview`
+ * (see skills/pptx/slide-templates.md).
  */
 
 import { spawn } from 'node:child_process'
@@ -18,7 +19,6 @@ import { MODES } from '../src/modes.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export const ROOT = path.resolve(__dirname, '..')
 
-const PPTX_SCRIPTS_DIR = path.join(ROOT, 'skills', 'pptx', 'scripts')
 const PPTX_OUTPUT_DIR = path.join(ROOT, 'design', 'pptx-slides', 'output')
 const PREVIEW_ROOT = path.join(ROOT, 'public', 'screenshots', 'powerpoint')
 
@@ -41,10 +41,6 @@ function run(cmd, args, options = {}) {
   })
 }
 
-function pythonExecutable() {
-  return process.platform === 'win32' ? 'python' : 'python3'
-}
-
 function statMtime(filePath) {
   try {
     return fs.statSync(filePath).mtimeMs
@@ -61,8 +57,7 @@ export function pathsForMode(modeKey, meta) {
   const scriptPath = path.join(ROOT, 'design', 'pptx-slides', meta.deckScript)
   const pptxPath = path.join(PPTX_OUTPUT_DIR, meta.pptxFile)
   const photosDir = path.join(PREVIEW_ROOT, meta.previewSlug)
-  const qcGridPath = path.join(PPTX_OUTPUT_DIR, `${path.parse(meta.pptxFile).name}-qa.jpg`)
-  return { scriptPath, pptxPath, photosDir, qcGridPath }
+  return { scriptPath, pptxPath, photosDir }
 }
 
 async function buildPptx(scriptPath, pptxPath) {
@@ -75,16 +70,6 @@ async function buildPptx(scriptPath, pptxPath) {
   }
 }
 
-/** Export slide-NN.jpg into the deck photo folder (thumbnail.py). */
-export async function generateSlidePhotos(pptxPath, photosDir) {
-  fs.mkdirSync(photosDir, { recursive: true })
-  await run(
-    pythonExecutable(),
-    ['thumbnail.py', pptxPath, '--slides-dir', photosDir, '--dpi', '150'],
-    { cwd: PPTX_SCRIPTS_DIR },
-  )
-}
-
 async function countSlidesInPptx(pptxPath) {
   const buf = fs.readFileSync(pptxPath)
   const zip = await JSZip.loadAsync(buf)
@@ -94,8 +79,8 @@ async function countSlidesInPptx(pptxPath) {
   return matches?.length || 1
 }
 
-/** Last resort so the slideshow has something to show while photos are regenerating. */
-async function writeTemporarySlidePhotos(photosDir, slideCount, deckLabel) {
+/** Branded placeholders when no slide-NN.jpg files exist yet. */
+async function writePlaceholderSlidePhotos(photosDir, slideCount, deckLabel) {
   fs.mkdirSync(photosDir, { recursive: true })
   const w = 1280
   const h = 720
@@ -106,7 +91,7 @@ async function writeTemporarySlidePhotos(photosDir, slideCount, deckLabel) {
         <rect x="0" y="0" width="100%" height="56" fill="#092c69"/>
         <text x="48" y="38" font-family="Montserrat, Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff">${deckLabel}</text>
         <text x="48" y="360" font-family="Montserrat, Arial, sans-serif" font-size="42" font-weight="700" fill="#092c69">Slide ${i}</text>
-        <text x="48" y="420" font-family="Montserrat, Arial, sans-serif" font-size="18" fill="#717188">Slide ${i} of ${slideCount}</text>
+        <text x="48" y="420" font-family="Montserrat, Arial, sans-serif" font-size="18" fill="#717188">Run pnpm screenshot &lt;mode-key&gt; --preview (see slide-templates.md)</text>
       </svg>`
     const out = path.join(photosDir, `slide-${String(i).padStart(2, '0')}.jpg`)
     await sharp(Buffer.from(svg)).jpeg({ quality: 90 }).toFile(out)
@@ -128,11 +113,11 @@ function needsPptxBuild(scriptPath, pptxPath) {
   return statMtime(scriptPath) > statMtime(pptxPath)
 }
 
-function needsPhotoRefresh(pptxPath, previewSlug) {
+function photosAreStale(pptxPath, previewSlug) {
   if (!fs.existsSync(pptxPath)) return false
   const pptxMtime = statMtime(pptxPath)
   const urls = listSlidePhotoUrls(previewSlug)
-  if (urls.length === 0) return true
+  if (urls.length === 0) return false
   const newest = urls.reduce((max, url) => {
     const file = path.join(ROOT, 'public', url.replace(/^\//, ''))
     return Math.max(max, statMtime(file))
@@ -141,7 +126,7 @@ function needsPhotoRefresh(pptxPath, previewSlug) {
 }
 
 /**
- * Ensure .pptx exists and slide photos in public/screenshots/powerpoint/[slug]/ are current.
+ * Ensure .pptx exists and slide photos in public/screenshots/powerpoint/[slug]/ are available.
  */
 export async function ensurePptxDeck(modeKey) {
   const meta = MODES[modeKey]
@@ -155,40 +140,25 @@ export async function ensurePptxDeck(modeKey) {
     await buildPptx(scriptPath, pptxPath)
   }
 
-  if (needsPhotoRefresh(pptxPath, meta.previewSlug)) {
-    try {
-      await generateSlidePhotos(pptxPath, photosDir)
-    } catch (err) {
-      console.warn(`[slides] Photo export for ${modeKey}:`, err.message)
-      const existing = listSlidePhotoUrls(meta.previewSlug)
-      if (existing.length === 0) {
-        const count = await countSlidesInPptx(pptxPath)
-        await writeTemporarySlidePhotos(photosDir, count, meta.label)
-      }
-    }
+  let slideUrls = listSlidePhotoUrls(meta.previewSlug)
+  if (slideUrls.length === 0) {
+    const count = await countSlidesInPptx(pptxPath)
+    await writePlaceholderSlidePhotos(photosDir, count, meta.label)
+    slideUrls = listSlidePhotoUrls(meta.previewSlug)
+    console.warn(
+      `[slides] ${meta.label}: using placeholder preview JPGs. Run \`pnpm screenshot ${modeKey} --preview\` while dev server is up (see skills/pptx/slide-templates.md).`,
+    )
+  } else if (photosAreStale(pptxPath, meta.previewSlug)) {
+    console.warn(
+      `[slides] ${meta.label}: .pptx is newer than preview JPGs. Run \`pnpm screenshot ${modeKey} --preview\` to refresh (requires \`pnpm dev\`).`,
+    )
   }
 
-  const slideUrls = listSlidePhotoUrls(meta.previewSlug)
   return {
     slideUrls,
     previewReady: slideUrls.length > 0,
     pptxPath,
   }
-}
-
-/** QA contact sheet for slide-agent (thumbnail.py grid). */
-export async function buildQaGrid(modeKey) {
-  const meta = MODES[modeKey]
-  if (!meta || meta.type !== 'pptx') return null
-  const { pptxPath, qcGridPath } = pathsForMode(modeKey, meta)
-  await ensurePptxDeck(modeKey)
-  const qcPrefix = qcGridPath.replace(/\.jpg$/, '')
-  await run(
-    pythonExecutable(),
-    ['thumbnail.py', pptxPath, qcPrefix, '--cols', '3'],
-    { cwd: PPTX_SCRIPTS_DIR },
-  )
-  return fs.existsSync(qcGridPath) ? qcGridPath : `${qcPrefix}.jpg`
 }
 
 export async function ensureAllPptxDecks() {

@@ -4,7 +4,7 @@ The deck will be produced as a single self-contained PptxGenJS Node script using
 - `skills/pptx/SKILL.md` + `skills/pptx/pptxgenjs.md`
 - The Smart Creator design system (`DESIGN.md` + `src/index.css`)
 
-Slide photos for browser preview use `skills/pptx/scripts/thumbnail.py`. The slideshow uses `components/PptxSlideShow.jsx`.
+Slide photos for browser preview use Playwright: `pnpm screenshot <mode-key> --preview` (requires `pnpm dev`). The slideshow uses `components/PptxSlideShow.jsx`.
 
 ---
 

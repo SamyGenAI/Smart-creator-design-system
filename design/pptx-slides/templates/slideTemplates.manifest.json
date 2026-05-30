@@ -1,0 +1,256 @@
+{
+  "version": 1,
+  "source": "design/pptx-slides/templates/slideTemplates.html",
+  "canvas": {
+    "widthPx": 1280,
+    "heightPx": 720,
+    "pptxLayout": "LAYOUT_16x9",
+    "widthIn": 10,
+    "heightIn": 5.625
+  },
+  "conversion": {
+    "xIn": "xPx / 1280 * 10",
+    "yIn": "yPx / 720 * 5.625",
+    "wIn": "wPx / 1280 * 10",
+    "hIn": "hPx / 720 * 5.625",
+    "fontPt": "Math.round(fontPx * 0.5625)"
+  },
+  "titleAnchor": {
+    "topPx": 50,
+    "leftPx": 72,
+    "fontPx": 62,
+    "fontWeight": 800,
+    "colorVar": "--navy",
+    "tokKey": "brand"
+  },
+  "tokenMap": {
+    "--cream": "bg",
+    "--navy": "brand",
+    "--ink": "text",
+    "--muted": "textSec",
+    "--blue-100": "accent1Soft",
+    "--blue-200": "accent1Mid",
+    "--blue-300": "accent1",
+    "--blue-400": "accent1Strong",
+    "--pink-100": "accent4Soft",
+    "--pink-200": "accent4Mid",
+    "--pink-300": "accent4",
+    "--amber-100": "accent3Soft",
+    "--amber-200": "accent3Mid",
+    "--amber-300": "accent3",
+    "--green-100": "accent2Soft",
+    "--green-200": "accent2Mid",
+    "--green-300": "accent2",
+    "--orange-100": "accent5Soft",
+    "--orange-200": "accent5Mid",
+    "--orange-300": "accent5",
+    "white-on-brand": "onBrand",
+    "surface": "surface"
+  },
+  "primitives": {
+    "glass-navy": "Frosted card on brand background: white 10% fill, 3px white border, 20px radius",
+    "gn-header": "Navy header bar inside glass card, 64px tall, white border",
+    "gn-body": "Muted body copy inside glass card, 24px medium weight",
+    "pill": "Rounded legend chip with dot indicator",
+    "num-badge": "Numbered step badge",
+    "legend": "Absolute-positioned legend column"
+  },
+  "templates": [
+    {
+      "id": "venn-2-circle",
+      "label": "Venn 2-circle",
+      "dataScreenLabel": "Venn 2-circle",
+      "slots": {
+        "regions": 3,
+        "legendItems": 3,
+        "items": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Overlap, comparison, or shared traits between two concepts",
+      "placeholderPattern": "Item N, Description N, legend pills with percentages",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "donut-chart",
+      "label": "Donut chart",
+      "dataScreenLabel": "Donut chart",
+      "slots": {
+        "segments": 3,
+        "legendItems": 3
+      },
+      "bestFor": "Market share, budget split, or proportional breakdown",
+      "placeholderPattern": "Segment labels with percentages in legend pills",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "iceberg",
+      "label": "Iceberg",
+      "dataScreenLabel": "Iceberg",
+      "slots": {
+        "visibleItems": 3,
+        "hiddenItems": 3
+      },
+      "bestFor": "Surface vs root cause, visible symptoms vs underlying drivers",
+      "placeholderPattern": "Visible Signs / Underlying Patterns style labels with descriptions",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "pyramid",
+      "label": "Pyramid",
+      "dataScreenLabel": "Pyramid",
+      "slots": {
+        "tiers": 4
+      },
+      "bestFor": "Hierarchy, maturity model, or priority stack",
+      "placeholderPattern": "Tier labels from apex to base with descriptions",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "pie-chart",
+      "label": "Pie chart",
+      "dataScreenLabel": "Pie chart",
+      "slots": {
+        "segments": 3,
+        "legendItems": 3
+      },
+      "bestFor": "Simple three-part distribution with legend",
+      "placeholderPattern": "R&D / Marketing / Operations style segment labels",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "vertical-timeline",
+      "label": "Vertical timeline",
+      "dataScreenLabel": "Vertical timeline",
+      "slots": {
+        "steps": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Sequential process, roadmap milestones, or phased rollout",
+      "placeholderPattern": "Step N + Description N down the left spine",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "header-cards",
+      "label": "Header cards",
+      "dataScreenLabel": "Header cards",
+      "slots": {
+        "cards": 3,
+        "headers": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Three parallel pillars, features, or value props with titled cards",
+      "placeholderPattern": "Card title N in gn-header, body in gn-body",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "cascade-boxes",
+      "label": "Cascade boxes",
+      "dataScreenLabel": "Cascade boxes",
+      "slots": {
+        "boxes": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Waterfall logic, cause chain, or descending dependency flow",
+      "placeholderPattern": "Stacked offset boxes with Item N + Description N",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "badge-cards",
+      "label": "Badge cards",
+      "dataScreenLabel": "Badge cards",
+      "slots": {
+        "cards": 3,
+        "badges": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Numbered priorities, ranked tips, or ordered recommendations",
+      "placeholderPattern": "num-badge + Item N + Description N per card",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "chevron-process",
+      "label": "Chevron process",
+      "dataScreenLabel": "Chevron process",
+      "slots": {
+        "steps": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Linear workflow, funnel stages, or handoff sequence",
+      "placeholderPattern": "Chevron shapes with Step N labels and descriptions",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "icon-columns-3",
+      "label": "Icon columns 3",
+      "dataScreenLabel": "Icon columns 3",
+      "slots": {
+        "columns": 3,
+        "icons": 3,
+        "titles": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Three benefits, capabilities, or talking points with icons",
+      "placeholderPattern": "Icon title N + Description N in three equal columns",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "icon-columns-6",
+      "label": "Icon columns 6",
+      "dataScreenLabel": "Icon columns 6",
+      "slots": {
+        "columns": 6,
+        "icons": 6,
+        "titles": 6,
+        "descriptions": 6
+      },
+      "bestFor": "Feature grid, checklist of six items, or compact capability matrix",
+      "placeholderPattern": "Icon title N + Description N in six columns (2 rows of 3)",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "venn-3-circle",
+      "label": "Venn 3-circle",
+      "dataScreenLabel": "Venn 3-circle",
+      "slots": {
+        "circles": 3,
+        "overlapRegions": 4,
+        "legendItems": 4
+      },
+      "bestFor": "Three-way comparison, intersection of domains, or ecosystem overlap",
+      "placeholderPattern": "Items / Steps / Icons / All Three region labels",
+      "bodyTopPx": 130
+    },
+    {
+      "id": "navy-glass-cards-3",
+      "label": "Navy glass cards 3",
+      "dataScreenLabel": "Navy glass cards 3",
+      "slots": {
+        "cards": 3,
+        "headers": 3,
+        "descriptions": 3
+      },
+      "bestFor": "Premium three-card layout on dark brand background with glass effect",
+      "placeholderPattern": "Card title N in gn-header, placeholder copy in gn-body",
+      "bodyTopPx": 130,
+      "background": "brand"
+    },
+    {
+      "id": "navy-glass-cards-4",
+      "label": "Navy glass cards 4",
+      "dataScreenLabel": "Navy glass cards 4",
+      "slots": {
+        "cards": 4,
+        "headers": 4,
+        "descriptions": 4
+      },
+      "bestFor": "Four-quadrant summary, KPI cards, or compact comparison on brand background",
+      "placeholderPattern": "Card N in gn-header, short description in gn-body",
+      "bodyTopPx": 130,
+      "background": "brand"
+    }
+  ],
+  "bookends": {
+    "hero": "No catalog template. Compose creatively: brand background, badge pill, large title, subtitle, author bar.",
+    "cta": "No catalog template. Compose creatively: brand background, key takeaway, CREATOR_DISPLAY_NAME, follow CTA."
+  }
+}

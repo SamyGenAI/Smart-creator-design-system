@@ -11,8 +11,9 @@ license: Proprietary. LICENSE.txt has complete terms
 | Task | Guide |
 |------|-------|
 | Read/analyze content | `python -m markitdown presentation.pptx` |
+| Create Smart Creator decks | Read [slide-templates.md](slide-templates.md) first |
 | Edit or create from template | Read [editing.md](editing.md) |
-| Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+| PptxGenJS API reference | Read [pptxgenjs.md](pptxgenjs.md) |
 
 ---
 
@@ -22,12 +23,11 @@ license: Proprietary. LICENSE.txt has complete terms
 # Text extraction
 python -m markitdown presentation.pptx
 
-# Visual overview
-python scripts/thumbnail.py presentation.pptx
-
 # Raw XML
 python scripts/office/unpack.py presentation.pptx unpacked/
 ```
+
+**Smart Creator slide decks:** visual preview via Playwright — `pnpm dev` then `pnpm screenshot <mode-key> --preview` (see [slide-templates.md](slide-templates.md)).
 
 ---
 
@@ -35,16 +35,18 @@ python scripts/office/unpack.py presentation.pptx unpacked/
 
 **Read [editing.md](editing.md) for full details.**
 
-1. Analyze template with `thumbnail.py`
+1. Analyze template with `python -m markitdown template.pptx` and open the file in PowerPoint for layout review
 2. Unpack → manipulate slides → edit content → clean → pack
 
 ---
 
-## Creating from Scratch
+## Creating Smart Creator Decks
 
-**Read [pptxgenjs.md](pptxgenjs.md) for full details.**
+**Read [slide-templates.md](slide-templates.md) first.**
 
-Use when no template or reference presentation is available.
+Every content slide ports from the catalog at `design/pptx-slides/templates/` (`slideTemplates.html` + `slideTemplates.manifest.json`). Use `LAYOUT_16x9` (1280×720). Hero and CTA bookends are the only slides composed without a catalog template.
+
+**Read [pptxgenjs.md](pptxgenjs.md)** for PptxGenJS API details.
 
 ---
 
@@ -204,29 +206,21 @@ Report ALL issues found, including minor ones.
 
 ---
 
-## Converting to Images
+## Visual QA (Smart Creator decks)
 
-Convert presentations to individual slide images for visual inspection:
-
-```bash
-python scripts/office/soffice.py --headless --convert-to pdf output.pptx
-pdftoppm -jpeg -r 150 output.pdf slide
-```
-
-This creates `slide-01.jpg`, `slide-02.jpg`, etc.
-
-To re-render specific slides after fixes:
+With `pnpm dev` running:
 
 ```bash
-pdftoppm -jpeg -r 150 -f N -l N output.pdf slide-fixed
+pnpm screenshot <mode-key> --preview   # commit JPGs under public/screenshots/powerpoint/
+pnpm screenshot <mode-key>             # QA PNGs in qc-screenshots/
 ```
+
+See [slide-templates.md](slide-templates.md) for the full workflow.
 
 ---
 
 ## Dependencies
 
-- `pip install "markitdown[pptx]"` - text extraction
-- `pip install Pillow` - thumbnail grids
-- `npm install -g pptxgenjs` - creating from scratch
-- `soffice` - PDF conversion (auto-configured for sandboxed environments via `scripts/office/soffice.py`)
-- `pdftoppm` - PDF to slide images
+- `pip install "markitdown[pptx]"` — text extraction (optional, for editing workflow)
+- `pptxgenjs` — creating Smart Creator decks (see [pptxgenjs.md](pptxgenjs.md))
+- `pnpm dev` + Playwright — browser preview photos via `scripts/screenshot.mjs`

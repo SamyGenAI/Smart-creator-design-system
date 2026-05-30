@@ -1,31 +1,28 @@
 #!/usr/bin/env node
 /**
- * Screenshot a rendered design from the dev server.
+ * Screenshot a rendered design from the dev server (Playwright).
  *
  * Usage:
- *   node scripts/screenshot.mjs <mode-key> [out-path]
+ *   node scripts/screenshot.mjs <mode-key> [out-path] [--preview]
  *
- * The mode-key must match a key in src/App.jsx MODES (e.g. "openclaw",
- * "claude-cowork-setup", "igentivVSL"). For slide decks every slide is
- * captured into a numbered file (out-1.png, out-2.png, ...).
+ * Carousel / infographic: single file or numbered strip (qc-screenshots/ by default).
+ * pptx deck:
+ *   --preview  → public/screenshots/powerpoint/[previewSlug]/slide-01.jpg …
+ *   (default)  → qc-screenshots/<mode-key>-1.png … for agent QA
  *
- * Output defaults to qc-screenshots/<mode-key>.png — that folder is
- * git-ignored and reserved for QC output. User-authored content screenshots
- * live under public/screenshots/ and are served by Vite at /screenshots/...
+ * Requires `pnpm dev` to be running.
  *
  * Examples:
- *   node scripts/screenshot.mjs claude-cowork-setup
- *   node scripts/screenshot.mjs openclaw qc-screenshots/openclaw.png
- *   node scripts/screenshot.mjs igentivVSL qc-screenshots/vsl.png
- *
- * Requires the dev server to be running (pnpm dev). Reads the actual port
- * from the Vite output if not 5173.
+ *   node scripts/screenshot.mjs claude-code --preview
+ *   node scripts/screenshot.mjs openclaw
+ *   pnpm screenshot claude-code --preview
  */
 
 import { chromium } from 'playwright'
 import { mkdirSync, existsSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { dirname, resolve, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import sharp from 'sharp'
 import { MODES } from '../src/modes.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -34,10 +31,10 @@ const ROOT = resolve(__dirname, '..')
 const SIZES = {
   carousel: { width: 1080, height: 1350 },
   infographic: { width: 1080, height: 1350 },
-  slides: { width: 1280, height: 720 },
+  pptx: { width: 1280, height: 720 },
 }
 
-async function detectPort() {
+export async function detectDevPort() {
   for (const port of [5173, 5174, 5175, 5176]) {
     try {
       const res = await fetch(`http://localhost:${port}/`)
@@ -47,75 +44,128 @@ async function detectPort() {
   throw new Error('Dev server not reachable on ports 5173–5176. Run `pnpm dev` first.')
 }
 
-async function main() {
-  const [, , modeKey, outArg] = process.argv
-  if (!modeKey) {
-    console.error('Usage: node scripts/screenshot.mjs <mode-key> [out-path]')
-    process.exit(1)
-  }
+/**
+ * Capture slides for a registered mode. Returns written file paths (absolute).
+ */
+export async function captureModeScreenshots(modeKey, options = {}) {
+  const { preview = false, outArg = null, port: portOverride = null } = options
 
   const mode = MODES[modeKey]
   if (!mode) {
-    console.error(`Unknown mode "${modeKey}". Available: ${Object.keys(MODES).join(', ')}`)
-    process.exit(1)
+    throw new Error(`Unknown mode "${modeKey}". Available: ${Object.keys(MODES).join(', ')}`)
   }
 
   const size = SIZES[mode.type]
   if (!size) {
-    console.error(`Unsupported type "${mode.type}" for mode "${modeKey}".`)
-    process.exit(1)
+    throw new Error(`Unsupported type "${mode.type}" for mode "${modeKey}".`)
   }
 
-  const port = await detectPort()
-  const out = outArg || `qc-screenshots/${modeKey}.png`
-  const outAbs = resolve(ROOT, out)
-  mkdirSync(dirname(outAbs), { recursive: true })
-
+  const port = portOverride ?? (await detectDevPort())
   const browser = await chromium.launch()
   const page = await browser.newPage({ viewport: { width: 1600, height: 1500 } })
   await page.goto(`http://localhost:${port}/`)
 
-  // Click the mode button by label
   await page.getByRole('button', { name: mode.label, exact: true }).click()
   await page.waitForTimeout(400)
 
-  // Locator that matches an actual slide/canvas root (1080×1350 or 1280×720).
-  const slideLocator = page.locator(
-    `div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`
-  )
+  const slideLocator =
+    mode.type === 'pptx'
+      ? page.locator('[data-name="PptxSlideShow-canvas"]')
+      : page.locator(`div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`)
 
-  if (mode.type === 'slides') {
-    // Slide deck — click each dot indicator and capture the visible slide.
-    const dots = await page.locator('button[style*="border-radius: 4px"]').count()
-    const total = dots || 1
-    const base = outAbs.replace(/\.png$/, '')
-    for (let i = 0; i < total; i++) {
-      await page.locator('button[style*="border-radius: 4px"]').nth(i).click()
-      await page.waitForTimeout(450)
-      const file = `${base}-${i + 1}.png`
-      await slideLocator.first().screenshot({ path: file })
-      console.log(`✓ ${file}`)
+  const written = []
+
+  try {
+    if (mode.type === 'pptx') {
+      await slideLocator.first().waitFor({ state: 'visible', timeout: 15000 })
+      const dots = page.locator('button[style*="border-radius: 4px"]')
+      const total = (await dots.count()) || 1
+
+      let outBase
+      if (preview) {
+        if (!mode.previewSlug) {
+          throw new Error(`Mode "${modeKey}" has no previewSlug for --preview output.`)
+        }
+        outBase = join(ROOT, 'public', 'screenshots', 'powerpoint', mode.previewSlug, 'slide')
+        mkdirSync(dirname(outBase + '-01.jpg'), { recursive: true })
+      } else if (outArg) {
+        outBase = resolve(ROOT, outArg).replace(/\.png$/i, '')
+      } else {
+        outBase = join(ROOT, 'qc-screenshots', modeKey)
+        mkdirSync(dirname(outBase + '-1.png'), { recursive: true })
+      }
+
+      for (let i = 0; i < total; i += 1) {
+        if (total > 1) await dots.nth(i).click()
+        await page.waitForTimeout(450)
+
+        const pngPath = `${outBase}-${i + 1}.png`
+        await slideLocator.first().screenshot({ path: pngPath })
+
+        if (preview) {
+          const jpgPath = join(
+            ROOT,
+            'public',
+            'screenshots',
+            'powerpoint',
+            mode.previewSlug,
+            `slide-${String(i + 1).padStart(2, '0')}.jpg`,
+          )
+          await sharp(pngPath).jpeg({ quality: 92 }).toFile(jpgPath)
+          written.push(jpgPath)
+          console.log(`✓ ${jpgPath}`)
+        } else {
+          written.push(pngPath)
+          console.log(`✓ ${pngPath}`)
+        }
+      }
+    } else if (mode.type === 'carousel') {
+      const total = await slideLocator.count()
+      const outAbs = outArg ? resolve(ROOT, outArg) : resolve(ROOT, `qc-screenshots/${modeKey}.png`)
+      mkdirSync(dirname(outAbs), { recursive: true })
+      const base = outAbs.replace(/\.png$/i, '')
+
+      for (let i = 0; i < total; i += 1) {
+        const file = total === 1 ? outAbs : `${base}-${i + 1}.png`
+        await slideLocator.nth(i).scrollIntoViewIfNeeded()
+        await slideLocator.nth(i).screenshot({ path: file })
+        written.push(file)
+        console.log(`✓ ${file}`)
+      }
+    } else {
+      const outAbs = outArg ? resolve(ROOT, outArg) : resolve(ROOT, `qc-screenshots/${modeKey}.png`)
+      mkdirSync(dirname(outAbs), { recursive: true })
+      await slideLocator.first().screenshot({ path: outAbs })
+      written.push(outAbs)
+      console.log(`✓ ${outAbs}`)
     }
-  } else if (mode.type === 'carousel') {
-    // Carousel = horizontal strip. Capture every slide into numbered files.
-    const total = await slideLocator.count()
-    const base = outAbs.replace(/\.png$/, '')
-    for (let i = 0; i < total; i++) {
-      const file = total === 1 ? outAbs : `${base}-${i + 1}.png`
-      await slideLocator.nth(i).scrollIntoViewIfNeeded()
-      await slideLocator.nth(i).screenshot({ path: file })
-      console.log(`✓ ${file}`)
-    }
-  } else {
-    // Infographic — single canvas.
-    await slideLocator.first().screenshot({ path: outAbs })
-    console.log(`✓ ${outAbs}`)
+  } finally {
+    await browser.close()
   }
 
-  await browser.close()
+  return written
 }
 
-main().catch((err) => {
-  console.error(err.message)
-  process.exit(1)
-})
+async function main() {
+  const args = process.argv.slice(2).filter((a) => a !== '--preview')
+  const preview = process.argv.includes('--preview')
+  const [modeKey, outArg] = args
+
+  if (!modeKey) {
+    console.error('Usage: node scripts/screenshot.mjs <mode-key> [out-path] [--preview]')
+    process.exit(1)
+  }
+
+  try {
+    await captureModeScreenshots(modeKey, { preview, outArg })
+  } catch (err) {
+    console.error(err.message)
+    process.exit(1)
+  }
+}
+
+const isMain =
+  process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))
+if (isMain) {
+  main()
+}
