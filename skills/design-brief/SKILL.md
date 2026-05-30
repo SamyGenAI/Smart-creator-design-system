@@ -49,7 +49,7 @@ Visual treatment: [e.g. PrimaryGlassSection with brand header bar]
 Content: [2–4 bullet points or sentences describing what goes here]
 
 **[Section / Slide 2 title]** *(Slides format only)*
-Template: [exact `data-screen-label` from slideTemplates.manifest.json, e.g. Icon columns 3 — omit for hero/CTA bookends]
+Template: [exact `dataScreenLabel` from slideTemplates.manifest.json, e.g. `Icon columns 3` — assign one for every slide where a catalog template can reasonably fit; only omit with a one-sentence justification when no template works]
 Visual treatment: [e.g. 2-column card grid using PastelShadowBorderCard]
 Content: [2–4 bullet points or sentences]
 
@@ -96,7 +96,7 @@ When the user approves (or approves with small edits), hand the **complete brief
 |--------|-------|
 | Infographic | `infographic-design-agent` — single agent that owns the brief **and** the build. It reads `skills/infographics-designer/SKILL.md`, prior infographics, and the component library, drafts the brief, waits for approval, and writes `design/infographics/[Name]Infographic.jsx`. When the request is an infographic, you usually just delegate to it directly rather than drafting the brief in-chat. |
 | Carousel | `carousel-copy-agent` → (JSON brief approval) → `carousel-design-agent` → `carousel-qc-agent` |
-| Slides | `slide-agent` — template-first `.mjs` script (see `skills/pptx/slide-templates.md`), `.pptx`, slide photos in `public/screenshots/powerpoint/[slug]/`, app registration; user runs `pnpm dev` only |
+| Slides | `slide-agent` — single-source `decks/[slug]/deck.mjs` + shared `layouts/`; preview and `.pptx` from same file via `DeckPreview`; user runs `pnpm dev` only |
 
 ---
 

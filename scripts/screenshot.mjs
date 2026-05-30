@@ -68,18 +68,19 @@ export async function captureModeScreenshots(modeKey, options = {}) {
   await page.getByRole('button', { name: mode.label, exact: true }).click()
   await page.waitForTimeout(400)
 
+  // pptx slides: all rendered in DOM simultaneously as div[data-name="pptx-slide"]
+  // carousel / infographic: located by inline style dimensions
   const slideLocator =
     mode.type === 'pptx'
-      ? page.locator('[data-name="PptxSlideShow-canvas"]')
+      ? page.locator('[data-name="pptx-slide"]')
       : page.locator(`div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`)
 
   const written = []
 
   try {
     if (mode.type === 'pptx') {
-      await slideLocator.first().waitFor({ state: 'visible', timeout: 15000 })
-      const dots = page.locator('button[style*="border-radius: 4px"]')
-      const total = (await dots.count()) || 1
+      await slideLocator.first().waitFor({ state: 'attached', timeout: 15000 })
+      const total = await slideLocator.count()
 
       let outBase
       if (preview) {
@@ -96,11 +97,17 @@ export async function captureModeScreenshots(modeKey, options = {}) {
       }
 
       for (let i = 0; i < total; i += 1) {
-        if (total > 1) await dots.nth(i).click()
-        await page.waitForTimeout(450)
+        // Make slide visible by evaluating the DOM directly (no clicking needed)
+        await page.evaluate((idx) => {
+          const slides = document.querySelectorAll('[data-name="pptx-slide"]')
+          slides.forEach((el, j) => {
+            el.style.visibility = j === idx ? 'visible' : 'hidden'
+          })
+        }, i)
+        await page.waitForTimeout(300)
 
         const pngPath = `${outBase}-${i + 1}.png`
-        await slideLocator.first().screenshot({ path: pngPath })
+        await slideLocator.nth(i).screenshot({ path: pngPath })
 
         if (preview) {
           const jpgPath = join(

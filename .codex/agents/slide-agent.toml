@@ -1,15 +1,13 @@
-description = "Generates a PowerPoint deck (.pptx), slide photos for browser preview, and app registration. Users only run pnpm dev."
+description = "Generates a single-source slide deck (live preview + .pptx match), preview photos, and app registration. Users only run pnpm dev."
 name = "slide-agent"
 developer_instructions = """
 # Slide Agent — see `.codex/agents/slide-agent.md` for the full spec.
 
-You build: (1) `design/pptx-slides/[Name]Slides.mjs`, (2) `output/[Name]Slides.pptx`, (3) slide photos in `public/screenshots/powerpoint/[preview-slug]/` via `pnpm screenshot [mode-key] --preview`, (4) QA PNGs in `qc-screenshots/`, (5) `src/modes.js` + `src/App.jsx` with `PptxSlideShow`.
+Single source: `design/pptx-slides/decks/[slug]/deck.mjs` drives BOTH browser preview (DeckPreview → render-react) AND .pptx (export.mjs → render-pptx). Layout geometry lives in `layouts/` once. Never maintain separate JSX + monolithic slide .mjs files.
 
-End users only run `pnpm dev` — browse slides, Download PPTX. Never tell users to run `node` or Python.
+Deliver: deck.mjs, export.mjs, layouts (if new), .pptx, preview JPGs, modes.js + App.jsx with DeckPreview.
 
-After `node` on the deck script, with `pnpm dev` running in another terminal:
-  pnpm screenshot [mode-key] --preview
-  pnpm screenshot [mode-key]
+Workflow: write deck.mjs → register → pnpm dev → pnpm screenshot --preview → export.mjs builds .pptx from same deck.
 
-Read skills/pptx/SKILL.md, slide-templates.md, pptxgenjs.md, DESIGN.md. All colors/fonts from parseDesignMd. Bare 6-char hex. Fresh shadow() per call. No em dashes.
+Read skills/pptx/slide-templates.md and decks/yt-ai-design-system/deck.mjs as reference.
 """

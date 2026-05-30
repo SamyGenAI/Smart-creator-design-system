@@ -27,7 +27,7 @@ python -m markitdown presentation.pptx
 python scripts/office/unpack.py presentation.pptx unpacked/
 ```
 
-**Smart Creator slide decks:** visual preview via Playwright — `pnpm dev` then `pnpm screenshot <mode-key> --preview` (see [slide-templates.md](slide-templates.md)).
+**Smart Creator slide decks:** visual preview via Playwright against live JSX slides — the slide-agent runs `pnpm screenshot <mode-key> --preview` after `pnpm dev` is up. Playwright targets `[data-name="pptx-slide"]` elements (all slides rendered in DOM by `PptxSlideViewer`; visibility toggled per capture — no navigation clicking). See [slide-templates.md](slide-templates.md).
 
 ---
 
@@ -44,7 +44,9 @@ python scripts/office/unpack.py presentation.pptx unpacked/
 
 **Read [slide-templates.md](slide-templates.md) first.**
 
-Every content slide ports from the catalog at `design/pptx-slides/templates/` (`slideTemplates.html` + `slideTemplates.manifest.json`). Use `LAYOUT_16x9` (1280×720). Hero and CTA bookends are the only slides composed without a catalog template.
+Every deck is defined once in `design/pptx-slides/decks/[slug]/deck.mjs`. Shared layouts in `design/pptx-slides/layouts/` encode geometry; `runtime/render-react.jsx` and `runtime/render-pptx.mjs` produce browser preview and `.pptx` from the same definition. Use `LAYOUT_16x9` (1280×720).
+
+**Templates first, creative only when no template fits.** For every slide, try to map content to one of the 15 catalog templates before composing from scratch. If the fit is imperfect, adapt: remove unused slots, split oversized content across two slides, or stretch a 3-slot template to 4 items. Only go freeform when no catalog template can reasonably serve the content — and when you do, say why in a comment.
 
 **Read [pptxgenjs.md](pptxgenjs.md)** for PptxGenJS API details.
 
@@ -208,12 +210,14 @@ Report ALL issues found, including minor ones.
 
 ## Visual QA (Smart Creator decks)
 
-With `pnpm dev` running:
+The slide-agent runs these commands itself — the user never runs them:
 
 ```bash
-pnpm screenshot <mode-key> --preview   # commit JPGs under public/screenshots/powerpoint/
-pnpm screenshot <mode-key>             # QA PNGs in qc-screenshots/
+pnpm screenshot <mode-key>             # QA PNGs in qc-screenshots/ — agent inspects these
+pnpm screenshot <mode-key> --preview   # commits JPGs under public/screenshots/powerpoint/
 ```
+
+Requires `pnpm dev` running. Playwright finds all `[data-name="pptx-slide"]` elements rendered by `PptxSlideViewer`, toggles visibility per slide in the DOM, and screenshots each — no dot-button clicking.
 
 See [slide-templates.md](slide-templates.md) for the full workflow.
 

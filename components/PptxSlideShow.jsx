@@ -27,7 +27,7 @@ export default function PptxSlideShow({ modeKey, label }) {
         setMessage('')
       } else {
         setStatus('empty')
-        setMessage('Slide photos are not ready yet. Wait a moment, then click Retry.')
+        setMessage('Slide photos not found. The slide-agent captures these automatically — check that the deck was fully built.')
       }
     } catch (err) {
       setStatus('error')

@@ -1,45 +1,25 @@
 /**
  * Slide deck pipeline (automatic on pnpm dev):
- *   1. Build .pptx from design/pptx-slides/[Name]Slides.mjs
- *   2. Serve slide photos from public/screenshots/powerpoint/[slug]/slide-01.jpg …
- *   3. If that folder is empty, write branded placeholder JPGs (sharp) until real exports are added
- *
- * Refresh preview JPGs with Playwright: `pnpm dev` + `pnpm screenshot <mode-key> --preview`
- * (see skills/pptx/slide-templates.md).
+ *   1. Build .pptx from design/pptx-slides/[Name]Slides.mjs via slide-engine.pptx.mjs
+ *   2. Preview JPGs in public/screenshots/powerpoint/[slug]/
  */
 
-import { spawn } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import JSZip from 'jszip'
-import sharp from 'sharp'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { MODES } from '../src/modes.js'
+import { renderDeckToPptx } from '../design/pptx-slides/slide-engine.pptx.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export const ROOT = path.resolve(__dirname, '..')
 
-const PPTX_OUTPUT_DIR = path.join(ROOT, 'design', 'pptx-slides', 'output')
+const PPTX_DIR = path.join(ROOT, 'design', 'pptx-slides')
+const PPTX_OUTPUT_DIR = path.join(PPTX_DIR, 'output')
 const PREVIEW_ROOT = path.join(ROOT, 'public', 'screenshots', 'powerpoint')
-
-function run(cmd, args, options = {}) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, {
-      stdio: ['ignore', 'pipe', 'pipe'],
-      shell: false,
-      ...options,
-    })
-    let stdout = ''
-    let stderr = ''
-    child.stdout?.on('data', (d) => { stdout += d })
-    child.stderr?.on('data', (d) => { stderr += d })
-    child.on('error', reject)
-    child.on('close', (code) => {
-      if (code === 0) resolve({ stdout, stderr })
-      else reject(new Error(stderr.trim() || stdout.trim() || `${cmd} exited ${code}`))
-    })
-  })
-}
+const ENGINE_FILES = [
+  path.join(PPTX_DIR, 'slide-engine.mjs'),
+  path.join(PPTX_DIR, 'slide-engine.pptx.mjs'),
+]
 
 function statMtime(filePath) {
   try {
@@ -54,48 +34,18 @@ export function getPptxModes() {
 }
 
 export function pathsForMode(modeKey, meta) {
-  const scriptPath = path.join(ROOT, 'design', 'pptx-slides', meta.deckScript)
+  const deckPath = path.join(PPTX_DIR, meta.deckFile)
   const pptxPath = path.join(PPTX_OUTPUT_DIR, meta.pptxFile)
   const photosDir = path.join(PREVIEW_ROOT, meta.previewSlug)
-  return { scriptPath, pptxPath, photosDir }
+  return { deckPath, pptxPath, photosDir }
 }
 
-async function buildPptx(scriptPath, pptxPath) {
-  if (!fs.existsSync(scriptPath)) {
-    throw new Error(`Deck script not found: ${scriptPath}`)
+async function buildPptx(deckPath, pptxPath) {
+  if (!fs.existsSync(deckPath)) {
+    throw new Error(`Deck file not found: ${deckPath}`)
   }
-  await run(process.execPath, [scriptPath], { cwd: ROOT })
-  if (!fs.existsSync(pptxPath)) {
-    throw new Error(`Expected .pptx after build: ${pptxPath}`)
-  }
-}
-
-async function countSlidesInPptx(pptxPath) {
-  const buf = fs.readFileSync(pptxPath)
-  const zip = await JSZip.loadAsync(buf)
-  const pres = await zip.file('ppt/presentation.xml')?.async('string')
-  if (!pres) return 1
-  const matches = pres.match(/<p:sldId\b/g)
-  return matches?.length || 1
-}
-
-/** Branded placeholders when no slide-NN.jpg files exist yet. */
-async function writePlaceholderSlidePhotos(photosDir, slideCount, deckLabel) {
-  fs.mkdirSync(photosDir, { recursive: true })
-  const w = 1280
-  const h = 720
-  for (let i = 1; i <= slideCount; i += 1) {
-    const svg = `
-      <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#fffceb"/>
-        <rect x="0" y="0" width="100%" height="56" fill="#092c69"/>
-        <text x="48" y="38" font-family="Montserrat, Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff">${deckLabel}</text>
-        <text x="48" y="360" font-family="Montserrat, Arial, sans-serif" font-size="42" font-weight="700" fill="#092c69">Slide ${i}</text>
-        <text x="48" y="420" font-family="Montserrat, Arial, sans-serif" font-size="18" fill="#717188">Run pnpm screenshot &lt;mode-key&gt; --preview (see slide-templates.md)</text>
-      </svg>`
-    const out = path.join(photosDir, `slide-${String(i).padStart(2, '0')}.jpg`)
-    await sharp(Buffer.from(svg)).jpeg({ quality: 90 }).toFile(out)
-  }
+  const deck = await import(pathToFileURL(deckPath).href)
+  await renderDeckToPptx(deck.default ?? deck, pptxPath)
 }
 
 export function listSlidePhotoUrls(previewSlug) {
@@ -108,9 +58,14 @@ export function listSlidePhotoUrls(previewSlug) {
     .map((f) => `/screenshots/powerpoint/${previewSlug}/${f}`)
 }
 
-function needsPptxBuild(scriptPath, pptxPath) {
+function needsPptxBuild(deckPath, pptxPath) {
   if (!fs.existsSync(pptxPath)) return true
-  return statMtime(scriptPath) > statMtime(pptxPath)
+  const pptxMtime = statMtime(pptxPath)
+  if (statMtime(deckPath) > pptxMtime) return true
+  for (const f of ENGINE_FILES) {
+    if (statMtime(f) > pptxMtime) return true
+  }
+  return false
 }
 
 function photosAreStale(pptxPath, previewSlug) {
@@ -125,40 +80,27 @@ function photosAreStale(pptxPath, previewSlug) {
   return pptxMtime > newest
 }
 
-/**
- * Ensure .pptx exists and slide photos in public/screenshots/powerpoint/[slug]/ are available.
- */
 export async function ensurePptxDeck(modeKey) {
   const meta = MODES[modeKey]
   if (!meta || meta.type !== 'pptx') {
     throw new Error(`Unknown slide deck mode: ${modeKey}`)
   }
 
-  const { scriptPath, pptxPath, photosDir } = pathsForMode(modeKey, meta)
+  const { deckPath, pptxPath } = pathsForMode(modeKey, meta)
 
-  if (needsPptxBuild(scriptPath, pptxPath)) {
-    await buildPptx(scriptPath, pptxPath)
+  if (needsPptxBuild(deckPath, pptxPath)) {
+    await buildPptx(deckPath, pptxPath)
   }
 
-  let slideUrls = listSlidePhotoUrls(meta.previewSlug)
+  const slideUrls = listSlidePhotoUrls(meta.previewSlug)
+
   if (slideUrls.length === 0) {
-    const count = await countSlidesInPptx(pptxPath)
-    await writePlaceholderSlidePhotos(photosDir, count, meta.label)
-    slideUrls = listSlidePhotoUrls(meta.previewSlug)
-    console.warn(
-      `[slides] ${meta.label}: using placeholder preview JPGs. Run \`pnpm screenshot ${modeKey} --preview\` while dev server is up (see skills/pptx/slide-templates.md).`,
-    )
+    console.warn(`[slides] ${meta.label}: no slide photos yet in public/screenshots/powerpoint/${meta.previewSlug}/`)
   } else if (photosAreStale(pptxPath, meta.previewSlug)) {
-    console.warn(
-      `[slides] ${meta.label}: .pptx is newer than preview JPGs. Run \`pnpm screenshot ${modeKey} --preview\` to refresh (requires \`pnpm dev\`).`,
-    )
+    console.warn(`[slides] ${meta.label}: .pptx is newer than preview photos — re-run pnpm screenshot ${modeKey} --preview`)
   }
 
-  return {
-    slideUrls,
-    previewReady: slideUrls.length > 0,
-    pptxPath,
-  }
+  return { slideUrls, previewReady: slideUrls.length > 0, pptxPath }
 }
 
 export async function ensureAllPptxDecks() {

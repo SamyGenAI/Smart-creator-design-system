@@ -1,7 +1,7 @@
 # Smart Creator — Master Rules for Claude Code
 
 ## What we ship
-LinkedIn infographics (**1080×1350**, React preview) and slide decks (**4:3** `.pptx` via PptxGenJS + photo preview in the app): brand tokens in `DESIGN.md` / `src/index.css` → optional Figma push for infographics (`mcp__figma__generate_figma_design`).
+LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** JSX live preview + `.pptx` via PptxGenJS): brand tokens in `DESIGN.md` / `src/index.css` → optional Figma push for infographics (`mcp__figma__generate_figma_design`).
 
 **Figma file:** read `FIGMA_FILE_KEY` from `.env` (see [`.claude/commands/figma.md`](.claude/commands/figma.md) for setup)
 
@@ -55,7 +55,7 @@ For **infographics**, the brief step and the build step are owned by the **same*
 |---|---|
 | Infographic | **By hand**: `InfographicCanvas` + `components/` + section JSX; **`pnpm generate:design` does not apply** |
 | Carousel | **`pnpm generate:design`** from [`templates/template-manifest.json`](templates/template-manifest.json) |
-| Slide deck | **`slide-agent`** → one `design/pptx-slides/[Name]Slides.mjs` per deck, ports from [`design/pptx-slides/templates/`](design/pptx-slides/templates/) |
+| Slide deck | **`slide-agent`** → `design/pptx-slides/[Name]Slides.mjs` + shared `slide-engine.*` |
 
 ---
 
@@ -87,10 +87,10 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 Skill: [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md) + [`skills/pptx/slide-templates.md`](skills/pptx/slide-templates.md) + [`skills/pptx/pptxgenjs.md`](skills/pptx/pptxgenjs.md) · Agent: `.claude/agents/slide-agent.md` · Templates: [`design/pptx-slides/templates/slideTemplates.html`](design/pptx-slides/templates/slideTemplates.html) · Tokens: `DESIGN.md` + `src/index.css`.
 
-Each deck is **one standalone PptxGenJS Node script** at `design/pptx-slides/[Name]Slides.mjs`. Content slides port from the **15-layout template catalog** (`slideTemplates.manifest.json`). The slide-agent also captures **slide photos** to `public/screenshots/powerpoint/[preview-slug]/` via `scripts/screenshot.mjs` (Playwright) and registers the deck in `src/modes.js` + `src/App.jsx` (`PptxSlideShow`).
+Each deck is **one file**: `design/pptx-slides/[Name]Slides.mjs` exports `{ meta, slides }`. Shared **`slide-engine.mjs`** (layouts), **`slide-preview.jsx`** (browser), and **`slide-engine.pptx.mjs`** (export) render the same deck for preview and `.pptx`.
 
 Workflow:
 
-1. `/powerpoint <topic>` — draft brief (`skills/design-brief/SKILL.md`), wait for approval.
-2. On approval, **`slide-agent`** delivers: `.mjs` script, `.pptx`, slide photos, QA grid, app registration.
-3. User runs **`pnpm dev`** — browse slides in the browser, click **Download PPTX** for the editable file.
+1. `/powerpoint <topic>` — brief, approval.
+2. **`slide-agent`** writes `[Name]Slides.mjs`, registers app, captures preview JPGs.
+3. User runs **`pnpm dev`** — browse slides, **Download PPTX**.

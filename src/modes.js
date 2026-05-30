@@ -9,8 +9,8 @@
  *   type        — 'infographic' | 'carousel' | 'pptx'
  *   exportName  — file stem for downloads (no extension)
  *
- * pptx modes only (also used by scripts/sync-pptx-previews.mjs):
- *   deckScript  — PptxGenJS script under design/pptx-slides/
+ * pptx modes only:
+ *   deckFile    — deck definition under design/pptx-slides/ (exports { meta, slides })
  *   pptxFile    — output filename under design/pptx-slides/output/
  *   previewSlug — folder under public/screenshots/powerpoint/
  */
@@ -24,12 +24,12 @@ export const MODES = {
   openclaw:            { label: 'OpenClaw 24/7 Agent Carousel', type: 'carousel', exportName: 'openclaw' },
   'ai-operating-system': { label: 'Build Your AI Operating System', type: 'carousel', exportName: 'ai-operating-system' },
   'ai-os-infographic':   { label: 'AI OS Infographic',   type: 'infographic', exportName: 'ai-os-infographic' },
-  'claude-code': {
-    label: 'Claude Code Setup (Slides)',
+  'yt-ai-design-system': {
+    label: 'YT: AI Design System',
     type: 'pptx',
-    exportName: 'claude-code-slides',
-    deckScript: 'ClaudeCodeSlides.mjs',
-    pptxFile: 'ClaudeCodeSlides.pptx',
-    previewSlug: 'claude-code',
+    exportName: 'yt-ai-design-system',
+    deckFile: 'YtAiDesignSystemSlides.mjs',
+    pptxFile: 'YtAiDesignSystemSlides.pptx',
+    previewSlug: 'YT - AI Design system',
   },
 }
