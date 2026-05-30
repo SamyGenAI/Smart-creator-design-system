@@ -10,7 +10,8 @@ import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProof
 import AiOperatingSystemInfographic from '../design/infographics/AiOperatingSystemInfographic.jsx'
 import PptxSlideViewer from '../components/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
-import ytAiDesignSystemDeck from '../design/pptx-slides/YtAiDesignSystemSlides.mjs'
+import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
+import claudeCodeBusinessDeck from '../design/pptx-slides/decks/claude-code-business/deck.mjs'
 import { MODES as MODE_REGISTRY } from './modes.js'
 
 function YtAiDesignSystemDeck() {
@@ -19,6 +20,16 @@ function YtAiDesignSystemDeck() {
       modeKey="yt-ai-design-system"
       label="YT: AI Design System"
       slides={renderDeckToSlides(ytAiDesignSystemDeck)}
+    />
+  )
+}
+
+function ClaudeCodeBusinessDeck() {
+  return (
+    <PptxSlideViewer
+      modeKey="claude-code-business"
+      label="Claude Code Business"
+      slides={renderDeckToSlides(claudeCodeBusinessDeck)}
     />
   )
 }
@@ -34,6 +45,7 @@ const COMPONENTS = {
   'ai-operating-system': AIOperatingSystemCarousel,
   'ai-os-infographic':   AiOperatingSystemInfographic,
   'yt-ai-design-system':    YtAiDesignSystemDeck,
+  'claude-code-business': ClaudeCodeBusinessDeck,
 }
 
 const MODES = Object.fromEntries(

@@ -44,7 +44,7 @@ python scripts/office/unpack.py presentation.pptx unpacked/
 
 **Read [slide-templates.md](slide-templates.md) first.**
 
-Every deck is defined once in `design/pptx-slides/decks/[slug]/deck.mjs`. Shared layouts in `design/pptx-slides/layouts/` encode geometry; `runtime/render-react.jsx` and `runtime/render-pptx.mjs` produce browser preview and `.pptx` from the same definition. Use `LAYOUT_16x9` (1280×720).
+Every deck is defined once in `design/pptx-slides/decks/[slug]/deck.mjs`, with deck-local `layouts.mjs` beside it when needed. `runtime/render-react.jsx` and `runtime/render-pptx.mjs` produce browser preview and `.pptx` from the same definition. Use `LAYOUT_16x9` (1280×720).
 
 **Templates first, creative only when no template fits.** For every slide, try to map content to one of the 15 catalog templates before composing from scratch. If the fit is imperfect, adapt: remove unused slots, split oversized content across two slides, or stretch a 3-slot template to 4 items. Only go freeform when no catalog template can reasonably serve the content — and when you do, say why in a comment.
 

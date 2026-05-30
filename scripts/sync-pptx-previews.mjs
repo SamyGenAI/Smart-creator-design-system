@@ -35,9 +35,10 @@ export function getPptxModes() {
 
 export function pathsForMode(modeKey, meta) {
   const deckPath = path.join(PPTX_DIR, meta.deckFile)
+  const layoutPath = meta.layoutFile ? path.join(PPTX_DIR, meta.layoutFile) : null
   const pptxPath = path.join(PPTX_OUTPUT_DIR, meta.pptxFile)
   const photosDir = path.join(PREVIEW_ROOT, meta.previewSlug)
-  return { deckPath, pptxPath, photosDir }
+  return { deckPath, layoutPath, pptxPath, photosDir }
 }
 
 async function buildPptx(deckPath, pptxPath) {
@@ -58,10 +59,11 @@ export function listSlidePhotoUrls(previewSlug) {
     .map((f) => `/screenshots/powerpoint/${previewSlug}/${f}`)
 }
 
-function needsPptxBuild(deckPath, pptxPath) {
+function needsPptxBuild(deckPath, layoutPath, pptxPath) {
   if (!fs.existsSync(pptxPath)) return true
   const pptxMtime = statMtime(pptxPath)
   if (statMtime(deckPath) > pptxMtime) return true
+  if (layoutPath && statMtime(layoutPath) > pptxMtime) return true
   for (const f of ENGINE_FILES) {
     if (statMtime(f) > pptxMtime) return true
   }
@@ -86,9 +88,9 @@ export async function ensurePptxDeck(modeKey) {
     throw new Error(`Unknown slide deck mode: ${modeKey}`)
   }
 
-  const { deckPath, pptxPath } = pathsForMode(modeKey, meta)
+  const { deckPath, layoutPath, pptxPath } = pathsForMode(modeKey, meta)
 
-  if (needsPptxBuild(deckPath, pptxPath)) {
+  if (needsPptxBuild(deckPath, layoutPath, pptxPath)) {
     await buildPptx(deckPath, pptxPath)
   }
 

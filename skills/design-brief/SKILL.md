@@ -49,7 +49,7 @@ Visual treatment: [e.g. PrimaryGlassSection with brand header bar]
 Content: [2–4 bullet points or sentences describing what goes here]
 
 **[Section / Slide 2 title]** *(Slides format only)*
-Template: [exact `dataScreenLabel` from slideTemplates.manifest.json, e.g. `Icon columns 3` — assign one for every slide where a catalog template can reasonably fit; only omit with a one-sentence justification when no template works]
+Template: [exact `dataScreenLabel` from `design/pptx-slides/templates/slideTemplates.manifest.json`, e.g. `Icon columns 3` — assign one for every slide; only omit with a one-sentence justification when no catalog template truly fits]
 Visual treatment: [e.g. 2-column card grid using PastelShadowBorderCard]
 Content: [2–4 bullet points or sentences]
 
@@ -96,7 +96,7 @@ When the user approves (or approves with small edits), hand the **complete brief
 |--------|-------|
 | Infographic | `infographic-design-agent` — single agent that owns the brief **and** the build. It reads `skills/infographics-designer/SKILL.md`, prior infographics, and the component library, drafts the brief, waits for approval, and writes `design/infographics/[Name]Infographic.jsx`. When the request is an infographic, you usually just delegate to it directly rather than drafting the brief in-chat. |
 | Carousel | `carousel-copy-agent` → (JSON brief approval) → `carousel-design-agent` → `carousel-qc-agent` |
-| Slides | `slide-agent` — single-source `decks/[slug]/deck.mjs` + shared `layouts/`; preview and `.pptx` from same file via `DeckPreview`; user runs `pnpm dev` only |
+| Slides | `slide-agent` — single-source `decks/[slug]/deck.mjs` + `decks/[slug]/layouts.mjs`; preview and `.pptx` from the same deck definition; user runs `pnpm dev` only |
 
 ---
 
@@ -104,6 +104,8 @@ When the user approves (or approves with small edits), hand the **complete brief
 
 - **No questions before the brief.** Draft first, ask nothing.
 - **Use real token names.** Brief must reference actual CSS variable names and Tailwind token classes from `DESIGN.md` / `src/index.css` — not hex literals and not generic "blue" / "dark".
+- **Templates first for slides.** In slide briefs, every slide must map to a catalog template unless you explicitly justify why no template fits; if a custom layout is needed, say which template it most closely adapts and what slot you are stretching or removing.
+- **Prefer decomposition over invention.** If a slide feels awkward to template, split it into two slides or change the angle before inventing a new layout.
 - **No invented facts.** If source material is thin, say so in "Copy notes" and note what content will be suggested during generation.
 - **Illustrations must exist.** Only reference asset paths that exist under `assets/`. If unsure, list the closest match and note it as a suggestion.
 - **One approval gate.** The design agent never starts before the user explicitly approves the brief.
