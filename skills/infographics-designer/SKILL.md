@@ -48,7 +48,7 @@ The system is **brand-agnostic**. Chroma and typefaces are owned only by **`DESI
 | **`src/index.css`** | `:root` **CSS variables** (`--theme-*`, `--color/*`, `--font/*`, …) used by `components/` and infographic JSX. After brand onboarding, **sync** variables when the palette changes (see [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) — `apply-brand-answers`, validation, Done checklist). |
 | **`design/infographics/*.jsx`** | **Must not** contain `#hex`, `rgb()`, `hsl()`, named colors, or hardcoded `fontFamily: 'Some Font'`. Use Tailwind token classes (`bg-bg-canvas`, `text-text-primary`, …) and/or `var(--theme-…)`, `var(--color/…)`, `var(--font/family/title)` (escape slashes in Tailwind arbitrary values per `CLAUDE.md`). |
 
-**Rebranding / new brand:** Use **`skills/brand-setup/SKILL.md`** (`/setup`, `@setup`): Track A (site + Firecrawl) or Track B (Theme Factory) → `tmp/brand-answers.json` → `node scripts/apply-brand-answers.mjs` → align **`src/index.css`** with the updated semantic roles → `pnpm design:validate`. Do not embed one-off brand colors in infographic files.
+**Rebranding / new brand:** Use **`skills/brand-setup/SKILL.md`** (`/setup`, `@setup`): Track A (site + Firecrawl) or Track B (Theme Factory) → answers JSON piped into `node scripts/apply-brand-answers.mjs` → align **`src/index.css`** with the updated semantic roles → `pnpm design:validate`. Do not embed one-off brand colors in infographic files.
 
 ## Icons and illustrations
 

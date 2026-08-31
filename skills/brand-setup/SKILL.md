@@ -50,7 +50,7 @@ When Track B applies:
 1. Read [`skills/theme-factory/SKILL.md`](../theme-factory/SKILL.md) fully.
 2. Surface [`skills/theme-factory/theme-showcase.pdf`](../theme-factory/theme-showcase.pdf) for the user (open in IDE or OS viewer; **do not** edit the PDF). Use the SKILL's numbered theme list and wait for explicit **theme # or name**.
 3. If none fit, follow the SKILL section **Create your Own Theme**, then derive hex + fonts from what the user approves (same mapping rules as presets).
-4. Open the preset file under **`skills/theme-factory/themes/*.md`** and map palettes + typography into **`tmp/brand-answers.json`** semantics using **§ Smart Creator — DESIGN.md mapping** inside the theme-factory SKILL.
+4. Open the preset file under **`skills/theme-factory/themes/*.md`** and map palettes + typography into the **answers JSON** semantics using **§ Smart Creator — DESIGN.md mapping** inside the theme-factory SKILL.
 5. **Do not** run `scripts/fetch-brand-from-url.mjs` on Track B unless the user later provides a URL. Collect **brand display name + one-line description** by questionnaire instead of trusting `public/brand-data.json` alone (see Prerequisites note below).
 
 ### From here, both tracks converge (steps 5-8)
@@ -81,7 +81,7 @@ When Track B applies:
 3. **Present extraction (Track A only)**  
    Load `public/brand-data.json` and summarize: colors (first batch), fonts, design patterns, screenshot URL, locally saved assets, `brandingProfile` highlights if present, and `attemptsUsed`.
    Use locally saved assets first (`savedAssets.screenshot`, `savedAssets.images`) for stable analysis; keep `screenshotUrl` as fallback.  
-   **Track B:** skip; instead briefly present the **chosen theme file** (palette + type) and the proposed **semantic token mapping** you will place in `tmp/brand-answers.json`.
+   **Track B:** skip; instead briefly present the **chosen theme file** (palette + type) and the proposed **semantic token mapping** you will feed to `apply-brand-answers`.
 
 4. **User approval / edits**  
    Confirm or collect corrected values (valid `#hex` only where the pipeline expects hex). **Track B:** user is approving the **theme-derived** proposal (and `brandName` / `brandDescription` if not from JSON).
@@ -100,7 +100,7 @@ When Track B applies:
    **Track B:** if they have nothing to screenshot yet, allow **skip** and document it.
 
 6. **Answers JSON**  
-   Write `tmp/brand-answers.json` using this shape (fill from step 4; **Track B:** seed colors/fonts from the **theme → DESIGN.md mapping** from step 4; omit keys the user did not change so `apply-brand-answers` keeps existing `DESIGN.md` values where appropriate):
+   Build the answers JSON **in-message — do not write it to a file.** It is piped straight into `apply-brand-answers` in step 7, so nothing lands in the repo. Use this shape (fill from step 4; **Track B:** seed colors/fonts from the **theme → DESIGN.md mapping** from step 4; omit keys the user did not change so `apply-brand-answers` keeps existing `DESIGN.md` values where appropriate):
 
    ```json
    {
@@ -145,10 +145,15 @@ When Track B applies:
 
 7. **Apply and validate**  
     From repo root:
+    Pipe the answers JSON from step 6 on **stdin** so no file is created:
     ```bash
-    node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json
+    cat <<'JSON' | node scripts/apply-brand-answers.mjs
+    { ...answers JSON from step 6... }
+    JSON
     node scripts/validate-design.mjs
     ```
+
+    `--input <path>` still works if the user explicitly wants the answers saved to a file, but stdin is the default.
 
     Then **sync** any changed semantic colors into `src/index.css` (`:root` CSS variables) so runtime components match `DESIGN.md`.
 
@@ -179,7 +184,7 @@ When Track B applies:
 
 ## Guardrails
 
-- **Theme fonts:** presets often name **DejaVu Sans** (or similar). If not already loaded for the workspace, resolve to nearest **Google Fonts** pairings acceptable to the user, add the import to **`index.html`**, and align `fonts.primary` / `fonts.serif` in `brand-answers.json` accordingly. Example import line to add inside `<head>`:
+- **Theme fonts:** presets often name **DejaVu Sans** (or similar). If not already loaded for the workspace, resolve to nearest **Google Fonts** pairings acceptable to the user, add the import to **`index.html`**, and align `fonts.primary` / `fonts.serif` in the answers JSON accordingly. Example import line to add inside `<head>`:
   ```html
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
   ```
@@ -221,7 +226,7 @@ Before closing onboarding, confirm you **posed or explicitly confirmed** each it
 
 - [ ] **Theme choice** — user picked a **theme # or name** from the showcase (or completed **Create your Own Theme** per `skills/theme-factory/SKILL.md`)
 - [ ] **Brand naming** — **brand display name** and **one-line description** collected from the user (do not rely on template `public/brand-data.json`)
-- [ ] **Theme-derived tokens** — user approved or corrected the proposed semantic mapping before `tmp/brand-answers.json`
+- [ ] **Theme-derived tokens** — user approved or corrected the proposed semantic mapping before applying it
 
 **Both tracks (after identity)**
 

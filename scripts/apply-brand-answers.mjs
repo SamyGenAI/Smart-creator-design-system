@@ -59,14 +59,40 @@ function readFrontMatter(content) {
   }
 }
 
-function main() {
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    let data = ''
+    process.stdin.setEncoding('utf8')
+    process.stdin.on('data', (chunk) => { data += chunk })
+    process.stdin.on('end', () => resolve(data))
+    process.stdin.on('error', reject)
+  })
+}
+
+async function main() {
   const args = parseArgs(process.argv.slice(2))
-  if (!args.input) {
-    throw new Error('Missing --input path to answers JSON')
+
+  // Answers arrive either on stdin (preferred - no file touches the repo)
+  // or via --input for a saved JSON file.
+  let raw
+  if (args.input) {
+    raw = readFileSync(resolve(ROOT, args.input), 'utf8')
+  } else if (!process.stdin.isTTY) {
+    raw = await readStdin()
+  } else {
+    throw new Error('No answers provided. Pipe JSON on stdin or pass --input <path>')
   }
 
-  const inputPath = resolve(ROOT, args.input)
-  const answers = JSON.parse(readFileSync(inputPath, 'utf8'))
+  if (!raw.trim()) {
+    throw new Error('Answers input was empty')
+  }
+
+  let answers
+  try {
+    answers = JSON.parse(raw)
+  } catch (error) {
+    throw new Error(`Answers input is not valid JSON: ${error.message}`)
+  }
 
   const designContent = readFileSync(DESIGN_PATH, 'utf8')
   const { frontmatter, body } = readFrontMatter(designContent)
@@ -107,4 +133,7 @@ function main() {
   console.log('✓ DESIGN.md updated from setup answers')
 }
 
-main()
+main().catch((error) => {
+  console.error(error.message)
+  process.exit(1)
+})

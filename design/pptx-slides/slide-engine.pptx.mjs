@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { parseDesignMd } from '../../scripts/parse-design-md.mjs'
 import { buildScenes, pt } from './slide-engine.mjs'
+import { createRasterCache, resolveImagePayload } from './slide-engine.rasterize.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 
@@ -46,7 +47,7 @@ function noLine() {
   return { width: 0, color: 'FFFFFF', transparency: 100 }
 }
 
-function renderNode(pres, slide, node, TOK, FONT) {
+async function renderNode(pres, slide, node, TOK, FONT, rasterCache) {
   switch (node.type) {
     case 'rect': {
       const shape = node.radius > 0 ? pres.shapes.ROUNDED_RECTANGLE : pres.shapes.RECTANGLE
@@ -90,8 +91,10 @@ function renderNode(pres, slide, node, TOK, FONT) {
       })
       break
     case 'image': {
+      const absPath = assetPath(node.src)
+      const payload = await resolveImagePayload(node, absPath, rasterCache)
       const opts = {
-        path: assetPath(node.src),
+        ...payload,
         x: node.x,
         y: node.y,
         w: node.w,
@@ -114,10 +117,14 @@ export async function renderDeckToPptx(deck, outFile) {
   pres.author = deck.meta?.author ?? ''
   pres.title = deck.meta?.title ?? 'Slide Deck'
 
+  const rasterCache = createRasterCache()
+
   for (const scene of buildScenes(deck)) {
     const s = pres.addSlide()
     s.background = { color: TOK[scene.background] ?? TOK.bg }
-    for (const node of scene.children) renderNode(pres, s, node, TOK, FONT)
+    for (const node of scene.children) {
+      await renderNode(pres, s, node, TOK, FONT, rasterCache)
+    }
   }
 
   const outDir = path.dirname(outFile)

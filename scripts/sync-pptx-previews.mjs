@@ -19,6 +19,7 @@ const PREVIEW_ROOT = path.join(ROOT, 'public', 'screenshots', 'powerpoint')
 const ENGINE_FILES = [
   path.join(PPTX_DIR, 'slide-engine.mjs'),
   path.join(PPTX_DIR, 'slide-engine.pptx.mjs'),
+  path.join(PPTX_DIR, 'slide-engine.rasterize.mjs'),
 ]
 
 function statMtime(filePath) {
@@ -70,18 +71,6 @@ function needsPptxBuild(deckPath, layoutPath, pptxPath) {
   return false
 }
 
-function photosAreStale(pptxPath, previewSlug) {
-  if (!fs.existsSync(pptxPath)) return false
-  const pptxMtime = statMtime(pptxPath)
-  const urls = listSlidePhotoUrls(previewSlug)
-  if (urls.length === 0) return false
-  const newest = urls.reduce((max, url) => {
-    const file = path.join(ROOT, 'public', url.replace(/^\//, ''))
-    return Math.max(max, statMtime(file))
-  }, 0)
-  return pptxMtime > newest
-}
-
 export async function ensurePptxDeck(modeKey) {
   const meta = MODES[modeKey]
   if (!meta || meta.type !== 'pptx') {
@@ -96,23 +85,15 @@ export async function ensurePptxDeck(modeKey) {
 
   const slideUrls = listSlidePhotoUrls(meta.previewSlug)
 
-  if (slideUrls.length === 0) {
-    console.warn(`[slides] ${meta.label}: no slide photos yet in public/screenshots/powerpoint/${meta.previewSlug}/`)
-  } else if (photosAreStale(pptxPath, meta.previewSlug)) {
-    console.warn(`[slides] ${meta.label}: .pptx is newer than preview photos — re-run pnpm screenshot ${modeKey} --preview`)
-  }
-
   return { slideUrls, previewReady: slideUrls.length > 0, pptxPath }
 }
 
 export async function ensureAllPptxDecks() {
-  for (const [key, meta] of getPptxModes()) {
+  for (const [key] of getPptxModes()) {
     try {
       await ensurePptxDeck(key)
-      const n = listSlidePhotoUrls(meta.previewSlug).length
-      console.log(`[slides] ${meta.label}: ${n} photo(s) in public/screenshots/powerpoint/${meta.previewSlug}/`)
-    } catch (err) {
-      console.warn(`[slides] ${key}: ${err.message}`)
+    } catch {
+      // PPTX sync runs silently on dev startup; export API surfaces build errors.
     }
   }
 }

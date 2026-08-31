@@ -62,7 +62,7 @@ To handle cases where none of the existing themes work for an artifact, create a
 
 ## Smart Creator — `DESIGN.md` mapping (brand onboarding)
 
-When [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) routes a user through **Track B — Theme factory**, this skill supplies the **starter palette and fonts**. The agent must **expand** each theme’s short list into Smart Creator’s semantic roles (`tmp/brand-answers.json` → `apply-brand-answers.mjs`). Use this mapping — adjust per theme wording (some themes describe “Primary background” vs “Primary dark”) but keep **contrast**:
+When [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) routes a user through **Track B — Theme factory**, this skill supplies the **starter palette and fonts**. The agent must **expand** each theme’s short list into Smart Creator’s semantic roles (answers JSON → `apply-brand-answers.mjs` on stdin). Use this mapping — adjust per theme wording (some themes describe “Primary background” vs “Primary dark”) but keep **contrast**:
 
 | DESIGN.md semantic role | How to derive from theme Markdown |
 |---|---|

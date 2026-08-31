@@ -76,9 +76,7 @@ function exportPlugin() {
   return {
     name: 'playwright-export-api',
     configureServer(server) {
-      ensureAllPptxDecks().catch((err) => {
-        console.warn('[slides] Startup sync:', err.message)
-      })
+      ensureAllPptxDecks().catch(() => {})
 
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url || '/', 'http://localhost')

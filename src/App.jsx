@@ -3,11 +3,13 @@ import McKinseyCarousel from '../design/carousels/McKinseyCarousel.jsx'
 import ScheduleTasksCarousel from '../design/carousels/ScheduleTasksCarousel.jsx'
 import OpenClawCarousel from '../design/carousels/OpenClawCarousel.jsx'
 import AIOperatingSystemCarousel from '../design/carousels/AIOperatingSystemCarousel.jsx'
+import GtmSystemCarousel from '../design/carousels/GtmSystemCarousel.jsx'
 import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWinsInfographic.jsx'
 import AiOsInfographic from '../design/infographics/AiOsInfographic.jsx'
 import BulletProofAISystemInfographic from '../design/infographics/BulletProofAISystemInfographic.jsx'
 import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProofAISystemInfographicV2.jsx'
 import AiOperatingSystemInfographic from '../design/infographics/AiOperatingSystemInfographic.jsx'
+import GtmSystemInfographic from '../design/infographics/GtmSystemInfographic.jsx'
 import PptxSlideViewer from '../components/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
@@ -43,7 +45,9 @@ const COMPONENTS = {
   scheduleTasks:         ScheduleTasksCarousel,
   openclaw:              OpenClawCarousel,
   'ai-operating-system': AIOperatingSystemCarousel,
+  'gtm-system-carousel': GtmSystemCarousel,
   'ai-os-infographic':   AiOperatingSystemInfographic,
+  'gtm-system':          GtmSystemInfographic,
   'yt-ai-design-system':    YtAiDesignSystemDeck,
   'claude-code-business': ClaudeCodeBusinessDeck,
 }

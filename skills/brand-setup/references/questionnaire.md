@@ -57,7 +57,7 @@ Prefer visual references in this order:
 - Empty `fonts`: ask for primary and serif names explicitly.
 - No `screenshotUrl`: run validation from local assets in `public/assets/brand-firecrawl/` and user-provided files under `public/assets/brand-screenshots/`; rely more on user input when needed.
 
-## Before writing `tmp/brand-answers.json`
+## Before applying the answers JSON
 
 - Re-read `DESIGN.md` front matter if needed so semantic references like `{colors.bg.accent.1}` stay valid when the user chooses reference style.
 - Ensure every hex is `#` + 3, 6, or 8 hex digits.
@@ -66,8 +66,8 @@ Prefer visual references in this order:
 
 - [ ] Creator **first + last name** captured and written to `src/creatorIdentity.js` (see **Creator identity & avatar** in `skills/brand-setup/SKILL.md`); repo search confirms no stale literal creator name remains in runtime assets
 - [ ] Avatar file present at **`assets/avatar/avatar-profile.png`** (or user warned and deferred explicitly)
-- [ ] `tmp/brand-answers.json` written
-- [ ] `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
+- [ ] Answers JSON assembled in-message (not written to a file)
+- [ ] Answers JSON piped on stdin into `node scripts/apply-brand-answers.mjs`
 - [ ] `src/index.css` synced with updated palette (when colors changed)
 - [ ] `node scripts/validate-design.mjs`
 - [ ] User told about optional **`assets/`** pieces (icons, logos) besides the avatar

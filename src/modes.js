@@ -24,6 +24,8 @@ export const MODES = {
   openclaw:            { label: 'OpenClaw 24/7 Agent Carousel', type: 'carousel', exportName: 'openclaw' },
   'ai-operating-system': { label: 'Build Your AI Operating System', type: 'carousel', exportName: 'ai-operating-system' },
   'ai-os-infographic':   { label: 'AI OS Infographic',   type: 'infographic', exportName: 'ai-os-infographic' },
+  'gtm-system':          { label: 'GTM System on Claude Code', type: 'infographic', exportName: 'gtm-system' },
+  'gtm-system-carousel': { label: 'GTM System Carousel', type: 'carousel', exportName: 'gtm-system-carousel' },
   'yt-ai-design-system': {
     label: 'YT: AI Design System',
     type: 'pptx',

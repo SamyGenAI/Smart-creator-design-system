@@ -97,7 +97,7 @@ This repo supports both entry points for onboarding and generation:
 | **Cursor Agent** | Reference `/setup` in chat |
 | **Codex** | Mention `setup` in chat |
 
-Both paths run the same `brand-setup` skill workflow and produce the same artifacts (`public/brand-data.json`, `tmp/brand-answers.json`, updated `DESIGN.md`, and `src/index.css` kept in sync with the palette).
+Both paths run the same `brand-setup` skill workflow and produce the same artifacts (`public/brand-data.json`, updated `DESIGN.md`, and `src/index.css` kept in sync with the palette). The answers JSON is piped straight into the apply script — it is never written to the repo.
 
 ### 4. Claude Code MCP servers
 
@@ -138,7 +138,7 @@ Inside Claude Code, just type the following commands and answer the questions :
 
 Claude will add a file in the matching `design/` subfolder (`design/infographics/`, `design/carousels/` as JSX, or `design/pptx-slides/` as JSX + PptxGenJS `.mjs`) and register it in `src/modes.js` + `src/App.jsx`.
 
-> **Pro tip — prompt precisely and show what "good" looks like.** Frontier Claude models (Opus/Sonnet 4.x) have strong vision capabilities, so the more specific you are *and* the more visual reference you provide, the closer the first generation will be to what you want. Instead of "make a carousel on AI agents", try: "8-slide carousel on AI agent patterns for technical founders, opinionated tone, ends with a hiring CTA — match the layout density of the attached screenshot." Drop reference images directly into chat (competitor designs, mood boards, sketches, even rough Figma exports) — Claude will read composition, hierarchy, spacing, and color emphasis from them and translate that into on-brand JSX using your tokens.
+> **Pro tip — prompt precisely and show what "good" looks like.** Frontier Claude models (Opus/Sonnet 4.x) have strong vision capabilities, so the more specific you are *and* the more visual reference you provide, the closer the first generation will be to what you want.
 
 ---
 
@@ -160,8 +160,8 @@ The agent will first ask whether you have an existing website or visual identity
 3. Claude presents the extraction; you approve or correct hex values and font names
 4. Place brand screenshots in `public/assets/brand-screenshots/`
 5. (Optional) Add brand screenshots to `public/assets/brand-screenshots/` for validation
-6. Claude writes `tmp/brand-answers.json` and applies it:
-   - `node scripts/apply-brand-answers.mjs --input tmp/brand-answers.json`
+6. Claude assembles the answers JSON in chat and pipes it in — no file is written:
+   - `cat <<'JSON' | node scripts/apply-brand-answers.mjs`
    - `node scripts/validate-design.mjs`
    - Sync updated colors into `src/index.css` when the palette changed
 
@@ -171,7 +171,7 @@ The agent will first ask whether you have an existing website or visual identity
 2. The chosen theme is mapped to semantic tokens; you approve colors and fonts
 3. Provide a brand name and one-line description verbally
 4. (Optional) Add screenshots to `public/assets/brand-screenshots/` for validation
-5. Claude writes `tmp/brand-answers.json` and applies the brand — same final commands as Track A
+5. Claude pipes the answers JSON into the apply script — same final commands as Track A
 
 **Both tracks produce the same artifacts:** updated `DESIGN.md` and aligned `src/index.css` (manual sync for CSS variables).
 
@@ -207,8 +207,12 @@ pnpm design:validate
 For first-time onboarding, use the setup skill in chat (`skills/brand-setup/SKILL.md`) and apply answers with:
 
 ```bash
-pnpm brand:apply -- --input tmp/brand-answers.json
+cat <<'JSON' | pnpm brand:apply
+{ "brandName": "...", "colors": { "semantic": { } } }
+JSON
 ```
+
+Pass `--input <path>` instead if you deliberately want the answers kept as a file.
 
 ### B. Runtime tokens → `src/index.css`
 
@@ -319,10 +323,10 @@ The system is only as good as the brief you hand it. A few habits that consisten
 1. **Be precise about intent, not just topic.** State the audience, the *one* takeaway, the tone, the format, and the CTA in a single sentence before invoking a slash command. "Infographic comparing Notion vs Airtable" is weak. "1080×1350 infographic for solo operators choosing their first ops tool — single takeaway: Airtable wins for relational data, Notion wins for docs — neutral tone, no winner declared, footer CTA to my newsletter" is strong.
 2. **Show what "good" looks like — drop in reference images.** Frontier Claude models (Opus/Sonnet 4.x) have strong vision capabilities. Paste screenshots of designs you admire (competitor carousels, magazine spreads, dashboards, Figma mockups, even hand sketches) directly into the chat. Claude reads composition, density, hierarchy, color emphasis, and typography rhythm from images and translates it into JSX using *your* tokens — so you keep your brand while borrowing structure.
 3. **Constrain the layout when you have an opinion.** "3 cards in a row, second card emphasized" or "stat block top-left, illustration top-right, checklist below" cuts iteration time dramatically vs leaving layout open-ended.
-4. **Iterate with diffs, not rewrites.** Once a draft exists, prompt deltas ("swap card 2 and 3", "make the header tighter — match this screenshot's spacing") instead of regenerating from scratch. The system is designed for surgical edits inside the JSX file.
+4. **Iterate with diffs, not rewrites.** Once a draft exists, prompt deltas ("swap card 2 and 3", "make the header tighter, match this screenshot's spacing") instead of regenerating from scratch. The system is designed for surgical edits inside the JSX file.
 
 ---
 
 ## License
 
-Personal project — fork freely, but brand assets in `assets/` are illustrative only.
+Personal project, fork freely, but brand assets in `assets/` are illustrative only.

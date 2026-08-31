@@ -4,3 +4,6 @@ dist/
 qc-screenshots/
 .claude/settings.local.json
 tmp/
+
+debug.log
+vite.config.js.timestamp-*
