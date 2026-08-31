@@ -1,5 +1,9 @@
 import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
-import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+import {
+  CREATOR_AVATAR_SRC,
+  CREATOR_DISPLAY_NAME,
+  avatarFallback,
+} from '../../src/creatorIdentity.js'
 
 /**
  * LinkedIn Carousel — "Build Your GTM System on Claude Code"
@@ -684,7 +688,8 @@ function SlideCTA() {
         flexShrink: 0,
       }}>
         <img
-          src="/assets/avatar/avatar-profile.png"
+          src={CREATOR_AVATAR_SRC}
+          onError={avatarFallback}
           alt={CREATOR_DISPLAY_NAME}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />

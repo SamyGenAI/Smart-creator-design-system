@@ -787,7 +787,7 @@ export default function BulletProofAISystemInfographicV2() {
 
         {/* Footer pill */}
         <div style={{ position: 'absolute', left: 16, right: 16, bottom: 22 }}>
-          <InfographicFooter className="h-[60px] relative w-full" name="Samy Chouaf" />
+          <InfographicFooter className="h-[60px] relative w-full" />
         </div>
       </div>
     </InfographicCanvas>

@@ -34,7 +34,6 @@ import InfographicFooter from '../../components/InfographicFooter.jsx'
 import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
 import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
 import TextBox from '../../components/TextBox.jsx'
-import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
 
 const GLASS_CARD = 'col-1 ml-0 mt-0 row-1'
 const FONT_BODY = 'var(--font\\/family\\/body)'
@@ -187,11 +186,7 @@ export default function ClaudeDesignWinsInfographic() {
         </div>
 
         {/* ── FOOTER ──────────────────────────────────────────────────────── */}
-        <InfographicFooter
-          avatarSrc="/assets/avatar/avatar-profile.png"
-          name={CREATOR_DISPLAY_NAME}
-          className="h-[60px] relative shrink-0 w-[1048px]"
-        />
+        <InfographicFooter className="h-[60px] relative shrink-0 w-[1048px]" />
       </div>
     </InfographicCanvas>
   )

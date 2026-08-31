@@ -7,3 +7,11 @@ tmp/
 
 debug.log
 vite.config.js.timestamp-*
+
+# Creator identity — keep the template neutral in git while using the real
+# name/photo locally. Both are recreated by /setup on a fresh clone.
+src/creatorIdentity.local.js
+assets/avatar/avatar-profile.png
+
+# Generated decks — rebuilt by pnpm dev, and embed the creator name as author
+design/pptx-slides/output/*.pptx

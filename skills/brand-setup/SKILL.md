@@ -26,22 +26,29 @@ Do this **before** URL extraction (Track A) or Theme Factory (Track B). The temp
 
 1. **Given name** — ask: *What is your first name (as you want it to appear)?*
 2. **Family name** — ask: *What is your last name (as you want it to appear)?*
-3. **Update single identity source** — edit [`src/creatorIdentity.js`](../../src/creatorIdentity.js):
-   - `CREATOR_FIRST_NAME = '<firstName>'`
-   - `CREATOR_LAST_NAME = '<lastName>'`
-   - keep `CREATOR_DISPLAY_NAME` computed from first + last.
+3. **Write the local identity override** — create **[`src/creatorIdentity.local.js`](../../src/creatorIdentity.local.js)** (gitignored):
 
-4. **Verify** — run a quick repo search for old literal names (for example `Samy Chouaf`) and confirm runtime assets now consume `CREATOR_DISPLAY_NAME` via imports.
+   ```js
+   export const CREATOR_FIRST_NAME = '<firstName>'
+   export const CREATOR_LAST_NAME  = '<lastName>'
+   ```
+
+   **Do not edit `src/creatorIdentity.js`** — it is tracked and must stay neutral
+   (`Your Name`) so the template can be redeployed without leaking the owner's
+   identity. It reads the override automatically and falls back to the
+   placeholder when absent.
+
+4. **Verify** — run a quick repo search for any literal creator name across `design/`, `components/`, and `src/` (there should be none), confirm runtime assets consume `CREATOR_DISPLAY_NAME` via imports, and check `git status` shows neither `creatorIdentity.local.js` nor `avatar-profile.png` as tracked changes.
 
    **Consistency:** downstream copy agents reference the same footer/author wording—do not invent alternate spellings mid-workflow.
 
 5. **Avatar / profile image** — ask the user to provide a square-friendly **headshot** (PNG or JPG).
 
-   - **Canonical path:** save (or convert and save) the file as **`assets/avatar/avatar-profile.png`**. This path is referenced by infographic footers, carousels, and slide export defaults.
+   - **Canonical path:** save (or convert and save) the file as **`assets/avatar/avatar-profile.png`**. This path is gitignored (it stays local, like the name override) and is referenced by infographic footers, carousels, and slide export defaults via `CREATOR_AVATAR_SRC`.
    - If the source is JPG, convert or re-export as PNG at this path unless the pipeline already resolves both (prefer one canonical file).
-   - If they cannot supply an image immediately, explain that footers/CTAs will reference a missing file until `assets/avatar/avatar-profile.png` exists—but **still** proceed with names and branding; remind them before closing onboarding.
+   - If they cannot supply an image immediately, footers/CTAs automatically fall back to the tracked neutral `assets/avatar/avatar-placeholder.png`, so nothing breaks—but **still** proceed with names and branding and remind them before closing onboarding.
 
-Do **not** skip this section for “solo” setups—distribution relies on `src/creatorIdentity.js` being set correctly during `@setup`.
+Do **not** skip this section for “solo” setups—distribution relies on `src/creatorIdentity.local.js` being written correctly during `@setup`.
 
 ## Track B — Theme factory path
 
@@ -65,7 +72,7 @@ When Track B applies:
 
 ## Workflow (8 steps)
 
-**Prerequisite:** complete the **Creator identity & avatar** steps above (update `src/creatorIdentity.js`) **before** the numbered workflow below. Obtain **`assets/avatar/avatar-profile.png`** during the same session when possible — if truly deferred per that section, keep going with branding tokens but remind the user before sign-off.
+**Prerequisite:** complete the **Creator identity & avatar** steps above (create `src/creatorIdentity.local.js`) **before** the numbered workflow below. Obtain **`assets/avatar/avatar-profile.png`** during the same session when possible — if truly deferred per that section, keep going with branding tokens but remind the user before sign-off.
 
 1. **Website URL (Track A only)**  
    Ask for the canonical site URL. **Track B:** skip; note *no URL* in your session notes.

@@ -734,7 +734,7 @@ export default function BulletProofAISystemInfographic() {
         </PrimaryGlassSection>
 
         {/* ── FOOTER ────────────────────────────────────────────────── */}
-        <InfographicFooter className="h-[60px] relative shrink-0 w-[1048px]" name="Smart Creator" />
+        <InfographicFooter className="h-[60px] relative shrink-0 w-[1048px]" />
       </div>
     </InfographicCanvas>
   )

@@ -1,11 +1,15 @@
-import { CREATOR_DISPLAY_NAME } from '../src/creatorIdentity.js'
+import {
+  CREATOR_AVATAR_SRC,
+  CREATOR_DISPLAY_NAME,
+  avatarFallback,
+} from '../src/creatorIdentity.js'
 
 /**
  * InfographicFooter — primary brand pill bar at the bottom of every infographic.
  * Figma node: 54:894  (infographic-footer)
  *
  * Props:
- *   avatarSrc   string   — path to profile picture (e.g. "/assets/avatar/avatar-profile.png")
+ *   avatarSrc   string   — path to profile picture (default from src/creatorIdentity.js)
  *   name        string   — display name (default from src/creatorIdentity.js)
  *   className   string   — overrides dimensions/positioning
  */
@@ -15,7 +19,7 @@ const FONT_TITLE = "var(--font\\/family\\/title)"
 const SHADOW_CARD = "var(--theme-shadow-card)"
 
 export default function InfographicFooter({
-  avatarSrc = "/assets/avatar/avatar-profile.png",
+  avatarSrc = CREATOR_AVATAR_SRC,
   name = CREATOR_DISPLAY_NAME,
   className,
 }) {
@@ -59,7 +63,7 @@ export default function InfographicFooter({
       >
         <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[40px]">
           {avatarSrc && (
-            <img alt={name} className="absolute left-0 max-w-none size-full top-0 object-cover" src={avatarSrc} />
+            <img alt={name} className="absolute left-0 max-w-none size-full top-0 object-cover" src={avatarSrc} onError={avatarFallback} />
           )}
         </div>
       </div>

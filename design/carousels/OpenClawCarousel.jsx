@@ -1,5 +1,9 @@
 import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
-import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+import {
+  CREATOR_AVATAR_SRC,
+  CREATOR_DISPLAY_NAME,
+  avatarFallback,
+} from '../../src/creatorIdentity.js'
 
 /**
  * LinkedIn Carousel — "Setup your 24/7 AI agent in 10 minutes"
@@ -584,7 +588,8 @@ function SlideCTA() {
         boxShadow: SOFT_SHADOW,
       }}>
         <img
-          src="/assets/avatar/avatar-profile.png"
+          src={CREATOR_AVATAR_SRC}
+          onError={avatarFallback}
           alt={CREATOR_DISPLAY_NAME}
           style={{ display: 'block', width: '100%', height: '100%' }}
         />

@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 import { parseDesignMd } from '../../scripts/parse-design-md.mjs'
 import { buildScenes, pt } from './slide-engine.mjs'
 import { createRasterCache, resolveImagePayload } from './slide-engine.rasterize.mjs'
+import { CREATOR_DISPLAY_NAME as PLACEHOLDER_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+import { resolveCreatorIdentity } from '../../src/creatorIdentity.node.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 
@@ -114,7 +116,14 @@ export async function renderDeckToPptx(deck, outFile) {
   const { hex: TOK, font: FONT } = getTok()
   const pres = new pptxgen()
   pres.layout = deck.meta?.layout ?? 'LAYOUT_16x9'
-  pres.author = deck.meta?.author ?? ''
+  // Decks import the identity statically, so under plain node they resolve to
+  // the neutral placeholder. Swap in the gitignored local override when present,
+  // leaving any deliberately custom author string untouched.
+  const identity = await resolveCreatorIdentity()
+  const deckAuthor = deck.meta?.author ?? ''
+  pres.author = deckAuthor === PLACEHOLDER_DISPLAY_NAME || deckAuthor === ''
+    ? identity.CREATOR_DISPLAY_NAME
+    : deckAuthor
   pres.title = deck.meta?.title ?? 'Slide Deck'
 
   const rasterCache = createRasterCache()
