@@ -68,8 +68,10 @@ Prefer visual references in this order:
 - [ ] Avatar file present at **`assets/avatar/avatar-profile.png`** (or user warned and deferred explicitly)
 - [ ] Answers JSON assembled in-message (not written to a file)
 - [ ] Answers JSON piped on stdin into `node scripts/apply-brand-answers.mjs`
-- [ ] `src/index.css` synced with updated palette (when colors changed)
-- [ ] `node scripts/validate-design.mjs`
+- [ ] `node scripts/generate-index-css.mjs` (`pnpm design:sync`) run — `src/index.css` is **generated**, never hand-synced
+- [ ] `node scripts/validate-design.mjs` — passes schema **and** the `index.css` drift check
+- [ ] `node scripts/lint-infographic-tokens.mjs` — no hardcoded colours/fonts in `components/` or `templates/`
+- [ ] No manual edits were needed to `DESIGN.md` or `src/index.css` (if any were, the pipeline has a gap — report it)
 - [ ] User told about optional **`assets/`** pieces (icons, logos) besides the avatar
 - [ ] User explicitly asked to start a **new conversation** after onboarding completion (context reset before generation)
 - [ ] Suggest to the user to try the following commands : **/infographic** or **/carousel**

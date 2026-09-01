@@ -197,7 +197,7 @@ components:
 
 # Human-readable design rules
 
-Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`). **Slide decks** are 4:3 PowerPoint / Google Slides (10×7.5 in via PptxGenJS — see [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md)), not React canvas. Colors, typography, radii, and shadows in the YAML above feed **Tailwind** via `tailwind.config.js`. Runtime **CSS variables** for components live in `src/index.css` — edit that file directly for theme tweaks.
+Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`). **Slide decks** are 4:3 PowerPoint / Google Slides (10×7.5 in via PptxGenJS — see [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md)), not React canvas. Colors, typography, radii, and shadows in the YAML above feed **Tailwind** via `tailwind.config.js`. Runtime **CSS variables** for components live in `src/index.css`, which is **generated from this file** — run `pnpm design:sync` after changing the YAML above, and never hand-edit the generated block. `pnpm design:validate` fails on drift.
 
 ## Colors (roles)
 
@@ -206,14 +206,15 @@ Fixed canvas: **infographic 1080×1350** (`InfographicCanvas`). **Slide decks** 
 | `colors.bg.brand` | Headers, footer bar, primary chrome |
 | `colors.bg.canvas` | Page / InfographicCanvas fill |
 | `colors.bg.accent.1..5` | Meaningful accents (chips, tiers) |
-| `colors.text.*` / `colors.text.onBrand` | Contrast pairs |
+| `colors.text.*` | Text on the canvas — `--theme-color-text-primary` |
+| `colors.text.onBrand` | Text/icons **on** `bg.brand` — derived by luminance, never assumed white |
 | `alphaColors.overlay.glass.*` | Glass frosts |
 
 Composition: **few strong colors**; respect contrast (see `.claude/agents/infographic-design-agent.md` + `skills/infographics-designer/SKILL.md`).
 
 ## Typography (see YAML `typography`)
 
-Montserrat everywhere for product work; optional Noto for display. Titles may wrap (~2 lines on the infographic header); no fixed character cap.
+The primary sans (`typography.hero.fontFamily`) everywhere for product work; the serif role (`typography.title-serif.fontFamily`) for display. Both are set by `/setup` — never name a typeface in a design file, use `var(--font/family/title)` / `var(--font/family/title-serif)`. Tracking comes from `var(--font/tracking/title)`, not a per-component literal. Titles may wrap (~2 lines on the infographic header); no fixed character cap.
 
 ## Layout
 
@@ -226,6 +227,14 @@ Use `shadow-elevation-*` / `shadow-card` classes mapped from tokens — every ca
 ## Components
 
 Primitives live under `components/` (see `skills/infographics-designer/SKILL.md`). Chips: accent **1** features · **2** outcomes · **3** process · **4** ranked · **5** caution.
+
+## Derived tokens (do not hand-edit)
+
+`colors.border.accent.*`, `alphaColors.bg.accentSoft.*`, `alphaColors.bg.surfaceAccent.*`,
+`alphaColors.overlay.indicator.primary`, `colors.text.onBrand`, `shadows.slide-primary` and
+`components.surface-accent-*.backgroundColor` are **computed from the semantic palette** by
+`scripts/derive-brand-tokens.mjs` whenever `/setup` runs. Editing them by hand is how a rebrand
+used to leave the previous brand's chroma behind.
 
 ## Mandatory don’ts
 

@@ -1,0 +1,36 @@
+name: Design system
+
+# Guards the brand pipeline:
+#  - DESIGN.md schema + token references resolve
+#  - src/index.css has not drifted from DESIGN.md
+#  - components/ and templates/ carry no hardcoded colours or fonts
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: DESIGN.md schema + index.css drift
+        run: pnpm design:validate
+
+      - name: Token lint (components/ + templates/)
+        run: pnpm tokens:lint
+
+      - name: Template boundaries
+        run: pnpm templates:check

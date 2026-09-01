@@ -15,6 +15,7 @@ const COLOR_ON_PRIMARY = "var(--theme-color-on-primary)"
 const COLOR_PRIMARY = "var(--theme-color-primary)"
 const SURFACE_GLASS = "var(--theme-surface-glass-soft)"
 const SHADOW_CARD = "var(--theme-shadow-card)"
+const ICON_ON_PRIMARY = "var(--theme-on-primary-icon-filter, brightness(0) invert(1))"
 const FONT_TITLE = "var(--font\\/family\\/title)"
 const BASE_CLASS = "border-3 border-solid content-stretch flex flex-col gap-[10px] items-start relative rounded-glass"
 export default function PrimaryGlassSection({ title = "xxx", iconSrc = null, iconAlt = "", children, className, titleSize = "32px" }) {
@@ -36,7 +37,10 @@ export default function PrimaryGlassSection({ title = "xxx", iconSrc = null, ico
 
         {iconSrc && (
           <div className="absolute left-[9px] top-1/2 -translate-y-1/2 overflow-clip size-[35px]" data-name="icon">
-            <img alt={iconAlt} className="absolute block max-w-none size-full" style={{ filter: 'brightness(0) invert(1)' }} src={iconSrc} />
+            {/* Icons are filtered to whatever reads on the brand fill — white on
+                a dark brand, black on a light one. Hardcoding invert(1) made
+                icons vanish on light brands. */}
+            <img alt={iconAlt} className="absolute block max-w-none size-full" style={{ filter: ICON_ON_PRIMARY }} src={iconSrc} />
           </div>
         )}
       </div>

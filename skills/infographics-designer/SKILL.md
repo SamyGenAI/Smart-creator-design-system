@@ -45,10 +45,23 @@ The system is **brand-agnostic**. Chroma and typefaces are owned only by **`DESI
 | Layer | Role |
 |--------|------|
 | **`DESIGN.md`** | Single source for **#hex** in the repo: `colors.*`, `typography.*`, `shadows.*`, `rounded.*`, etc. Consumed by `tailwind.config.js` (Tailwind theme) and must stay consistent with runtime CSS variables. |
-| **`src/index.css`** | `:root` **CSS variables** (`--theme-*`, `--color/*`, `--font/*`, …) used by `components/` and infographic JSX. After brand onboarding, **sync** variables when the palette changes (see [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) — `apply-brand-answers`, validation, Done checklist). |
+| **`src/index.css`** | `:root` **CSS variables** (`--theme-*`, `--color/*`, `--font/*`, …) used by `components/` and infographic JSX. **Generated** from `DESIGN.md` by `pnpm design:sync` — never hand-edit the generated block (see [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md)). |
 | **`design/infographics/*.jsx`** | **Must not** contain `#hex`, `rgb()`, `hsl()`, named colors, or hardcoded `fontFamily: 'Some Font'`. Use Tailwind token classes (`bg-bg-canvas`, `text-text-primary`, …) and/or `var(--theme-…)`, `var(--color/…)`, `var(--font/family/title)` (escape slashes in Tailwind arbitrary values per `CLAUDE.md`). |
 
-**Rebranding / new brand:** Use **`skills/brand-setup/SKILL.md`** (`/setup`, `@setup`): Track A (site + Firecrawl) or Track B (Theme Factory) → answers JSON piped into `node scripts/apply-brand-answers.mjs` → align **`src/index.css`** with the updated semantic roles → `pnpm design:validate`. Do not embed one-off brand colors in infographic files.
+**Rebranding / new brand:** Use **`skills/brand-setup/SKILL.md`** (`/setup`, `@setup`): Track A (site + Firecrawl) or Track B (Theme Factory) → answers JSON piped into `node scripts/apply-brand-answers.mjs` → `pnpm design:sync` regenerates **`src/index.css`** → `pnpm design:validate`. Do not embed one-off brand colors in infographic files.
+
+### Colour roles — brand fill vs text
+
+The brand may be **light** (e.g. lime on white). Pick the role, never the raw brand:
+
+| Token | Use for |
+|---|---|
+| `--theme-color-primary` | Brand **fill** — header bars, footer bar, filled chrome |
+| `--theme-color-on-primary` | Text **and icons sitting on** that fill (derived by luminance) |
+| `--theme-color-title` | Infographic/section **title text** (falls back to text colour on a light brand) |
+| `--theme-color-text-primary` / `-secondary` / `-muted` | Body text on the canvas |
+
+**Never** paint text with `--theme-color-primary`, and never assume white reads on the brand.
 
 ## Icons and illustrations
 

@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
 import yaml from 'js-yaml'
+import { deriveDependentTokens, isHexColor, resolveLocalRef } from './derive-brand-tokens.mjs'
 
 const ROOT = process.cwd()
 const DESIGN_PATH = resolve(ROOT, 'DESIGN.md')
@@ -46,6 +47,73 @@ function updateTypographyFamilies(typography, titleFont, serifFont) {
     next[name] = { ...spec, fontFamily: titleFont }
   }
   return next
+}
+
+/** Walk every string leaf, yielding [dotted path, value]. */
+function* walkLeaves(value, path = []) {
+  if (value == null) return
+  if (typeof value !== 'object') {
+    yield [path.join('.'), value]
+    return
+  }
+  if (Array.isArray(value)) return
+  for (const [key, child] of Object.entries(value)) {
+    yield* walkLeaves(child, [...path, key])
+  }
+}
+
+/** Every hex literal reachable from `colors` — the palette the brand declared. */
+function paletteHexes(design) {
+  const set = new Set()
+  for (const [, value] of walkLeaves(design.colors ?? {})) {
+    const resolved = resolveLocalRef(design, value)
+    if (isHexColor(resolved)) set.add(String(resolved).toLowerCase().slice(0, 7))
+  }
+  return set
+}
+
+/**
+ * After merging + deriving, no frontmatter key should still carry chroma that
+ * is absent from the new palette. Anything left is a hand-written leftover from
+ * the previous brand — the exact failure this ticket is about.
+ *
+ * Neutrals (greys/black/white) and shadow scrims are allowed: they are
+ * brand-agnostic by design.
+ */
+function findStaleHexes(design) {
+  const palette = paletteHexes(design)
+  const stale = []
+
+  for (const [path, value] of walkLeaves(design)) {
+    if (typeof value !== 'string') continue
+    // `shadows` are neutral scrims apart from the brand-keyed ones, which
+    // deriveDependentTokens() rewrites; skip the section wholesale.
+    if (path.startsWith('shadows.')) continue
+
+    const matches = value.match(/#[0-9a-fA-F]{6,8}\b/g) ?? []
+    for (const hex of matches) {
+      const normalized = hex.toLowerCase().slice(0, 7)
+      if (palette.has(normalized)) continue
+      if (isNeutral(normalized)) continue
+      stale.push({ path, value })
+      break
+    }
+
+    // rgb()/rgba() literals outside alphaColors are equally suspect.
+    if (!path.startsWith('alphaColors.') && /\brgba?\s*\(/.test(value)) {
+      stale.push({ path, value })
+    }
+  }
+
+  return stale
+}
+
+/** Greys, black and white carry no brand identity. */
+function isNeutral(hex) {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return Math.max(r, g, b) - Math.min(r, g, b) <= 12
 }
 
 function readFrontMatter(content) {
@@ -122,7 +190,20 @@ async function main() {
     next.typography = updateTypographyFamilies(next.typography ?? {}, primary, serif)
   }
 
-  const nextFrontmatter = yaml.dump(next, {
+  // Palette-derived tokens (accent borders, alpha tints, brand shadow, onBrand
+  // text) are recomputed rather than carried over from the previous brand.
+  const { design: derived, changed } = deriveDependentTokens(next)
+
+  const stale = findStaleHexes(derived)
+  if (stale.length > 0) {
+    const details = stale.map((s) => `  - ${s.path}: ${s.value}`).join('\n')
+    throw new Error(
+      `Refusing to write DESIGN.md — these keys still hold a hex that is not part of the new palette:\n${details}\n\n` +
+        'Add them to the answers JSON, or extend deriveDependentTokens() in scripts/derive-brand-tokens.mjs.'
+    )
+  }
+
+  const nextFrontmatter = yaml.dump(derived, {
     lineWidth: 120,
     noRefs: true,
     quotingType: '"',
@@ -131,6 +212,9 @@ async function main() {
   const serialized = `---\n${nextFrontmatter}---\n${body.startsWith('\n') ? body.slice(1) : body}`
   writeFileSync(DESIGN_PATH, serialized, 'utf8')
   console.log('✓ DESIGN.md updated from setup answers')
+  if (changed.length > 0) {
+    console.log(`  derived ${changed.length} dependent token(s): ${changed.join(', ')}`)
+  }
 }
 
 main().catch((error) => {

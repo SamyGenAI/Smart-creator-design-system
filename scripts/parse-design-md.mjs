@@ -256,6 +256,19 @@ function buildFontSizes(typography, legacyFontScale = LEGACY_FONT_SCALE) {
   return sizes
 }
 
+/**
+ * Serif families are usually not named "serif" (Rufina, Playfair, Georgia…), so
+ * matching on the name alone emitted `['Rufina', 'sans-serif']`. Resolve against
+ * the family actually assigned to the serif role first, then fall back to a
+ * name heuristic for anything else.
+ */
+function genericFallbackFor(name, serifFamily) {
+  if (serifFamily && String(name).toLowerCase() === String(serifFamily).toLowerCase()) return 'serif'
+  return /serif|slab|georgia|garamond|playfair|times|baskerville|didot|bodoni/i.test(name)
+    ? 'serif'
+    : 'sans-serif'
+}
+
 function buildFontFamilies(typography) {
   if (!typography || !isPlainObject(typography)) return {}
 
@@ -278,8 +291,7 @@ function buildFontFamilies(typography) {
     const name = String(spec.fontFamily)
     const key = name.toLowerCase().replace(/\s+/g, '-')
     if (!families[key]) {
-      const fallback = /serif/i.test(name) ? 'serif' : 'sans-serif'
-      families[key] = [name, fallback]
+      families[key] = [name, genericFallbackFor(name, serifFamily)]
     }
   }
 

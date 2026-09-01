@@ -85,7 +85,13 @@ When Track B applies:
    This writes [public/brand-data.json](public/brand-data.json) (title, description, content preview, screenshot URL, colors, fonts, design patterns, typography snippet, optional full `brandingProfile`), and saves downloaded assets under `public/assets/brand-firecrawl/`.
    The script retries automatically when no branded colors are extracted, and records `attemptsUsed` in the JSON.
 
-3. **Present extraction (Track A only)**  
+3. **Present extraction (Track A only)**
+
+   > **Treat extraction as a proposal, not truth.** Firecrawl reports what the CSS *declares*,
+   > which is often not what renders. Expect these and confirm each with the user against the
+   > screenshots: `fontStacks.*` is a **fallback list** (e.g. `["Times New Roman"]`) while
+   > `fontFamilies.*` names the real face; a reported `background: #FFFFFF` can belong to a
+   > page whose hero is near-black. Never feed extracted values straight into the answers JSON.  
    Load `public/brand-data.json` and summarize: colors (first batch), fonts, design patterns, screenshot URL, locally saved assets, `brandingProfile` highlights if present, and `attemptsUsed`.
    Use locally saved assets first (`savedAssets.screenshot`, `savedAssets.images`) for stable analysis; keep `screenshotUrl` as fallback.  
    **Track B:** skip; instead briefly present the **chosen theme file** (palette + type) and the proposed **semantic token mapping** you will feed to `apply-brand-answers`.
@@ -148,7 +154,13 @@ When Track B applies:
    }
    ```
 
-   Only include `colors.semantic` keys you intend to overwrite. `scripts/apply-brand-answers.mjs` deep-merges into `DESIGN.md` front matter.
+   Only include `colors.semantic` keys you intend to overwrite. `scripts/apply-brand-answers.mjs`
+   deep-merges into `DESIGN.md` front matter, then **derives** every palette-dependent token
+   (accent borders, alpha tints, indicator overlay, brand shadow, `text.onBrand`, component
+   surfaces). You do **not** supply those — supplying them by hand is what used to leave the old
+   brand behind.
+
+   `text.onBrand` is derived by luminance, so omit it unless the user insists on a specific value.
 
 7. **Apply and validate**  
     From repo root:
@@ -162,9 +174,23 @@ When Track B applies:
 
     `--input <path>` still works if the user explicitly wants the answers saved to a file, but stdin is the default.
 
-    Then **sync** any changed semantic colors into `src/index.css` (`:root` CSS variables) so runtime components match `DESIGN.md`.
+    Then **generate** `src/index.css` from `DESIGN.md` — this is a codegen step, not a
+    hand-sync. `validate-design` fails if the two drift apart:
 
-    Report: which areas changed (brand name, description, colors, fonts, radii), whether validation succeeded, and that `src/index.css` was updated if palette roles changed.
+    ```bash
+    node scripts/generate-index-css.mjs   # or: pnpm design:sync
+    node scripts/validate-design.mjs      # schema + index.css drift check
+    node scripts/lint-infographic-tokens.mjs
+    ```
+
+    **Do not hand-edit** `src/index.css` inside the generated block, and do not hand-edit the
+    derived keys in `DESIGN.md` (`colors.border.accent.*`, `alphaColors.*`,
+    `colors.text.onBrand`, `shadows.slide-primary`, `components.surface-accent-*`) —
+    `apply-brand-answers` recomputes them from the semantic palette and **refuses to write**
+    if any key still holds a hex outside the new palette.
+
+    Report: which areas changed (brand name, description, colors, fonts, radii), the derived
+    tokens the script listed, and that all three commands above passed.
 
 8. **Figma MCP setup (optional)**  
    Ask the user if they want to push designs directly to Figma:
@@ -196,7 +222,13 @@ When Track B applies:
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
   ```
 - Update `DESIGN.md` only via `scripts/apply-brand-answers.mjs` for the automated merge path. If the user needs tokens not covered by answers (full palette retune), edit `DESIGN.md` manually afterward, run `node scripts/validate-design.mjs`, and mirror the changes into `src/index.css`.
-- **`src/index.css`** holds runtime CSS variables — edit it when brand colors change (there is no codegen step).
+- **`src/index.css`** is **generated** from `DESIGN.md` by `scripts/generate-index-css.mjs`.
+  Change `DESIGN.md`, then run `pnpm design:sync`. Only edit `src/index.css` outside the
+  generated block (e.g. `.infographic-canvas`).
+- **Light brands are supported.** `--theme-color-primary` is the brand **fill**;
+  `--theme-color-on-primary` (text/icons on that fill), `--theme-color-title` and
+  `--theme-on-primary-icon-filter` are derived from brand luminance. Never assume the brand
+  is dark, and never paint title text with `--theme-color-primary`.
 - If the user gives non-hex color values where hex is required, ask for a valid `#hex`.
 - Keep `design/` output-only; onboarding must not edit generated designs.
 - If color extraction is empty, run the script again once manually before asking for manual palette values:

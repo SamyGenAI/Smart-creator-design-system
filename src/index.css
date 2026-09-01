@@ -1,4 +1,6 @@
-/* Design token CSS variables — edit this file directly (source of truth). */
+/* Design token CSS variables.
+   GENERATED from DESIGN.md — do not hand-edit the block below.
+   Regenerate with: pnpm design:sync   Verify with: pnpm design:validate */
 
 @tailwind base;
 @tailwind components;
@@ -7,8 +9,10 @@
 /*
   Semantic palette and theme aliases consumed by `components/` and `design/`.
 */
+/* >>> generated from DESIGN.md - do not edit by hand (pnpm design:sync) */
 :root {
-  /* ── Semantic palette ─────────────────────────────────────── */
+
+  /* -- Semantic palette -- */
   --color\/bg\/canvas: #fffceb;
   --color\/bg\/surface: #ffffff;
   --color\/bg\/surface-alt: #fff4e8;
@@ -19,56 +23,56 @@
   --color\/bg\/accent\/4: #ffe6f3;
   --color\/bg\/accent\/5: #ffa066;
 
-  /* ── Text ────────────────────────────────────────────────── */
-  --text\/primary:    #000000;
-  --text\/secondary:  #323241;
-  --text\/contrast:   #717188;
-  --text\/invert:     #ffffff;
+  /* -- Text -- */
+  --text\/primary: #000000;
+  --text\/secondary: #323241;
+  --text\/contrast: #717188;
+  --text\/invert: #ffffff;
   --text\/text-brand: #092c69;
 
-  /* ── Border ──────────────────────────────────────────────── */
-  --border\/primary:   #092c69;
+  /* -- Border -- */
+  --border\/primary: #092c69;
   --border\/secondary: #e3e4eb;
-  --border\/accent-1:  #7edaff;
-  --border\/accent-2:  #a9ff3e;
-  --border\/accent-3:  #fcd34d;
-  --border\/accent-4:  #ffb2da;
-  --border\/accent-5:  #ff914d;
+  --border\/accent-1: #7edaff;
+  --border\/accent-2: #a9ff3e;
+  --border\/accent-3: #fcd34d;
+  --border\/accent-4: #ffb2da;
+  --border\/accent-5: #ff914d;
   --border\/neutral-1: #e3e4eb;
 
-  /* ── Background ──────────────────────────────────────────── */
-  --components\/background\/primary:   #fffceb;
+  /* -- Background -- */
+  --components\/background\/primary: #fffceb;
   --components\/background\/secondary: #fff4e8;
-  --components\/background\/white:     #ffffff;
+  --components\/background\/white: #ffffff;
 
-  /* ── Card ────────────────────────────────────────────────── */
+  /* -- Card -- */
   --components\/card\/white: #ffffff;
   --components\/card\/cream: #fffceb;
   --components\/card\/accent-1: rgba(126,218,255,0.15);
   --components\/card\/accent-3: #fde68a;
   --components\/card\/accent-4: rgba(255,178,218,0.15);
 
-  /* ── Card-title accents ──────────────────────────────────── */
+  /* -- Card-title accents -- */
   --components\/card-title\/accent-1: #b4eaff;
   --components\/card-title\/accent-2: #d2ff9a;
   --components\/card-title\/accent-3: #fde68a;
   --components\/card-title\/accent-4: #ffe6f3;
   --components\/card-title\/accent-5: #ffa066;
 
-  /* ── Component micro-tokens ───────────────────────────────── */
+  /* -- Component micro-tokens -- */
   --check-stroke: #116F39;
 
-  /* ── Highlight ───────────────────────────────────────────── */
+  /* -- Highlight -- */
   --highlight\/accent-1: rgba(126,218,255,0.15);
   --highlight\/accent-2: rgba(169,255,62,0.15);
   --highlight\/accent-3: rgba(252,211,77,0.25);
   --highlight\/accent-5: rgba(255,145,77,0.15);
 
-  /* ── Surfaces (slides/cards) ─────────────────────────────── */
+  /* -- Surfaces (slides/cards) -- */
   --surface\/glass\/strong: rgba(255,255,255,0.92);
   --surface\/glass\/default: rgba(255,255,255,0.55);
 
-  /* ── Shadows ─────────────────────────────────────────────── */
+  /* -- Shadows -- */
   --shadow\/card: 0px 4px 4px 0px rgba(0,0,0,0.25);
   --shadow\/card-soft: 0 8px 32px rgba(0,0,0,0.18);
   --shadow\/elevation\/100: 0px 1px 4px 0px rgba(12,12,13,0.05);
@@ -80,10 +84,12 @@
   --shadow\/slide\/accent: 0 8px 32px rgba(0,0,0,0.10);
   --shadow\/slide\/primary: 0 8px 32px rgba(9,44,105,0.35);
 
-  /* ── Typography ──────────────────────────────────────────── */
+  /* -- Typography -- */
   --font\/family\/title: 'Montserrat', sans-serif;
   --font\/family\/body: 'Montserrat', sans-serif;
   --font\/family\/title-serif: 'Noto Serif', serif;
+  --font\/tracking\/title: -0.03em;
+  --font\/tracking\/subtitle: -0.03em;
 
   --font\/size\/xs: 12px;
   --font\/size\/sm: 16px;
@@ -100,12 +106,14 @@
   --font\/line-height\/lg: 40px;
   --font\/line-height\/xl: 48px;
 
-  /* ── Semantic aliases (component-facing, color-agnostic) ── */
+  /* -- Semantic aliases (component-facing, color-agnostic) -- */
   --theme-color-primary: #092c69;
   --theme-color-on-primary: #ffffff;
   --theme-color-text-primary: #000000;
   --theme-color-text-secondary: #323241;
   --theme-color-text-muted: #717188;
+  --theme-color-title: #092c69;
+  --theme-on-primary-icon-filter: brightness(0) invert(1);
 
   --theme-surface-canvas: #fffceb;
   --theme-surface-canvas-secondary: #fff4e8;
@@ -139,6 +147,16 @@
   --theme-shadow-surface-accent: 0 8px 32px rgba(0,0,0,0.10);
   --theme-shadow-surface-primary: 0 8px 32px rgba(9,44,105,0.35);
 }
+
+/* Base text styling - without this, unstyled text falls back to the UA serif. */
+@layer base {
+  body {
+    font-family: var(--font\/family\/body);
+    color: var(--theme-color-text-primary);
+    background-color: var(--theme-surface-canvas);
+  }
+}
+/* <<< end generated */
 
 /* Fixed canvas — required for infographic absolute positioning */
 .infographic-canvas {

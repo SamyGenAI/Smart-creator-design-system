@@ -13,7 +13,11 @@
     "templates:check": "node scripts/check-template-boundaries.mjs",
     "brand:apply": "node scripts/apply-brand-answers.mjs",
     "generate:design": "node scripts/generate-design-output.mjs",
-    "screenshot": "node scripts/screenshot.mjs"
+    "screenshot": "node scripts/screenshot.mjs",
+    "design:sync": "node scripts/generate-index-css.mjs",
+    "design:check": "node scripts/generate-index-css.mjs --check",
+    "tokens:lint": "node scripts/lint-infographic-tokens.mjs",
+    "verify": "pnpm design:validate && pnpm tokens:lint && pnpm templates:check"
   },
   "dependencies": {
     "playwright": "^1.58.2",

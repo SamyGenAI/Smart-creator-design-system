@@ -19,7 +19,7 @@ const TEXT_PRIMARY = 'var(--theme-color-text-primary)'
 const TEXT_SECONDARY = 'var(--theme-color-text-secondary)'
 const BACKGROUND_PRIMARY = 'var(--theme-surface-canvas)'
 const SURFACE_CARD = 'var(--theme-color-on-primary)'   /* white on any brand */
-const FONT = "var(--font\\/family\\/title, 'Montserrat', sans-serif)"
+const FONT = "var(--font\\/family\\/title, sans-serif)"
 
 const NAVBAR = <CarouselNavbarEdge textColor={TEXT_PRIMARY} fontFamily={FONT} />
 

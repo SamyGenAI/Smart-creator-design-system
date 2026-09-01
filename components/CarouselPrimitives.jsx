@@ -1,6 +1,6 @@
 import { CREATOR_DISPLAY_NAME } from '../src/creatorIdentity.js'
 
-const DEFAULT_FONT = "var(--font\\/family\\/title, 'Montserrat', sans-serif)"
+const DEFAULT_FONT = "var(--font\\/family\\/title, sans-serif)"
 const DEFAULT_TEXT = 'var(--theme-color-text-primary)'
 const DEFAULT_BACKGROUND = 'var(--theme-surface-canvas)'
 

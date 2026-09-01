@@ -63,7 +63,9 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 - **Chroma lives only in `DESIGN.md`** (YAML `#hex` and references) and in **`src/index.css`** as CSS variables. Tailwind color utilities come from `DESIGN.md` via `tailwind.config.js`.
 - **Never put chroma in `design/**/*.jsx`** — no `#hex`, `rgb()`, `hsl()`, named colors, or hardcoded `fontFamily: '…'` in infographic (or other design) files. Use Tailwind tokens (`bg-bg-canvas`, `text-text-primary`, …) and/or `var(--theme-…)`, `var(--color/…)`, `var(--font/family/…)` everywhere, **including every SVG `fill` / `stroke` / `color`**.
-- **`src/index.css`:** edit `:root` variables when the palette changes; keep them aligned with `DESIGN.md` after onboarding (**[`skills/brand-setup/SKILL.md`](skills/brand-setup/SKILL.md)** — Track A/B, `apply-brand-answers`, Done checklist).
+- **`src/index.css` is generated** from `DESIGN.md` by `scripts/generate-index-css.mjs` (`pnpm design:sync`). Change `DESIGN.md`, then regenerate — never hand-edit inside the `>>> generated` block. `pnpm design:validate` fails on drift.
+- **Brand fill ≠ text colour.** `--theme-color-primary` is the brand **fill**. For text use `--theme-color-text-primary`; for titles `--theme-color-title`; for anything sitting **on** the brand fill `--theme-color-on-primary`. These are derived from brand luminance, so light brands stay legible — never paint title text with `--theme-color-primary`.
+- **Tracking is a token**, not a component literal: `var(--font/tracking/title)`. Hardcoded px tracking tuned for one typeface collides glyphs on another.
 - Escape slashes in arbitrary Tailwind: `bg-[var(--color\/bg\/brand)]`.
 
 ---
@@ -72,11 +74,11 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 1. **Assets:** local paths only; no downloading icons · Figma image URLs expire (~7 days) → save under `assets/`.
 2. **Images:** containers `flex items-center justify-center` · `img` `w-full h-full object-contain` · never `display: contents`.
-3. **Primary glass icons:** dark SVGs only (`PrimaryGlassSection` filters to white).
+3. **Primary glass icons:** supply **dark, single-colour** SVGs. `PrimaryGlassSection` filters them to whatever reads on the brand fill via `--theme-on-primary-icon-filter` (white on a dark brand, black on a light one) — do **not** hardcode `brightness(0) invert(1)`.
 4. **Preserve** `data-node-id` / `data-name` on design-system nodes.
 5. **`design/` imports:** `'../../components/...'` from `design/infographics/` (two levels up).
 6. **Figma push:** share capture URL — **never** shell-open browser · remind user auth = their MCP Figma account.
-7. **DESIGN.md:** after YAML changes, Tailwind theme updates on next dev/build; run `pnpm design:validate` if you want YAML checked.
+7. **DESIGN.md:** after YAML changes, run `pnpm design:sync` (regenerates `src/index.css`) then `pnpm design:validate` (schema + drift). Tailwind picks the theme up on the next dev/build. `pnpm verify` runs validate + token lint + template boundaries — the same checks CI runs.
 8. **Do NOT render previews.** Never call `render.py`, `python render.py …`, `curl /api/export/png|pdf`, or any other server/headless render step to "verify" a design. The user runs `pnpm dev` themselves once the design file is written — that is the only inspection step. Stop after writing the JSX + registering in `src/App.jsx`.
 9. **No hardcoded creator identity.** Never put a creator name, handle, URL, or avatar path directly in `design/**/*.jsx`. Always use `<InfographicFooter />` (resolves name + avatar automatically). If the body copy needs the display name, import `CREATOR_DISPLAY_NAME` from `src/creatorIdentity.js`; for an avatar use `CREATOR_AVATAR_SRC` + `avatarFallback` from the same module. `src/creatorIdentity.js` is **tracked and stays neutral** (`Your Name`); the real name lives in the gitignored `src/creatorIdentity.local.js` written by `/setup`, and the real headshot in the gitignored `assets/avatar/avatar-profile.png`. This keeps every design rebrandable — and the repo redeployable — from one place.
 10. **Mandatory infographic components.** Every infographic must use `InfographicHeader` for the title block and `InfographicFooter` for the footer — never replace them with custom divs. Section cards must come from `PrimaryGlassSection` or `BrandBorderSectionBase` (or other `components/` primitives) rather than being written from scratch.
