@@ -6,7 +6,7 @@
  *
  * Fields:
  *   label       — display name in the top nav
- *   type        — 'infographic' | 'carousel' | 'pptx'
+ *   type        — 'infographic' | 'carousel' | 'thumbnail' | 'pptx'
  *   exportName  — file stem for downloads (no extension)
  *
  * pptx modes only:
@@ -27,6 +27,7 @@ export const MODES = {
   'gtm-system':          { label: 'GTM System on Claude Code', type: 'infographic', exportName: 'gtm-system' },
   'social-listening':    { label: 'Social Listening Routine', type: 'infographic', exportName: 'social-listening' },
   'gtm-system-carousel': { label: 'GTM System Carousel', type: 'carousel', exportName: 'gtm-system-carousel' },
+  'social-listening-thumbnail': { label: 'Social Listening (Thumbnail)', type: 'thumbnail', exportName: 'social-listening-thumbnail' },
   'yt-ai-design-system': {
     label: 'YT: AI Design System',
     type: 'pptx',

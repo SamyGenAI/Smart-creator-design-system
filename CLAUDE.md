@@ -15,6 +15,7 @@ LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** 
 | [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md) | Infographic canvas, layout, components, tokens — **primary reference** |
 | [`DESIGN.md`](DESIGN.md) | YAML tokens — **only** place brand `#hex` and font names belong; drives Tailwind via `tailwind.config.js` |
 | [`skills/brand-setup/SKILL.md`](skills/brand-setup/SKILL.md) | Onboarding / rebrand: Track A or B → `DESIGN.md` + sync `src/index.css` |
+| [`skills/newsletter-thumbnail/SKILL.md`](skills/newsletter-thumbnail/SKILL.md) | Newsletter thumbnail **420×300** — canvas, title block, visual area |
 
 ---
 
@@ -49,6 +50,22 @@ For **infographics**, the brief step and the build step are owned by the **same*
 
 ---
 
+## Newsletter thumbnails (420×300)
+
+Skill: [`skills/newsletter-thumbnail/SKILL.md`](skills/newsletter-thumbnail/SKILL.md) · Command: `/newsletter-thumbnail`
+
+| Item | Rule |
+|---|---|
+| Size | **420×300**, fixed px (override only on request) |
+| Root | **`NewsletterThumbnailCanvas`** — `bg-bg-canvas` + `SquareGridTexture` |
+| Title | **`NewsletterThumbnailTitle`** — centred, optional inline highlighter bar (`highlightWord`) |
+| Below title | **`NewsletterThumbnailVisual`** — `empty` · `image` (local asset) · `design` (JSX children) |
+
+`/newsletter-thumbnail` **asks for the title + the visual below it**, then writes
+`design/newsletter-thumbnails/[Name]Thumbnail.jsx` and registers it in `src/modes.js`
+(`type: 'thumbnail'`) + the `COMPONENTS` map in `src/App.jsx`. Export is PNG from the
+preview toolbar. Same token rules as infographics — no chroma in the design file.
+
 ## Templates & codegen
 
 | Output | How to create |
@@ -56,6 +73,7 @@ For **infographics**, the brief step and the build step are owned by the **same*
 | Infographic | **By hand**: `InfographicCanvas` + `components/` + section JSX; **`pnpm generate:design` does not apply** |
 | Carousel | **`pnpm generate:design`** from [`templates/template-manifest.json`](templates/template-manifest.json) |
 | Slide deck | **`slide-agent`** → `design/pptx-slides/[Name]Slides.mjs` + shared `slide-engine.*` |
+| Newsletter thumbnail | **By hand**: `NewsletterThumbnailCanvas` + title + visual components |
 
 ---
 

@@ -11,6 +11,7 @@ import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProof
 import AiOperatingSystemInfographic from '../design/infographics/AiOperatingSystemInfographic.jsx'
 import GtmSystemInfographic from '../design/infographics/GtmSystemInfographic.jsx'
 import SocialListeningInfographic from '../design/infographics/SocialListeningInfographic.jsx'
+import SocialListeningThumbnail from '../design/newsletter-thumbnails/SocialListeningThumbnail.jsx'
 import PptxSlideViewer from '../components/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
@@ -51,6 +52,7 @@ const COMPONENTS = {
   'ai-os-infographic':   AiOperatingSystemInfographic,
   'gtm-system':          GtmSystemInfographic,
   'social-listening':    SocialListeningInfographic,
+  'social-listening-thumbnail': SocialListeningThumbnail,
   'yt-ai-design-system':    YtAiDesignSystemDeck,
   'claude-code-business': ClaudeCodeBusinessDeck,
 }
@@ -66,6 +68,7 @@ const MODES = Object.fromEntries(
 const TYPE_LABELS = {
   infographic: 'Infographics',
   carousel:    'Carousels',
+  thumbnail:   'Newsletter thumbnails',
   pptx:        'Slide decks',
 }
 
@@ -73,6 +76,12 @@ const THEME_KEY = 'scds:theme'
 const ZOOM_STEPS = [0.25, 0.35, 0.5, 0.65, 0.75, 0.9, 1, 1.25, 1.5, 2]
 const MIN_ZOOM = ZOOM_STEPS[0]
 const MAX_ZOOM = ZOOM_STEPS[ZOOM_STEPS.length - 1]
+/**
+ * Upper bound for auto-fit. Large designs are still scaled down to fit; small
+ * ones (the 420×300 thumbnail) are scaled up to this before they stop growing,
+ * which keeps them legible without going soft.
+ */
+const MAX_AUTOFIT_ZOOM = 2
 
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob)
@@ -151,6 +160,7 @@ export default function App() {
 
   function exportLabel() {
     if (entry?.type === 'infographic') return 'Download PNG'
+    if (entry?.type === 'thumbnail') return 'Download PNG'
     if (entry?.type === 'carousel') return 'Download PDF'
     if (entry?.type === 'pptx') return 'Download PPTX'
     return 'Download'
@@ -175,9 +185,13 @@ export default function App() {
   }, [theme])
 
   /**
-   * Auto-fit: scale the design down so its natural size fits the available
-   * stage. Measured from the design's own bounding box, so it works for
-   * 1080×1350 infographics, carousels and 1280×720 decks alike.
+   * Auto-fit: scale the design so its natural size fills the available stage.
+   * Measured from the design's own bounding box, so it works for 1080×1350
+   * infographics, carousels and 1280×720 decks alike.
+   *
+   * Designs smaller than the stage are scaled UP (to MAX_AUTOFIT_ZOOM) so a
+   * 420×300 newsletter thumbnail is actually readable instead of sitting as a
+   * postage stamp in the middle of a large viewport.
    */
   const fitToStage = useCallback(() => {
     const stage = stageRef.current
@@ -193,7 +207,7 @@ export default function App() {
     const availableW = stage.clientWidth - padX
     const availableH = stage.clientHeight - padY
     if (availableW <= 0 || availableH <= 0) return
-    const next = Math.min(availableW / naturalW, availableH / naturalH, 1)
+    const next = Math.min(availableW / naturalW, availableH / naturalH, MAX_AUTOFIT_ZOOM)
     setZoom(clampZoom(Number(next.toFixed(3))))
   }, [])
 
@@ -235,6 +249,7 @@ export default function App() {
     setExportNotice('Preparing download...')
     try {
       if (entry.type === 'infographic') await exportFromServer('png')
+      else if (entry.type === 'thumbnail') await exportFromServer('png')
       else if (entry.type === 'carousel') await exportFromServer('pdf')
       else if (entry.type === 'pptx') await exportFromServer('pptx')
       showNotice('Download started.')

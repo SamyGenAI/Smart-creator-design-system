@@ -9,6 +9,7 @@ import { ensureAllPptxDecks, ensurePptxDeck, readPptxFile } from './scripts/sync
 const SIZES = {
   carousel: { width: 1080, height: 1350 },
   infographic: { width: 1080, height: 1350 },
+  thumbnail: { width: 420, height: 300 },
 }
 
 function pdfFromJpegs(pages) {
@@ -144,7 +145,7 @@ function exportPlugin() {
             return
           }
           const host = req.headers.host || 'localhost:5173'
-          const scale = Math.max(1, Math.min(4, Number(url.searchParams.get('scale') || (mode.type === 'infographic' ? '3' : '2'))))
+          const scale = Math.max(1, Math.min(4, Number(url.searchParams.get('scale') || (mode.type === 'infographic' || mode.type === 'thumbnail' ? '3' : '2'))))
 
           const browser = await chromium.launch()
           const context = await browser.newContext({
