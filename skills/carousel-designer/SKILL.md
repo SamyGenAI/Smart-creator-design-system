@@ -92,7 +92,7 @@ Delegate to the `carousel-qc-agent` subagent to verify the output.
 
 - **Canvas:** 1080×1350px, tokenized canvas background (`var(--theme-surface-canvas)`), design-system title font
 - **Navbar:** author name left (24px/500), "Follow" right, 3px divider line at y=83 using semantic text token
-- **Shared primitives:** use `components/CarouselPrimitives.jsx` (`CarouselNavbarEdge` / `CarouselNavbarCentered` / `CarouselSlideShell`) instead of redefining navbar/shell in each file
+- **Shared primitives:** use `components/carousel/CarouselPrimitives.jsx` (`CarouselNavbarEdge` / `CarouselNavbarCentered` / `CarouselSlideShell`) instead of redefining navbar/shell in each file
 - **Accent pill:** semantic accent token (`var(--theme-accent-1)`) behind key text
 - **Cards:** tokenized surface/text/shadow values (no hardcoded color literals)
 - **Illustrations:** `assets/illustrations/notion-style/oc-*.svg`

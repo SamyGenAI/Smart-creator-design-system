@@ -8,7 +8,7 @@
  *   NewsletterThumbnailTitle   — flex-none, top block
  *   visual area                — flex-1, empty | image | design
  */
-import SquareGridTexture from './SquareGridTexture.jsx'
+import SquareGridTexture from '../shared/SquareGridTexture.jsx'
 
 export const THUMBNAIL_WIDTH = 420
 export const THUMBNAIL_HEIGHT = 300

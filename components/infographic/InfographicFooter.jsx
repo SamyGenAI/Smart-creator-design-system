@@ -2,7 +2,7 @@ import {
   CREATOR_AVATAR_SRC,
   CREATOR_DISPLAY_NAME,
   avatarFallback,
-} from '../src/creatorIdentity.js'
+} from '../../src/creatorIdentity.js'
 
 /**
  * InfographicFooter — primary brand pill bar at the bottom of every infographic.

@@ -260,7 +260,7 @@ pnpm generate:design -- --type carousels --template linkedin --name MyTopic --da
 
 **Slide decks:** use `/powerpoint` — the slide-agent writes `design/pptx-slides/decks/<slug>/deck.mjs` (single source), reuses or adds layouts, builds `.pptx` via `export.mjs`, and registers `DeckPreview` in the app.
 
-**Infographics:** create `design/infographics/<Name>Infographic.jsx` with [`components/InfographicCanvas.jsx`](components/InfographicCanvas.jsx) and any components you need from [`components/`](components/); register in `src/App.jsx` (see [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md)).
+**Infographics:** create `design/infographics/<Name>Infographic.jsx` with [`components/infographic/InfographicCanvas.jsx`](components/infographic/InfographicCanvas.jsx) and any components you need from [`components/`](components/); register in `src/App.jsx` (see [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md)).
 
 ### G. Agent rules → `CLAUDE.md` + `.claude/agents/*.md`
 

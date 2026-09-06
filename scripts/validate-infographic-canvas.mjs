@@ -7,7 +7,7 @@ import { resolve, join } from 'path'
 const ROOT = process.cwd()
 const DIR = resolve(ROOT, 'design', 'infographics')
 const CANVAS_IMPORT =
-  /from\s+['"]\.\.\/\.\.\/components\/InfographicCanvas\.jsx['"]/
+  /from\s+['"]\.\.\/\.\.\/components\/infographic\/InfographicCanvas\.jsx['"]/
 
 function fail(message) {
   console.error(`✗ ${message}`)
@@ -32,7 +32,7 @@ for (const f of files) {
 
   if (!CANVAS_IMPORT.test(content)) {
     problems.push(
-      'must import InfographicCanvas from ../../components/InfographicCanvas.jsx',
+      'must import InfographicCanvas from ../../components/infographic/InfographicCanvas.jsx',
     )
   }
   /** Invalid tailwind token; `bg-bg-canvas` is correct. Avoid matching inside `bg-bg-canvas`. */

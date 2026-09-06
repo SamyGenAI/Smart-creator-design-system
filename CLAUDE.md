@@ -94,7 +94,15 @@ preview toolbar. Same token rules as infographics — no chroma in the design fi
 2. **Images:** containers `flex items-center justify-center` · `img` `w-full h-full object-contain` · never `display: contents`.
 3. **Primary glass icons:** supply **dark, single-colour** SVGs. `PrimaryGlassSection` filters them to whatever reads on the brand fill via `--theme-on-primary-icon-filter` (white on a dark brand, black on a light one) — do **not** hardcode `brightness(0) invert(1)`.
 4. **Preserve** `data-node-id` / `data-name` on design-system nodes.
-5. **`design/` imports:** `'../../components/...'` from `design/infographics/` (two levels up).
+5. **`design/` imports:** `'../../components/<folder>/...'` from `design/*/` (two levels up). `components/` is grouped by format:
+
+   | Folder | Contents |
+   |---|---|
+   | `components/infographic/` | `InfographicCanvas` · `InfographicHeader` · `InfographicFooter` · `PrimaryGlassSection` · `BrandBorderSectionBase` |
+   | `components/carousel/` | `CarouselPrimitives` |
+   | `components/newsletter-thumbnail/` | `NewsletterThumbnailCanvas` · `NewsletterThumbnailTitle` · `NewsletterThumbnailVisual` |
+   | `components/pptx/` | `PptxSlideShow` · `PptxSlideViewer` (preview chrome — token-lint allowlisted) |
+   | `components/shared/` | Cross-format primitives: `SquareGridTexture` · `Table` · `TextBox` · `Checklist` · `IconBullet` · `NumberBullet` · `ColoredTextBoxes` · `Grid8CompanyLogos` · `PastelShadowBorderCard` |
 6. **Figma push:** share capture URL — **never** shell-open browser · remind user auth = their MCP Figma account.
 7. **DESIGN.md:** after YAML changes, run `pnpm design:sync` (regenerates `src/index.css`) then `pnpm design:validate` (schema + drift). Tailwind picks the theme up on the next dev/build. `pnpm verify` runs validate + token lint + template boundaries — the same checks CI runs.
 8. **Do NOT render previews.** Never call `render.py`, `python render.py …`, `curl /api/export/png|pdf`, or any other server/headless render step to "verify" a design. The user runs `pnpm dev` themselves once the design file is written — that is the only inspection step. Stop after writing the JSX + registering in `src/App.jsx`.

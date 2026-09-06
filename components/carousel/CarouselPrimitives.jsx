@@ -1,4 +1,4 @@
-import { CREATOR_DISPLAY_NAME } from '../src/creatorIdentity.js'
+import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
 
 const DEFAULT_FONT = "var(--font\\/family\\/title, sans-serif)"
 const DEFAULT_TEXT = 'var(--theme-color-text-primary)'

@@ -21,10 +21,10 @@
  *   Final header used: 78 → total 1350 ✓
  */
 
-import InfographicCanvas from '../../components/InfographicCanvas.jsx'
-import InfographicHeader from '../../components/InfographicHeader.jsx'
-import InfographicFooter from '../../components/InfographicFooter.jsx'
-import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
+import InfographicCanvas from '../../components/infographic/InfographicCanvas.jsx'
+import InfographicHeader from '../../components/infographic/InfographicHeader.jsx'
+import InfographicFooter from '../../components/infographic/InfographicFooter.jsx'
+import PrimaryGlassSection from '../../components/infographic/PrimaryGlassSection.jsx'
 
 const FONT_BODY = 'var(--font\\/family\\/body)'
 const FONT_TITLE = 'var(--font\\/family\\/title)'

@@ -2,7 +2,7 @@
  * InfographicCanvas — canonical 1080×1350 infographic root.
  * Background and texture match DESIGN.md: canvas color + SquareGridTexture at 5%.
  */
-import SquareGridTexture from './SquareGridTexture.jsx'
+import SquareGridTexture from '../shared/SquareGridTexture.jsx'
 
 /** Default texture opacity — infographic spec (slides use SquareGridTexture with higher opacity). */
 export const INFOGRAPHIC_TEXTURE_OPACITY = 0.7

@@ -28,12 +28,12 @@
  *   Row 3R: success      · Row 4: accent                       ✓
  */
 
-import InfographicCanvas from '../../components/InfographicCanvas.jsx'
-import InfographicHeader from '../../components/InfographicHeader.jsx'
-import InfographicFooter from '../../components/InfographicFooter.jsx'
-import BrandBorderSectionBase from '../../components/BrandBorderSectionBase.jsx'
-import PrimaryGlassSection from '../../components/PrimaryGlassSection.jsx'
-import TextBox from '../../components/TextBox.jsx'
+import InfographicCanvas from '../../components/infographic/InfographicCanvas.jsx'
+import InfographicHeader from '../../components/infographic/InfographicHeader.jsx'
+import InfographicFooter from '../../components/infographic/InfographicFooter.jsx'
+import BrandBorderSectionBase from '../../components/infographic/BrandBorderSectionBase.jsx'
+import PrimaryGlassSection from '../../components/infographic/PrimaryGlassSection.jsx'
+import TextBox from '../../components/shared/TextBox.jsx'
 
 const GLASS_CARD = 'col-1 ml-0 mt-0 row-1'
 const FONT_BODY = 'var(--font\\/family\\/body)'

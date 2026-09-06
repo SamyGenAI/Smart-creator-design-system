@@ -11,8 +11,8 @@
  * Header: "The [bulletproof] AI system" with blue pill highlight + italic hook.
  */
 
-import InfographicCanvas from '../../components/InfographicCanvas.jsx'
-import InfographicFooter from '../../components/InfographicFooter.jsx'
+import InfographicCanvas from '../../components/infographic/InfographicCanvas.jsx'
+import InfographicFooter from '../../components/infographic/InfographicFooter.jsx'
 
 const FONT_TITLE = "var(--font\\/family\\/title)"
 const FONT_MONO = "'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace"

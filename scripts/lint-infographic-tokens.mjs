@@ -33,8 +33,8 @@ const PATTERNS = [
  * surface must still use tokens.
  */
 const ALLOWED = new Set([
-  'components/PptxSlideShow.jsx',
-  'components/PptxSlideViewer.jsx',
+  'components/pptx/PptxSlideShow.jsx',
+  'components/pptx/PptxSlideViewer.jsx',
 ])
 
 function stripComments(src) {

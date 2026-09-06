@@ -38,9 +38,9 @@ Read or skim every file under [`components/`](../../components/) — at minimum,
 
 | Slot | Component | Import path from `design/infographics/` |
 |------|-----------|------------------------------------------|
-| Canvas | `InfographicCanvas` | `../../components/InfographicCanvas.jsx` |
-| Header | `InfographicHeader` | `../../components/InfographicHeader.jsx` |
-| Footer | `InfographicFooter` | `../../components/InfographicFooter.jsx` |
+| Canvas | `InfographicCanvas` | `../../components/infographic/InfographicCanvas.jsx` |
+| Header | `InfographicHeader` | `../../components/infographic/InfographicHeader.jsx` |
+| Footer | `InfographicFooter` | `../../components/infographic/InfographicFooter.jsx` |
 | Sections | `PrimaryGlassSection` and/or `BrandBorderSectionBase` | `../../components/…` |
 
 Section-level building blocks: `IconBullet`, `NumberBullet`, `Checklist`, `Table`, `TextBox`, `ColoredTextBoxes`, `PastelShadowBorderCard`, `Grid8CompanyLogos`, plus optional patterns under `components/archetypes/`.

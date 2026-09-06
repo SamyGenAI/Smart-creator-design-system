@@ -25,7 +25,7 @@ Before writing any code, read these files in order:
 ## File structure
 
 ```jsx
-// 1. Imports: CarouselNavbarEdge + CarouselSlideShell from components/CarouselPrimitives.jsx
+// 1. Imports: CarouselNavbarEdge + CarouselSlideShell from components/carousel/CarouselPrimitives.jsx
 //             CREATOR_DISPLAY_NAME from src/creatorIdentity.js
 // 2. Token constants (copy from template — no raw hex)
 // 3. NAVBAR constant

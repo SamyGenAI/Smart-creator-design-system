@@ -1,5 +1,5 @@
 ---
-name: newsletter-thumbnail
+name: newsletter-thumbnail-designer
 description: >
   420×300 newsletter thumbnail format — canvas, title block with highlighter bar,
   and the visual area below it (empty / image / design). Use whenever a newsletter

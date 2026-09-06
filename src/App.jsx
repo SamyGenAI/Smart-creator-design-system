@@ -12,7 +12,7 @@ import AiOperatingSystemInfographic from '../design/infographics/AiOperatingSyst
 import GtmSystemInfographic from '../design/infographics/GtmSystemInfographic.jsx'
 import SocialListeningInfographic from '../design/infographics/SocialListeningInfographic.jsx'
 import SocialListeningThumbnail from '../design/newsletter-thumbnails/SocialListeningThumbnail.jsx'
-import PptxSlideViewer from '../components/PptxSlideViewer.jsx'
+import PptxSlideViewer from '../components/pptx/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
 import claudeCodeBusinessDeck from '../design/pptx-slides/decks/claude-code-business/deck.mjs'

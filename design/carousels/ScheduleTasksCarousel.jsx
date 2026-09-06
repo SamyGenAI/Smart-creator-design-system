@@ -1,4 +1,4 @@
-import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/CarouselPrimitives.jsx'
+import { CarouselNavbarEdge, CarouselSlideShell } from '../../components/carousel/CarouselPrimitives.jsx'
 import {
   CREATOR_AVATAR_SRC,
   CREATOR_DISPLAY_NAME,

@@ -5,9 +5,9 @@
  * Reference implementation of the newsletter-thumbnail format — matches the
  * Figma source (Newsletter-thumbnail 27:123).
  */
-import NewsletterThumbnailCanvas from '../../components/NewsletterThumbnailCanvas.jsx'
-import NewsletterThumbnailTitle from '../../components/NewsletterThumbnailTitle.jsx'
-import NewsletterThumbnailVisual from '../../components/NewsletterThumbnailVisual.jsx'
+import NewsletterThumbnailCanvas from '../../components/newsletter-thumbnail/NewsletterThumbnailCanvas.jsx'
+import NewsletterThumbnailTitle from '../../components/newsletter-thumbnail/NewsletterThumbnailTitle.jsx'
+import NewsletterThumbnailVisual from '../../components/newsletter-thumbnail/NewsletterThumbnailVisual.jsx'
 
 export default function SocialListeningThumbnail() {
   return (

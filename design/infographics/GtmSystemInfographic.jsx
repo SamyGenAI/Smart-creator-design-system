@@ -15,9 +15,9 @@
  *   Footer
  */
 
-import InfographicCanvas from '../../components/InfographicCanvas.jsx'
-import InfographicHeader from '../../components/InfographicHeader.jsx'
-import InfographicFooter from '../../components/InfographicFooter.jsx'
+import InfographicCanvas from '../../components/infographic/InfographicCanvas.jsx'
+import InfographicHeader from '../../components/infographic/InfographicHeader.jsx'
+import InfographicFooter from '../../components/infographic/InfographicFooter.jsx'
 
 const FONT_BODY  = 'var(--font\\/family\\/body)'
 const FONT_TITLE = 'var(--font\\/family\\/title)'

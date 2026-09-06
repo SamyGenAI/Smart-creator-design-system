@@ -18,7 +18,7 @@ Reference for the `carousel-design-agent` and `carousel-qc-agent`.
 
 ## 1. Slide Shell (shared)
 
-Every slide (except CTA) shares this shell. Prefer importing `CarouselSlideShell` + `CarouselNavbarEdge`/`CarouselNavbarCentered` from `components/CarouselPrimitives.jsx`:
+Every slide (except CTA) shares this shell. Prefer importing `CarouselSlideShell` + `CarouselNavbarEdge`/`CarouselNavbarCentered` from `components/carousel/CarouselPrimitives.jsx`:
 
 ```jsx
 function Slide({ children, nodeId, name, navbar }) {
