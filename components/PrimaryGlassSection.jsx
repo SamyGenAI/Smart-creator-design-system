@@ -31,7 +31,7 @@ export default function PrimaryGlassSection({ title = "xxx", iconSrc = null, ico
         style={{ backgroundColor: COLOR_PRIMARY, borderColor: COLOR_ON_PRIMARY }}
         data-node-id="22:309"
       >
-        <div className={`font-bold leading-[0] text-[${titleSize}] text-center tracking-[-0.96px]`} style={{ color: COLOR_ON_PRIMARY, fontFamily: FONT_TITLE }} data-node-id="22:310">
+        <div className="font-bold leading-[0] text-center tracking-[-0.96px]" style={{ color: COLOR_ON_PRIMARY, fontFamily: FONT_TITLE, fontSize: titleSize }} data-node-id="22:310">
           <p className="leading-[normal]">{title}</p>
         </div>
 

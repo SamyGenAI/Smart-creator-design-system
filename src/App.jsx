@@ -10,6 +10,7 @@ import BulletProofAISystemInfographic from '../design/infographics/BulletProofAI
 import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProofAISystemInfographicV2.jsx'
 import AiOperatingSystemInfographic from '../design/infographics/AiOperatingSystemInfographic.jsx'
 import GtmSystemInfographic from '../design/infographics/GtmSystemInfographic.jsx'
+import SocialListeningInfographic from '../design/infographics/SocialListeningInfographic.jsx'
 import PptxSlideViewer from '../components/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
@@ -48,6 +49,7 @@ const COMPONENTS = {
   'gtm-system-carousel': GtmSystemCarousel,
   'ai-os-infographic':   AiOperatingSystemInfographic,
   'gtm-system':          GtmSystemInfographic,
+  'social-listening':    SocialListeningInfographic,
   'yt-ai-design-system':    YtAiDesignSystemDeck,
   'claude-code-business': ClaudeCodeBusinessDeck,
 }

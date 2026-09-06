@@ -25,6 +25,7 @@ export const MODES = {
   'ai-operating-system': { label: 'Build Your AI Operating System', type: 'carousel', exportName: 'ai-operating-system' },
   'ai-os-infographic':   { label: 'AI OS Infographic',   type: 'infographic', exportName: 'ai-os-infographic' },
   'gtm-system':          { label: 'GTM System on Claude Code', type: 'infographic', exportName: 'gtm-system' },
+  'social-listening':    { label: 'Social Listening Routine', type: 'infographic', exportName: 'social-listening' },
   'gtm-system-carousel': { label: 'GTM System Carousel', type: 'carousel', exportName: 'gtm-system-carousel' },
   'yt-ai-design-system': {
     label: 'YT: AI Design System',
