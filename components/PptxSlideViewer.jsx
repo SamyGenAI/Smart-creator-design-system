@@ -41,7 +41,7 @@ export default function PptxSlideViewer({ slides, label, modeKey }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
       {label && (
-        <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontSize: 13, fontWeight: 500 }}>
+        <p style={{ margin: 0, color: 'var(--shell-text-muted, rgba(255,255,255,0.65))', fontSize: 13, fontWeight: 500 }}>
           {label}
           {total > 0 ? ` · Slide ${index + 1} of ${total}` : ''}
         </p>
@@ -56,7 +56,7 @@ export default function PptxSlideViewer({ slides, label, modeKey }) {
           flexShrink: 0,
           borderRadius: 12,
           overflow: 'hidden',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.28)',
         }}
       >
         {slideArray.map((slide, i) => (
@@ -106,7 +106,9 @@ export default function PptxSlideViewer({ slides, label, modeKey }) {
                   border: 'none',
                   padding: 0,
                   cursor: 'pointer',
-                  background: i === index ? 'var(--theme-accent-1)' : 'rgba(255,255,255,0.25)',
+                  background: i === index
+                    ? 'var(--shell-text, rgba(255,255,255,0.9))'
+                    : 'var(--shell-border-strong, rgba(255,255,255,0.25))',
                   transition: 'width 0.15s ease, background 0.15s ease',
                 }}
               />
@@ -125,7 +127,7 @@ export default function PptxSlideViewer({ slides, label, modeKey }) {
         </div>
       )}
 
-      <p style={{ margin: 0, color: 'rgba(255,255,255,0.45)', fontSize: 12, maxWidth: 520, textAlign: 'center' }}>
+      <p style={{ margin: 0, color: 'var(--shell-text-muted, rgba(255,255,255,0.45))', fontSize: 12, maxWidth: 520, textAlign: 'center' }}>
         Use the Download PPTX button above to get the editable PowerPoint file.
       </p>
     </div>
@@ -137,9 +139,10 @@ function navBtnStyle(disabled) {
     width: 44,
     height: 44,
     borderRadius: 10,
-    border: '1px solid rgba(255,255,255,0.2)',
-    background: disabled ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.12)',
-    color: disabled ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.9)',
+    border: '1px solid var(--shell-border, rgba(255,255,255,0.2))',
+    background: 'var(--shell-surface, rgba(255,255,255,0.12))',
+    color: 'var(--shell-text, rgba(255,255,255,0.9))',
+    opacity: disabled ? 0.4 : 1,
     fontSize: 20,
     cursor: disabled ? 'not-allowed' : 'pointer',
     fontFamily: 'var(--font\\/family\\/title)',
