@@ -76,9 +76,10 @@ function svgUrl(svg) {
  * Painting actual greys means the grain runs white → light grey → dark grey
  * and reads as a surface rather than a stain.
  *
- * `contrast` spreads the turbulence around mid-grey; `light`/`dark` are the
- * ends of the ramp. The tile is composited under a low layer opacity, so the
- * canvas colour still shows through and the grain stays neutral.
+ * `contrast` spreads the turbulence around the midpoint; `bias` lifts that
+ * midpoint toward white (see below). The tile is composited under a low layer
+ * opacity, so the canvas colour still shows through and the grain stays
+ * neutral.
  */
 function noiseSvg({ frequency, octaves, size, seed = 7, contrast = 1, bias = 0 }) {
   // `bias` lifts the whole ramp toward white. Turbulence averages to mid-grey,
