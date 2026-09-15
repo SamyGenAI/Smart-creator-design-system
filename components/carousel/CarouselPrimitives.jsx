@@ -1,4 +1,5 @@
 import { CREATOR_DISPLAY_NAME } from '../../src/creatorIdentity.js'
+import BackgroundTexture from '../shared/textures/BackgroundTexture.jsx'
 
 const DEFAULT_FONT = "var(--font\\/family\\/title, sans-serif)"
 const DEFAULT_TEXT = 'var(--theme-color-text-primary)'
@@ -85,6 +86,14 @@ export function CarouselNavbarCentered({
   )
 }
 
+/**
+ * CarouselSlideShell — one 1080×1350 slide surface.
+ *
+ * Each slide carries its own background texture (the deck is a sequence of
+ * separate pages, so there is no single canvas to put it on). The texture
+ * follows the preview toolbar; pass `textureId` to pin one, or
+ * `withTexture={false}` on a slide that paints its own full-bleed background.
+ */
 export function CarouselSlideShell({
   children,
   nodeId,
@@ -93,6 +102,9 @@ export function CarouselSlideShell({
   navbar = null,
   background = DEFAULT_BACKGROUND,
   fontFamily = DEFAULT_FONT,
+  withTexture = true,
+  textureId = null,
+  textureOpacity = null,
 }) {
   return (
     <div
@@ -108,6 +120,14 @@ export function CarouselSlideShell({
         fontFamily,
       }}
     >
+      {withTexture && (
+        <BackgroundTexture
+          width={1080}
+          height={1350}
+          textureId={textureId}
+          opacity={textureOpacity}
+        />
+      )}
       {withNavbar && navbar}
       {children}
     </div>

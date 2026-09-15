@@ -24,7 +24,7 @@ LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** 
 | Item | Rule |
 |---|---|
 | Size | **1080×1350**, fixed px, non-responsive |
-| Root | **`InfographicCanvas`** — `bg-bg-canvas` + `SquareGridTexture` at **5%** (never roll your own full-canvas texture) |
+| Root | **`InfographicCanvas`** — `bg-bg-canvas` + the selected background texture (chosen in the preview toolbar; never roll your own full-canvas texture) |
 | Inner | **981px** centered · row gap **22px** · header/footer **`flex-none`**, body **`flex-1`** |
 | Position | overlap grid helpers allowed (`col-1`/`row-1` + margins) |
 
@@ -57,7 +57,7 @@ Skill: [`skills/newsletter-thumbnail/SKILL.md`](skills/newsletter-thumbnail/SKIL
 | Item | Rule |
 |---|---|
 | Size | **420×300**, fixed px (override only on request) |
-| Root | **`NewsletterThumbnailCanvas`** — `bg-bg-canvas` + `SquareGridTexture` |
+| Root | **`NewsletterThumbnailCanvas`** — `bg-bg-canvas` + the selected background texture |
 | Title | **`NewsletterThumbnailTitle`** — centred, optional inline highlighter bar (`highlightWord`) |
 | Below title | **`NewsletterThumbnailVisual`** — `empty` · `image` (local asset) · `design` (JSX children) |
 
@@ -102,12 +102,13 @@ preview toolbar. Same token rules as infographics — no chroma in the design fi
    | `components/carousel/` | `CarouselPrimitives` |
    | `components/newsletter-thumbnail/` | `NewsletterThumbnailCanvas` · `NewsletterThumbnailTitle` · `NewsletterThumbnailVisual` |
    | `components/pptx/` | `PptxSlideShow` · `PptxSlideViewer` (preview chrome — token-lint allowlisted) |
-   | `components/shared/` | Cross-format primitives: `SquareGridTexture` · `Table` · `TextBox` · `Checklist` · `IconBullet` · `NumberBullet` · `ColoredTextBoxes` · `Grid8CompanyLogos` · `PastelShadowBorderCard` |
+   | `components/shared/` | Cross-format primitives: `BackgroundTexture` (in `shared/textures/`) · `Table` · `TextBox` · `Checklist` · `IconBullet` · `NumberBullet` · `ColoredTextBoxes` · `Grid8CompanyLogos` · `PastelShadowBorderCard` |
 6. **Figma push:** share capture URL — **never** shell-open browser · remind user auth = their MCP Figma account.
 7. **DESIGN.md:** after YAML changes, run `pnpm design:sync` (regenerates `src/index.css`) then `pnpm design:validate` (schema + drift). Tailwind picks the theme up on the next dev/build. `pnpm verify` runs validate + token lint + template boundaries — the same checks CI runs.
 8. **Do NOT render previews.** Never call `render.py`, `python render.py …`, `curl /api/export/png|pdf`, or any other server/headless render step to "verify" a design. The user runs `pnpm dev` themselves once the design file is written — that is the only inspection step. Stop after writing the JSX + registering in `src/App.jsx`.
 9. **No hardcoded creator identity.** Never put a creator name, handle, URL, or avatar path directly in `design/**/*.jsx`. Always use `<InfographicFooter />` (resolves name + avatar automatically). If the body copy needs the display name, import `CREATOR_DISPLAY_NAME` from `src/creatorIdentity.js`; for an avatar use `CREATOR_AVATAR_SRC` + `avatarFallback` from the same module. `src/creatorIdentity.js` is **tracked and stays neutral** (`Your Name`); the real name lives in the gitignored `src/creatorIdentity.local.js` written by `/setup`, and the real headshot in the gitignored `assets/avatar/avatar-profile.png`. This keeps every design rebrandable — and the repo redeployable — from one place.
 10. **Mandatory infographic components.** Every infographic must use `InfographicHeader` for the title block and `InfographicFooter` for the footer — never replace them with custom divs. Section cards must come from `PrimaryGlassSection` or `BrandBorderSectionBase` (or other `components/` primitives) rather than being written from scratch.
+11. **Background textures are user-chosen, not authored.** Every canvas (`InfographicCanvas`, `NewsletterThumbnailCanvas`, `CarouselSlideShell`) already paints the texture the user picked in the preview toolbar. Never add a texture element to a design file, and never hardcode a grid. The registry lives in [`components/shared/textures/textureRegistry.js`](components/shared/textures/textureRegistry.js) — 12 options (Blank, Atelier Fine/Grid, Salon Broad, Blueprint, Constellation, Pinstripe, Laid Paper, Linen Weave, Sandstone, Silk Grain, Cold Press). A design that genuinely must pin one texture passes `textureId` to its canvas; otherwise leave it alone. Adding a texture means adding one registry entry plus one miniature in `TextureSwatch.jsx`.
 
 ---
 

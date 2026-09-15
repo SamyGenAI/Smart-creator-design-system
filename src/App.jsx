@@ -8,6 +8,18 @@ import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
 import { MODES as MODE_REGISTRY } from './modes.js'
 import appLogo from '../assets/logos/app/thesmartcreator_logo.png'
+import {
+  TextureProvider,
+  TEXTURE_STORAGE_KEY,
+  TEXTURE_OPACITY_STORAGE_KEY,
+  readInitialTextureId,
+  readInitialTextureOpacity,
+} from '../components/shared/textures/TextureContext.jsx'
+import {
+  TEXTURES,
+  getTexture,
+} from '../components/shared/textures/textureRegistry.js'
+import TextureSwatch from '../components/shared/textures/TextureSwatch.jsx'
 
 function YtAiDesignSystemDeck() {
   return (
@@ -95,6 +107,9 @@ export default function App() {
   const [theme, setTheme] = useState(readStoredTheme)
   const [zoom, setZoom] = useState(1)
   const [autoFit, setAutoFit] = useState(true)
+  const [textureId, setTextureId] = useState(readInitialTextureId)
+  const [textureOpacity, setTextureOpacity] = useState(readInitialTextureOpacity)
+  const [texturePanelOpen, setTexturePanelOpen] = useState(false)
 
   const stageRef = useRef(null)
   const designRef = useRef(null)
@@ -154,6 +169,28 @@ export default function App() {
     document.documentElement.style.colorScheme = theme
   }, [theme])
 
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(TEXTURE_STORAGE_KEY, textureId)
+      window.localStorage.setItem(TEXTURE_OPACITY_STORAGE_KEY, JSON.stringify(textureOpacity))
+    } catch {
+      /* storage unavailable — the texture simply won't persist */
+    }
+  }, [textureId, textureOpacity])
+
+  const activeTexture = getTexture(textureId)
+  const activeTextureOpacity = textureOpacity[textureId] ?? activeTexture.defaultOpacity
+
+  /** Reset one texture back to the strength the registry ships. */
+  const resetTextureOpacity = useCallback((id) => {
+    setTextureOpacity((current) => {
+      if (!(id in current)) return current
+      const next = { ...current }
+      delete next[id]
+      return next
+    })
+  }, [])
+
   /**
    * Auto-fit: scale the design so its natural size fills the available stage.
    * Measured from the design's own bounding box, so it works for 1080×1350
@@ -206,7 +243,13 @@ export default function App() {
   }
 
   async function exportFromServer(format) {
-    const res = await fetch(`/api/export/${format}?mode=${encodeURIComponent(activeMode)}`)
+    // The texture rides along so the headless render matches the preview.
+    const params = new URLSearchParams({
+      mode: activeMode,
+      texture: textureId,
+      textureOpacity: String(activeTextureOpacity),
+    })
+    const res = await fetch(`/api/export/${format}?${params}`)
     if (!res.ok) throw new Error(await res.text())
     const blob = await res.blob()
     const ext = format === 'png' ? 'png' : format === 'pptx' ? 'pptx' : 'pdf'
@@ -329,6 +372,22 @@ export default function App() {
           Actual size
         </button>
 
+        <div style={subBarDividerStyle(t)} aria-hidden="true" />
+
+        <TexturePicker
+          t={t}
+          open={texturePanelOpen}
+          onOpenChange={setTexturePanelOpen}
+          textureId={textureId}
+          onSelect={setTextureId}
+          opacity={activeTextureOpacity}
+          isCustomOpacity={textureId in textureOpacity}
+          onOpacityChange={(value) =>
+            setTextureOpacity((current) => ({ ...current, [textureId]: value }))
+          }
+          onOpacityReset={() => resetTextureOpacity(textureId)}
+        />
+
         {exportNotice && <div style={noticeStyle(t)}>{exportNotice}</div>}
       </div>
 
@@ -336,7 +395,9 @@ export default function App() {
         {ActiveDesign ? (
           <div style={zoomLayerStyle(zoom)}>
             <div ref={designRef} style={{ display: 'inline-block' }}>
-              <ActiveDesign />
+              <TextureProvider textureId={textureId} opacityById={textureOpacity}>
+                <ActiveDesign />
+              </TextureProvider>
             </div>
           </div>
         ) : (
@@ -449,6 +510,143 @@ function DesignPicker({ t, groups, value, currentLabel, onChange }) {
   )
 }
 
+/**
+ * TexturePicker — the background-texture control in the sub-bar.
+ *
+ * A popover of checkbox tiles, one per registry texture, each with an SVG
+ * miniature. Selection is single-choice (a canvas wears one texture), so the
+ * boxes behave as radios while keeping the checkbox affordance the brief asked
+ * for: ticking a new one unticks the old, and ticking the active one clears it
+ * back to Blank — so the control both adds and removes a texture.
+ *
+ * Under the grid, a strength slider tunes the active texture's opacity. It is
+ * stored per texture because a readable Silk Grain and a readable Salon Broad
+ * sit at very different values.
+ */
+function TexturePicker({
+  t,
+  open,
+  onOpenChange,
+  textureId,
+  onSelect,
+  opacity,
+  isCustomOpacity,
+  onOpacityChange,
+  onOpacityReset,
+}) {
+  const rootRef = useRef(null)
+  const active = getTexture(textureId)
+
+  useEffect(() => {
+    if (!open) return undefined
+    function onPointerDown(e) {
+      if (rootRef.current && !rootRef.current.contains(e.target)) onOpenChange(false)
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') onOpenChange(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open, onOpenChange])
+
+  /** Ticking the active texture again clears it — that is the "remove" path. */
+  function toggle(id) {
+    onSelect(id === textureId ? 'none' : id)
+  }
+
+  return (
+    <div ref={rootRef} style={{ position: 'relative' }}>
+      <button
+        type="button"
+        className="scds-btn"
+        onClick={() => onOpenChange(!open)}
+        style={textureTriggerStyle(t, open)}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        title={active.hint}
+      >
+        <span style={textureTriggerSwatchStyle(t)} aria-hidden="true">
+          <TextureSwatch id={active.id} label={active.label} />
+        </span>
+        <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.2 }}>
+          <span style={textureTriggerCaptionStyle(t)}>Texture</span>
+          <span style={{ fontWeight: 700 }}>{active.label}</span>
+        </span>
+        <span style={chevronStyle(t, open)} aria-hidden="true">
+          <ChevronIcon />
+        </span>
+      </button>
+
+      {open && (
+        <div role="dialog" aria-label="Background texture" style={texturePanelStyle(t)}>
+          <div style={texturePanelHeadStyle(t)}>Background texture</div>
+
+          <div style={textureGridStyle}>
+            {TEXTURES.map((texture) => {
+              const checked = texture.id === textureId
+              return (
+                <button
+                  key={texture.id}
+                  type="button"
+                  role="checkbox"
+                  aria-checked={checked}
+                  className="scds-texture-tile"
+                  onClick={() => toggle(texture.id)}
+                  style={textureTileStyle(t, checked)}
+                  title={texture.hint}
+                >
+                  <span style={textureTileBoxStyle(t, checked)} aria-hidden="true">
+                    {checked && <CheckIcon />}
+                  </span>
+                  <span style={textureTileSwatchStyle(t)} aria-hidden="true">
+                    <TextureSwatch id={texture.id} label={texture.label} />
+                  </span>
+                  <span style={textureTileLabelStyle}>{texture.label}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {textureId !== 'none' && (
+            <div style={textureStrengthRowStyle(t)}>
+              <label htmlFor="texture-strength" style={textureStrengthLabelStyle(t)}>
+                Strength
+              </label>
+              <input
+                id="texture-strength"
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={opacity}
+                onChange={(e) => onOpacityChange(Number(e.target.value))}
+                style={{ flex: 1, accentColor: t.text, minWidth: 0 }}
+              />
+              <span style={textureStrengthValueStyle(t)}>{Math.round(opacity * 100)}%</span>
+              <button
+                type="button"
+                className="scds-btn"
+                onClick={onOpacityReset}
+                disabled={!isCustomOpacity}
+                style={textureResetBtnStyle(t, !isCustomOpacity)}
+                title="Back to this texture's default strength"
+              >
+                Reset
+              </button>
+            </div>
+          )}
+
+          <p style={textureHintStyle(t)}>{active.hint}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ------------------------------------------------------------------ */
 /* Theme palettes — shell chrome only. Designs keep their own tokens.  */
 /* ------------------------------------------------------------------ */
@@ -518,6 +716,9 @@ const GLOBAL_CSS = `
   .scds-option { transition: background 0.12s ease; }
   .scds-option[aria-selected="false"]:hover { background: var(--shell-option-hover); }
   .scds-option:focus-visible { outline: 2px solid var(--shell-text); outline-offset: -2px; }
+  .scds-texture-tile { transition: background 0.12s ease, border-color 0.12s ease; }
+  .scds-texture-tile[aria-checked="false"]:hover { background: var(--shell-option-hover); }
+  .scds-texture-tile:focus-visible { outline: 2px solid var(--shell-text); outline-offset: 2px; }
 `
 
 /* ------------------------------------------------------------------ */
@@ -827,6 +1028,215 @@ function ghostBtnStyle(t, active) {
     fontSize: 17,
     cursor: 'pointer',
     whiteSpace: 'nowrap',
+  }
+}
+
+/* -- Texture picker -- */
+
+function subBarDividerStyle(t) {
+  return {
+    width: 1,
+    alignSelf: 'stretch',
+    margin: '16px 4px',
+    background: t.border,
+    flexShrink: 0,
+  }
+}
+
+function textureTriggerStyle(t, open) {
+  return {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 14,
+    height: 62,
+    padding: '0 20px',
+    borderRadius: 16,
+    border: `1px solid ${open ? t.borderStrong : t.border}`,
+    background: open ? t.surfaceMuted : t.surface,
+    color: t.text,
+    fontFamily: FONT,
+    fontSize: 17,
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
+  }
+}
+
+function textureTriggerSwatchStyle(t) {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    border: `1px solid ${t.border}`,
+    background: t.surfaceMuted,
+    color: t.text,
+    overflow: 'hidden',
+    flexShrink: 0,
+  }
+}
+
+function textureTriggerCaptionStyle(t) {
+  return {
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: '0.07em',
+    textTransform: 'uppercase',
+    color: t.textMuted,
+  }
+}
+
+function texturePanelStyle(t) {
+  return {
+    position: 'absolute',
+    top: 'calc(100% + 10px)',
+    left: 0,
+    zIndex: 200,
+    width: 'min(720px, calc(100vw - 48px))',
+    maxHeight: 'min(560px, 70vh)',
+    overflowY: 'auto',
+    padding: 18,
+    borderRadius: 18,
+    border: `1.5px solid ${t.border}`,
+    background: t.surface,
+    boxShadow: t.menuShadow,
+  }
+}
+
+function texturePanelHeadStyle(t) {
+  return {
+    padding: '0 2px 12px',
+    fontSize: 13,
+    fontWeight: 700,
+    letterSpacing: '0.07em',
+    textTransform: 'uppercase',
+    color: t.textMuted,
+  }
+}
+
+const textureGridStyle = {
+  display: 'grid',
+  // Wide enough that the full texture name fits — the names are the point.
+  gridTemplateColumns: 'repeat(auto-fill, minmax(215px, 1fr))',
+  gap: 10,
+}
+
+function textureTileStyle(t, checked) {
+  return {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    padding: '10px 12px',
+    borderRadius: 14,
+    border: `1.5px solid ${checked ? t.borderStrong : t.border}`,
+    background: checked ? t.surfaceMuted : 'transparent',
+    color: t.text,
+    fontFamily: FONT,
+    fontSize: 15,
+    fontWeight: checked ? 700 : 500,
+    textAlign: 'left',
+    cursor: 'pointer',
+  }
+}
+
+function textureTileBoxStyle(t, checked) {
+  return {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+    flexShrink: 0,
+    // Ink/cream pair, never a system accent colour.
+    border: `1.5px solid ${checked ? t.btnBg : t.borderStrong}`,
+    background: checked ? t.btnBg : 'transparent',
+    color: t.btnText,
+  }
+}
+
+function textureTileSwatchStyle(t) {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 9,
+    border: `1px solid ${t.border}`,
+    background: t.canvas,
+    color: t.text,
+    overflow: 'hidden',
+    flexShrink: 0,
+  }
+}
+
+const textureTileLabelStyle = {
+  flex: 1,
+  minWidth: 0,
+  // Names wrap rather than truncate — "Atelier Fine" and "Atelier Grid" are
+  // only distinguishable once the second word survives.
+  lineHeight: 1.25,
+}
+
+function textureStrengthRowStyle(t) {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 16,
+    paddingTop: 16,
+    borderTop: `1px solid ${t.border}`,
+  }
+}
+
+function textureStrengthLabelStyle(t) {
+  return {
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: '0.07em',
+    textTransform: 'uppercase',
+    color: t.textMuted,
+    whiteSpace: 'nowrap',
+  }
+}
+
+function textureStrengthValueStyle(t) {
+  return {
+    minWidth: 52,
+    textAlign: 'right',
+    fontSize: 15,
+    fontWeight: 700,
+    color: t.text,
+    fontVariantNumeric: 'tabular-nums',
+  }
+}
+
+function textureResetBtnStyle(t, disabled) {
+  return {
+    height: 34,
+    padding: '0 14px',
+    borderRadius: 10,
+    border: `1px solid ${t.border}`,
+    background: 'transparent',
+    color: disabled ? t.textMuted : t.text,
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.45 : 1,
+    whiteSpace: 'nowrap',
+  }
+}
+
+function textureHintStyle(t) {
+  return {
+    margin: '14px 2px 0',
+    fontSize: 14,
+    lineHeight: 1.4,
+    color: t.textMuted,
   }
 }
 

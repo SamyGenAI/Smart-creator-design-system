@@ -14,7 +14,7 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
 import { parseDesignMd } from './parse-design-md.mjs'
-import { luminance, contrastRatio, pickReadableOn, isHexColor } from './derive-brand-tokens.mjs'
+import { luminance, contrastRatio, pickReadableOn, isHexColor, mix, isLightColor } from './derive-brand-tokens.mjs'
 
 const ROOT = process.cwd()
 const CSS_PATH = resolve(ROOT, 'src', 'index.css')
@@ -181,6 +181,23 @@ export function buildRootBlock(tokens) {
   push('theme-surface-glass-soft', glass.default)
   push('theme-surface-glass-strong', glass.strong)
   push('theme-surface-glass-default', glass.default)
+
+  L.push('')
+  // Background-texture ramp: white → light grey → dark grey.
+  //
+  // Textures used to draw in --theme-surface-canvas-secondary, which sits ~3%
+  // off the canvas (#fff4e8 on #fffceb) and was invisible at normal size. A
+  // texture needs its own scale that steps away from the canvas by a real,
+  // fixed amount instead of tracking a near-identical surface colour.
+  //
+  // The ramp is derived from the canvas so it inverts on dark brands: on a
+  // light canvas the greys darken, on a dark canvas they lighten. "Highlight"
+  // is the lifted end, "mid" the light grey, "deep" the dark grey.
+  const textureAway = isLightColor(bg.canvas) ? '#000000' : '#ffffff'
+  const textureToward = isLightColor(bg.canvas) ? '#ffffff' : '#000000'
+  push('theme-texture-highlight', mix(bg.canvas, textureToward, 0.55))
+  push('theme-texture-mid', mix(bg.canvas, textureAway, 0.16))
+  push('theme-texture-deep', mix(bg.canvas, textureAway, 0.38))
 
   L.push('')
   for (const k of ['1', '2', '3', '4', '5']) push('theme-accent-' + k, accent[k])

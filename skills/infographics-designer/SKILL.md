@@ -11,7 +11,7 @@ Produce 1080×1350 LinkedIn infographics in React, rendered to PNG via Playwrigh
 
 - Size: **1080 × 1350px**, fixed
 - Inner column: 981px centered
-- Background: canvas token (`InfographicCanvas` uses `bg-bg-canvas`) + `SquareGridTexture` at **5%**
+- Background: canvas token (`InfographicCanvas` uses `bg-bg-canvas`) + the background texture chosen in the preview toolbar — do not add a texture yourself
 - Footer: 60px fixed
 - Header: flexible — allow 2-line title wrap, use `clamp()` for font sizing
 - Row gap: 22px between sibling rows

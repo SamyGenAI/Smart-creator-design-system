@@ -17,7 +17,7 @@ registered with `type: 'thumbnail'`.
 | Item | Rule |
 |---|---|
 | Size | **420×300**, fixed px, non-responsive (override only if the user asks) |
-| Root | **`NewsletterThumbnailCanvas`** — `bg-bg-canvas` + `SquareGridTexture`; never roll your own texture |
+| Root | **`NewsletterThumbnailCanvas`** — `bg-bg-canvas` + the selected background texture; never roll your own |
 | Flow | `flex flex-col`: title block **`flex-none`**, visual area **`flex-1`** |
 
 ```jsx

@@ -22,7 +22,7 @@ LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** 
 | Item | Rule |
 |---|---|
 | Size | **1080×1350**, fixed px, non-responsive |
-| Root | **`InfographicCanvas`** — `bg-bg-canvas` + `SquareGridTexture` at **5%** (never roll your own full-canvas texture) |
+| Root | **`InfographicCanvas`** — `bg-bg-canvas` + the selected background texture (chosen in the preview toolbar; never roll your own full-canvas texture) |
 | Inner | **981px** centered · row gap **22px** · header/footer **`flex-none`**, body **`flex-1`** |
 | Position | overlap grid helpers allowed (`col-1`/`row-1` + margins) |
 

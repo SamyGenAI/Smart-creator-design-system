@@ -127,6 +127,10 @@
   --theme-surface-glass-strong: rgba(255,255,255,0.92);
   --theme-surface-glass-default: rgba(255,255,255,0.55);
 
+  --theme-texture-highlight: #fffef6;
+  --theme-texture-mid: #d6d4c5;
+  --theme-texture-deep: #9e9c92;
+
   --theme-accent-1: #b4eaff;
   --theme-accent-2: #d2ff9a;
   --theme-accent-3: #fde68a;

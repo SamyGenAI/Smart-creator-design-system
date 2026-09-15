@@ -153,7 +153,13 @@ function exportPlugin() {
             deviceScaleFactor: scale,
           })
           const page = await context.newPage()
-          await page.goto(`http://${host}/?mode=${encodeURIComponent(modeKey)}&export=1`, { waitUntil: 'networkidle' })
+          // Forward the texture choice so the export matches the preview.
+          const pageParams = new URLSearchParams({ mode: modeKey, export: '1' })
+          for (const key of ['texture', 'textureOpacity']) {
+            const value = url.searchParams.get(key)
+            if (value) pageParams.set(key, value)
+          }
+          await page.goto(`http://${host}/?${pageParams}`, { waitUntil: 'networkidle' })
           await page.waitForTimeout(300)
           await page.evaluate(async () => {
             await document.fonts.ready
