@@ -14,7 +14,7 @@
  *
  * Examples:
  *   node scripts/screenshot.mjs claude-code --preview
- *   node scripts/screenshot.mjs openclaw
+ *   node scripts/screenshot.mjs mckinsey
  *   pnpm screenshot claude-code --preview
  */
 

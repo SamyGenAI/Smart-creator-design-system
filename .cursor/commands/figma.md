@@ -15,7 +15,7 @@ Captures the currently active mode from the local dev server (localhost:5173) an
 
 2. **Check the dev server.** Run `netstat -ano | findstr :5173` (Windows) or `lsof -i :5173` (macOS/Linux). If nothing is listening, tell the user to run `pnpm dev` first and wait for them to confirm.
 
-3. **Identify the active mode.** Ask the user which design to push if it is not clear from context. You need the Vite URL query param (e.g. `?mode=ai-operating-system`) and the design type (carousel or infographic).
+3. **Identify the active mode.** Ask the user which design to push if it is not clear from context. You need the Vite URL query param (e.g. `?mode=social-listening`) and the design type (carousel or infographic).
 
 4. **Select the target node ID.** Use `FIGMA_CAROUSEL_NODE_ID` for carousels and `FIGMA_INFOGRAPHIC_NODE_ID` for infographics. If the relevant node ID is not set in `.env`, ask the user to supply it before continuing.
 

@@ -1,21 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import McKinseyCarousel from '../design/carousels/McKinseyCarousel.jsx'
-import ScheduleTasksCarousel from '../design/carousels/ScheduleTasksCarousel.jsx'
-import OpenClawCarousel from '../design/carousels/OpenClawCarousel.jsx'
-import AIOperatingSystemCarousel from '../design/carousels/AIOperatingSystemCarousel.jsx'
-import GtmSystemCarousel from '../design/carousels/GtmSystemCarousel.jsx'
-import ClaudeDesignWinsInfographic from '../design/infographics/ClaudeDesignWinsInfographic.jsx'
-import AiOsInfographic from '../design/infographics/AiOsInfographic.jsx'
-import BulletProofAISystemInfographic from '../design/infographics/BulletProofAISystemInfographic.jsx'
-import BulletProofAISystemInfographicV2 from '../design/infographics/BulletProofAISystemInfographicV2.jsx'
-import AiOperatingSystemInfographic from '../design/infographics/AiOperatingSystemInfographic.jsx'
 import GtmSystemInfographic from '../design/infographics/GtmSystemInfographic.jsx'
 import SocialListeningInfographic from '../design/infographics/SocialListeningInfographic.jsx'
 import SocialListeningThumbnail from '../design/newsletter-thumbnails/SocialListeningThumbnail.jsx'
 import PptxSlideViewer from '../components/pptx/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
-import claudeCodeBusinessDeck from '../design/pptx-slides/decks/claude-code-business/deck.mjs'
 import { MODES as MODE_REGISTRY } from './modes.js'
 import appLogo from '../assets/logos/app/thesmartcreator_logo.png'
 
@@ -29,32 +19,12 @@ function YtAiDesignSystemDeck() {
   )
 }
 
-function ClaudeCodeBusinessDeck() {
-  return (
-    <PptxSlideViewer
-      modeKey="claude-code-business"
-      label="Claude Code Business"
-      slides={renderDeckToSlides(claudeCodeBusinessDeck)}
-    />
-  )
-}
-
 const COMPONENTS = {
-  'bulletproof-ai':      BulletProofAISystemInfographic,
-  'bulletproof-ai-v2':   BulletProofAISystemInfographicV2,
-  'ai-os':               AiOsInfographic,
-  'claude-design-wins':  ClaudeDesignWinsInfographic,
-  mckinsey:              McKinseyCarousel,
-  scheduleTasks:         ScheduleTasksCarousel,
-  openclaw:              OpenClawCarousel,
-  'ai-operating-system': AIOperatingSystemCarousel,
-  'gtm-system-carousel': GtmSystemCarousel,
-  'ai-os-infographic':   AiOperatingSystemInfographic,
   'gtm-system':          GtmSystemInfographic,
   'social-listening':    SocialListeningInfographic,
+  mckinsey:              McKinseyCarousel,
   'social-listening-thumbnail': SocialListeningThumbnail,
-  'yt-ai-design-system':    YtAiDesignSystemDeck,
-  'claude-code-business': ClaudeCodeBusinessDeck,
+  'yt-ai-design-system': YtAiDesignSystemDeck,
 }
 
 const MODES = Object.fromEntries(
@@ -119,7 +89,7 @@ function readStoredTheme() {
 }
 
 export default function App() {
-  const [activeMode, setActiveMode] = useState('bulletproof-ai')
+  const [activeMode, setActiveMode] = useState('gtm-system')
   const [exportNotice, setExportNotice] = useState('')
   const [isExporting, setIsExporting] = useState(false)
   const [theme, setTheme] = useState(readStoredTheme)

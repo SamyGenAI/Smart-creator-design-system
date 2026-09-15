@@ -15,18 +15,9 @@
  *   previewSlug — folder under public/screenshots/powerpoint/
  */
 export const MODES = {
-  'bulletproof-ai':    { label: 'Bullet-Proof AI System',    type: 'infographic', exportName: 'bulletproof-ai-system' },
-  'bulletproof-ai-v2': { label: 'Bullet-Proof AI System V2', type: 'infographic', exportName: 'bulletproof-ai-system-v2' },
-  'ai-os':             { label: 'What is an AI OS?',         type: 'infographic', exportName: 'ai-os' },
-  'claude-design-wins':{ label: 'Claude Design - 5 Wins',    type: 'infographic', exportName: 'claude-design-wins' },
-  mckinsey:            { label: 'McKinsey Carousel',         type: 'carousel',    exportName: 'mckinsey' },
-  scheduleTasks:       { label: 'Schedule Tasks Carousel',   type: 'carousel',    exportName: 'scheduleTasks' },
-  openclaw:            { label: 'OpenClaw 24/7 Agent Carousel', type: 'carousel', exportName: 'openclaw' },
-  'ai-operating-system': { label: 'Build Your AI Operating System', type: 'carousel', exportName: 'ai-operating-system' },
-  'ai-os-infographic':   { label: 'AI OS Infographic',   type: 'infographic', exportName: 'ai-os-infographic' },
-  'gtm-system':          { label: 'GTM System on Claude Code', type: 'infographic', exportName: 'gtm-system' },
-  'social-listening':    { label: 'Social Listening Routine', type: 'infographic', exportName: 'social-listening' },
-  'gtm-system-carousel': { label: 'GTM System Carousel', type: 'carousel', exportName: 'gtm-system-carousel' },
+  'gtm-system':       { label: 'GTM System on Claude Code', type: 'infographic', exportName: 'gtm-system' },
+  'social-listening': { label: 'Social Listening Routine',  type: 'infographic', exportName: 'social-listening' },
+  mckinsey:           { label: 'McKinsey Carousel',         type: 'carousel',    exportName: 'mckinsey' },
   'social-listening-thumbnail': { label: 'Social Listening (Thumbnail)', type: 'thumbnail', exportName: 'social-listening-thumbnail' },
   'yt-ai-design-system': {
     label: 'YT: AI Design System',
@@ -36,14 +27,5 @@ export const MODES = {
     layoutFile: 'decks/yt-ai-design-system/layouts.mjs',
     pptxFile: 'YtAiDesignSystemSlides.pptx',
     previewSlug: 'YT - AI Design system',
-  },
-  'claude-code-business': {
-    label: 'Claude Code Business',
-    type: 'pptx',
-    exportName: 'claude-code-business',
-    deckFile: 'decks/claude-code-business/deck.mjs',
-    layoutFile: 'decks/claude-code-business/layouts.mjs',
-    pptxFile: 'ClaudeCodeBusinessSlides.pptx',
-    previewSlug: 'Claude Code Business',
   },
 }

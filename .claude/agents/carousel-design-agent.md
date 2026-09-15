@@ -20,7 +20,7 @@ Before writing any code, read these files in order:
 
 1. `templates/carousels/LinkedInCarouselTemplate.jsx` — **the canonical starting point**. Your output must follow its structure exactly: same token constants, same `Slide` wrapper, same `NAVBAR` pattern, same root export shape.
 2. `skills/carousel-designer/references/slide-types.md` — per-slide layout specs and character limits.
-3. `design/carousels/McKinseyCarousel.jsx` and `design/carousels/ScheduleTasksCarousel.jsx` — **for inspiration only**: observe how real slides handle screenshots, wrapup rows, and CTA. Do not copy their slide content or structure verbatim.
+3. `design/carousels/McKinseyCarousel.jsx` — **for inspiration only**: observe how real slides handle screenshots, wrapup rows, and CTA. Do not copy their slide content or structure verbatim.
 
 ## File structure
 
