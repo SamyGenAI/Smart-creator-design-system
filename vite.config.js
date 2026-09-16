@@ -92,11 +92,20 @@ async function waitForAssets(page) {
 }
 
 /**
- * GIF export — infographics only.
+ * GIF export — infographics only. Output is the full 1080×1350 canvas.
  *
  * One Chromium, one page, N screenshots. The frame is driven in-page through
  * `window.__setMotionFrame` (published by MotionProvider when `export=1`);
  * reloading the page per frame turns a ~5s export into ~60s.
+ *
+ * Two response shapes, same render path:
+ *   - default          → the GIF bytes, as a normal file download.
+ *   - `?stream=1`      → Server-Sent Events carrying real progress
+ *                        ({phase,frame,total}) while frames render, then one
+ *                        final `done` event holding the GIF as base64. The
+ *                        client cannot see progress on a plain binary response,
+ *                        and a 166-frame render at full size is long enough
+ *                        that a determinate bar matters.
  *
  * Encoding note, learned the hard way: `pageHeight` MUST sit inside the `raw`
  * object. Outside it, sharp silently produces a 1-frame GIF. And
@@ -105,19 +114,48 @@ async function waitForAssets(page) {
  */
 async function handleGifExport(req, res, url) {
   let browser = null
+  // Progress is opt-in so the plain `/api/export/gif` download keeps working
+  // byte-for-byte for any caller that is not listening for events.
+  const streaming = url.searchParams.get('stream') === '1'
+  let sseOpen = false
+  const sendEvent = (event, data) => {
+    if (!streaming || !sseOpen) return
+    // Explicit escapes, not a multi-line template: the SSE framing
+    // (`event:`, `data:`, blank-line terminator) must survive any reformat.
+    res.write('event: ' + event + '\n' + 'data: ' + JSON.stringify(data) + '\n\n')
+  }
+  const fail = (status, message) => {
+    if (streaming && sseOpen) {
+      sendEvent('error', { message })
+      res.end()
+    } else {
+      res.statusCode = status
+      res.end(message)
+    }
+  }
   try {
     const modeKey = url.searchParams.get('mode') || ''
     const mode = MODES[modeKey]
     if (!mode) {
-      res.statusCode = 400
-      res.end(`Unknown mode "${modeKey}"`)
+      fail(400, `Unknown mode "${modeKey}"`)
       return
     }
     // Animation is infographic-only, mirroring how PDF rejects non-carousels.
     if (mode.type !== 'infographic') {
-      res.statusCode = 400
-      res.end('GIF export is only supported for infographic modes.')
+      fail(400, 'GIF export is only supported for infographic modes.')
       return
+    }
+
+    if (streaming) {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'text/event-stream')
+      res.setHeader('Cache-Control', 'no-cache')
+      res.setHeader('Connection', 'keep-alive')
+      // Vite sits behind no proxy in dev, but this is free insurance against
+      // one buffering the stream and defeating the whole point.
+      res.setHeader('X-Accel-Buffering', 'no')
+      res.flushHeaders?.()
+      sseOpen = true
     }
 
     const size = SIZES.infographic
@@ -126,14 +164,17 @@ async function handleGifExport(req, res, url) {
       1,
       Math.min(300, Number(url.searchParams.get('durationInFrames') || 90))
     )
-    // Half scale (540×675). Capped at 1, not just defaulted: full-size frames
-    // take far longer to render and the extra resolution does not survive GIF's
-    // 256-colour quantisation, so it only buys a slower, heavier file.
-    const scale = Math.max(0.25, Math.min(1, Number(url.searchParams.get('scale') || 0.5)))
-    const width = Math.round(size.width * scale)
-    const height = Math.round(size.height * scale)
+    // Full size: the GIF must come out at the design's own 1080×1350, same as
+    // every other export. `scale` still drives Chromium's deviceScaleFactor so
+    // a caller can render at >1 for crisper downsampling, but the OUTPUT is
+    // pinned to the canvas size regardless.
+    const scale = Math.max(0.25, Math.min(2, Number(url.searchParams.get('scale') || 1)))
+    const width = size.width
+    const height = size.height
 
     const host = req.headers.host || 'localhost:5173'
+
+    sendEvent('progress', { phase: 'launching', frame: 0, total: durationInFrames })
 
     browser = await chromium.launch()
     const context = await browser.newContext({
@@ -155,6 +196,8 @@ async function handleGifExport(req, res, url) {
       `div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`
     )
 
+    sendEvent('progress', { phase: 'rendering', frame: 0, total: durationInFrames })
+
     const frames = []
     for (let frame = 0; frame < durationInFrames; frame += 1) {
       await page.evaluate((f) => {
@@ -165,6 +208,9 @@ async function handleGifExport(req, res, url) {
       const png = await locator.first().screenshot({ type: 'png', scale: 'device' })
       const raw = await sharp(png).resize(width, height, { fit: 'fill' }).removeAlpha().raw().toBuffer()
       frames.push(raw)
+      // Real progress: one event per captured frame, which is the only part of
+      // this job whose duration actually scales with the timeline.
+      sendEvent('progress', { phase: 'rendering', frame: frame + 1, total: durationInFrames })
     }
 
     await browser.close()
@@ -175,20 +221,37 @@ async function handleGifExport(req, res, url) {
     const perFrame = Math.round(1000 / fps)
     const delay = frames.map((_, i) => (i === frames.length - 1 ? 1000 : perFrame))
 
+    // Quantising 166 full-size frames is slow enough to deserve its own phase,
+    // otherwise the bar sits at 100% for seconds with nothing explaining why.
+    sendEvent('progress', { phase: 'encoding', frame: durationInFrames, total: durationInFrames })
+
     const gif = await sharp(Buffer.concat(frames), {
       raw: { width, height: height * frames.length, channels: 3, pageHeight: height },
     })
       .gif({ delay, loop: 0, dither: 1.0 })
       .toBuffer()
 
+    const fileName = `${mode.exportName || modeKey}.gif`
+
+    if (streaming) {
+      sendEvent('done', {
+        fileName,
+        width,
+        height,
+        bytes: gif.length,
+        gif: gif.toString('base64'),
+      })
+      res.end()
+      return
+    }
+
     res.statusCode = 200
     res.setHeader('Content-Type', 'image/gif')
-    res.setHeader('Content-Disposition', `attachment; filename="${mode.exportName || modeKey}.gif"`)
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
     res.end(gif)
   } catch (error) {
     if (browser) await browser.close().catch(() => {})
-    res.statusCode = 500
-    res.end(`Export failed: ${error?.message || 'Unknown error'}`)
+    fail(500, `Export failed: ${error?.message || 'Unknown error'}`)
   }
 }
 

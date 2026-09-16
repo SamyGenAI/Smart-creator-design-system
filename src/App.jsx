@@ -72,15 +72,27 @@ const MAX_ZOOM = ZOOM_STEPS[ZOOM_STEPS.length - 1]
 const MAX_AUTOFIT_ZOOM = 2
 
 /**
- * GIF render scale — fixed at half, i.e. 540×675.
+ * GIF render scale — 1, i.e. the full 1080×1350 canvas.
  *
- * Not a user choice: full 1080×1350 takes far longer to render and the extra
- * resolution does not survive GIF's 256-colour quantisation anyway, so it just
- * produces a slower, heavier file that reads worse.
+ * Not a user choice. This is Chromium's deviceScaleFactor for the capture; the
+ * server pins the OUTPUT to the design's own 1080×1350 either way, so every
+ * export leaves at the canvas size.
  */
-const GIF_SCALE = 0.5
+const GIF_SCALE = 1
 
 const EXPORT_EXTENSIONS = { png: 'png', gif: 'gif', pptx: 'pptx', pdf: 'pdf' }
+
+/**
+ * Decode the base64 GIF carried by the stream's final event. Done in 8KB
+ * chunks: String.fromCharCode.apply on a multi-MB array blows the argument
+ * limit and throws.
+ */
+function base64ToBlob(base64, type) {
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i)
+  return new Blob([bytes], { type })
+}
 
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob)
@@ -128,6 +140,12 @@ export default function App() {
   const [textureOpacity, setTextureOpacity] = useState(readInitialTextureOpacity)
   const [texturePanelOpen, setTexturePanelOpen] = useState(false)
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  /**
+   * GIF export progress, or null when no render is running.
+   * { phase: 'launching'|'rendering'|'encoding', frame, total }
+   * Fed by real per-frame events from the server — never a timed fake.
+   */
+  const [exportProgress, setExportProgress] = useState(null)
 
   const stageRef = useRef(null)
   const designRef = useRef(null)
@@ -157,6 +175,7 @@ export default function App() {
   function switchMode(key) {
     setActiveMode(key)
     setExportNotice('')
+    setExportProgress(null)
     setAutoFit(true)
   }
 
@@ -304,12 +323,75 @@ export default function App() {
       params.set('fps', String(motionFps))
       params.set('durationInFrames', String(motionDuration))
       params.set('scale', String(GIF_SCALE))
+      // Ask for the progress stream instead of the plain binary: a binary
+      // response gives no way to know which frame the server is on.
+      params.set('stream', '1')
+      await exportGifStreaming(params)
+      return
     }
     const res = await fetch(`/api/export/${format}?${params}`)
     if (!res.ok) throw new Error(await res.text())
     const blob = await res.blob()
     const ext = EXPORT_EXTENSIONS[format] || 'png'
     downloadBlob(blob, `${sanitizeFileName(entry.exportName)}.${ext}`)
+  }
+
+  /**
+   * GIF export over Server-Sent Events.
+   *
+   * Read with fetch + a stream reader rather than EventSource, because
+   * EventSource cannot carry the final payload cleanly, reconnects on its own
+   * after the server closes, and offers no abort. Events arrive as
+   * `event: <name>\ndata: <json>\n\n` blocks; a chunk can split mid-block, so
+   * the tail is buffered until the blank-line terminator shows up.
+   */
+  async function exportGifStreaming(params) {
+    const res = await fetch(`/api/export/gif?${params}`)
+    if (!res.ok) throw new Error(await res.text())
+    if (!res.body) throw new Error('Streaming is not supported by this browser.')
+
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    let finished = null
+    let failure = null
+
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+
+      let split
+      while ((split = buffer.indexOf('\n\n')) !== -1) {
+        const block = buffer.slice(0, split)
+        buffer = buffer.slice(split + 2)
+
+        let name = 'message'
+        const dataLines = []
+        for (const line of block.split('\n')) {
+          if (line.startsWith('event: ')) name = line.slice(7).trim()
+          else if (line.startsWith('data: ')) dataLines.push(line.slice(6))
+        }
+        if (!dataLines.length) continue
+
+        let payload
+        try {
+          payload = JSON.parse(dataLines.join('\n'))
+        } catch {
+          continue
+        }
+
+        if (name === 'progress') setExportProgress(payload)
+        else if (name === 'done') finished = payload
+        else if (name === 'error') failure = payload?.message || 'Export failed'
+      }
+    }
+
+    if (failure) throw new Error(failure)
+    if (!finished) throw new Error('Export ended before the GIF was returned.')
+
+    downloadBlob(base64ToBlob(finished.gif, 'image/gif'), finished.fileName)
+    return finished
   }
 
   async function handleExport(format) {
@@ -319,7 +401,15 @@ export default function App() {
     if (!exportFormats.some((f) => f.format === format && !f.disabled)) return
     setExportMenuOpen(false)
     setIsExporting(true)
-    setExportNotice(format === 'gif' ? 'Rendering frames...' : 'Preparing download...')
+    if (format === 'gif') {
+      // Seed the bar at frame 0 so it appears the moment the click lands,
+      // rather than when the first server event arrives (Chromium launch alone
+      // is a second or two of otherwise unexplained silence).
+      setExportProgress({ phase: 'launching', frame: 0, total: motionDuration })
+      setExportNotice('')
+    } else {
+      setExportNotice('Preparing download...')
+    }
     try {
       await exportFromServer(format)
       showNotice('Download started.')
@@ -327,6 +417,7 @@ export default function App() {
       showNotice(`Export failed: ${error?.message || 'Unknown error'}`)
     } finally {
       setIsExporting(false)
+      setExportProgress(null)
     }
   }
 
@@ -458,7 +549,11 @@ export default function App() {
             </>
           )}
 
-          {exportNotice && <div style={noticeStyle(t)}>{exportNotice}</div>}
+          {exportProgress ? (
+            <ExportProgressBar t={t} progress={exportProgress} />
+          ) : (
+            exportNotice && <div style={noticeStyle(t)}>{exportNotice}</div>
+          )}
         </div>
 
         <main ref={stageRef} style={stageStyle(t)}>
@@ -637,6 +732,47 @@ function TransportRow({ t }) {
         {frame} / {last}
         <span style={transportFpsStyle}>{fps}fps</span>
       </span>
+    </div>
+  )
+}
+
+/**
+ * ExportProgressBar — determinate progress for a GIF render.
+ *
+ * Every value comes from the server's own per-frame events, so the bar tracks
+ * real work: no timed animation pretending to make progress. The encode phase
+ * has no frame counter of its own, so it holds the bar full and says what it is
+ * doing instead of stalling at 100% unexplained.
+ */
+function ExportProgressBar({ t, progress }) {
+  const { phase, frame, total } = progress
+  const safeTotal = Math.max(1, Number(total) || 1)
+  const ratio = phase === 'encoding' ? 1 : Math.min(1, Math.max(0, (Number(frame) || 0) / safeTotal))
+  const pct = Math.round(ratio * 100)
+
+  const label =
+    phase === 'launching'
+      ? 'Starting renderer...'
+      : phase === 'encoding'
+        ? 'Encoding GIF...'
+        : `Rendering frame ${Math.min(frame, safeTotal)} of ${safeTotal}`
+
+  return (
+    <div
+      style={exportProgressWrapStyle(t)}
+      role="progressbar"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      // Encoding has no measurable sub-progress; omitting the value marks the
+      // bar indeterminate to assistive tech rather than claiming 100% done.
+      aria-valuenow={phase === 'encoding' ? undefined : pct}
+      aria-label={label}
+    >
+      <span style={exportProgressLabelStyle()}>{label}</span>
+      <span style={exportProgressTrackStyle(t)}>
+        <span style={exportProgressFillStyle(t, ratio, phase === 'encoding')} />
+      </span>
+      <span style={exportProgressPctStyle()}>{phase === 'encoding' ? '' : `${pct}%`}</span>
     </div>
   )
 }
@@ -924,6 +1060,18 @@ const GLOBAL_CSS = `
   .scds-texture-tile { transition: background 0.12s ease, border-color 0.12s ease; }
   .scds-texture-tile[aria-checked="false"]:hover { background: var(--shell-option-hover); }
   .scds-texture-tile:focus-visible { outline: 2px solid var(--shell-text); outline-offset: 2px; }
+  /*
+   * Encode-phase pulse on the export progress bar. The bar is already full at
+   * this point, so opacity is the only thing left to signal "still working".
+   */
+  @keyframes scds-progress-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scds-btn { transition: none; }
+    @keyframes scds-progress-pulse { 0%, 100% { opacity: 1; } }
+  }
 `
 
 /* ------------------------------------------------------------------ */
@@ -1508,6 +1656,60 @@ function textureHintStyle(t) {
     lineHeight: 1.4,
     color: t.textMuted,
   }
+}
+
+/*
+ * Export progress bar. Sits in the notice slot at the end of the sub bar, so a
+ * running render never shifts the toolbar layout.
+ */
+function exportProgressWrapStyle(t) {
+  return {
+    marginLeft: 'auto',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
+    color: t.textMuted,
+    fontSize: 14,
+    lineHeight: 1.3,
+    whiteSpace: 'nowrap',
+  }
+}
+
+function exportProgressLabelStyle() {
+  return { fontVariantNumeric: 'tabular-nums' }
+}
+
+function exportProgressTrackStyle(t) {
+  return {
+    position: 'relative',
+    display: 'block',
+    width: 132,
+    height: 6,
+    borderRadius: 999,
+    background: t.surfaceMuted,
+    border: `1px solid ${t.border}`,
+    overflow: 'hidden',
+  }
+}
+
+function exportProgressFillStyle(t, ratio, encoding) {
+  return {
+    display: 'block',
+    height: '100%',
+    width: `${Math.round(ratio * 100)}%`,
+    borderRadius: 999,
+    background: t.btnBg,
+    // Smooths the per-frame steps into continuous motion. This is a transition
+    // on a real measured value, not an animation standing in for one.
+    transition: 'width 140ms linear',
+    // The encode phase holds at full width, so a gentle pulse is the only
+    // signal that work is still happening.
+    animation: encoding ? 'scds-progress-pulse 1.1s ease-in-out infinite' : undefined,
+  }
+}
+
+function exportProgressPctStyle() {
+  return { fontVariantNumeric: 'tabular-nums', minWidth: 34, textAlign: 'right' }
 }
 
 function noticeStyle(t) {
