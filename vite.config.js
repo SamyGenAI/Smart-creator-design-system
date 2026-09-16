@@ -73,6 +73,125 @@ function pdfFromJpegs(pages) {
   return Buffer.concat(parts)
 }
 
+/**
+ * Wait for fonts and images before the first screenshot. Shared with the PNG
+ * path so a GIF frame and a PNG of the same design settle identically.
+ */
+async function waitForAssets(page) {
+  await page.evaluate(async () => {
+    await document.fonts.ready
+    await Promise.all(
+      Array.from(document.images)
+        .filter((img) => !img.complete)
+        .map((img) => new Promise((resolve) => {
+          img.addEventListener('load', resolve, { once: true })
+          img.addEventListener('error', resolve, { once: true })
+        }))
+    )
+  })
+}
+
+/**
+ * GIF export — infographics only.
+ *
+ * One Chromium, one page, N screenshots. The frame is driven in-page through
+ * `window.__setMotionFrame` (published by MotionProvider when `export=1`);
+ * reloading the page per frame turns a ~5s export into ~60s.
+ *
+ * Encoding note, learned the hard way: `pageHeight` MUST sit inside the `raw`
+ * object. Outside it, sharp silently produces a 1-frame GIF. And
+ * `sharp(pngBuffers, { join: { animated: true } })` drops every per-frame delay
+ * after the first.
+ */
+async function handleGifExport(req, res, url) {
+  let browser = null
+  try {
+    const modeKey = url.searchParams.get('mode') || ''
+    const mode = MODES[modeKey]
+    if (!mode) {
+      res.statusCode = 400
+      res.end(`Unknown mode "${modeKey}"`)
+      return
+    }
+    // Animation is infographic-only, mirroring how PDF rejects non-carousels.
+    if (mode.type !== 'infographic') {
+      res.statusCode = 400
+      res.end('GIF export is only supported for infographic modes.')
+      return
+    }
+
+    const size = SIZES.infographic
+    const fps = Math.max(1, Math.min(60, Number(url.searchParams.get('fps') || 30)))
+    const durationInFrames = Math.max(
+      1,
+      Math.min(300, Number(url.searchParams.get('durationInFrames') || 90))
+    )
+    // Half scale (540×675). Capped at 1, not just defaulted: full-size frames
+    // take far longer to render and the extra resolution does not survive GIF's
+    // 256-colour quantisation, so it only buys a slower, heavier file.
+    const scale = Math.max(0.25, Math.min(1, Number(url.searchParams.get('scale') || 0.5)))
+    const width = Math.round(size.width * scale)
+    const height = Math.round(size.height * scale)
+
+    const host = req.headers.host || 'localhost:5173'
+
+    browser = await chromium.launch()
+    const context = await browser.newContext({
+      viewport: { width: 1600, height: 1600 },
+      deviceScaleFactor: scale,
+    })
+    const page = await context.newPage()
+
+    const pageParams = new URLSearchParams({ mode: modeKey, export: '1', frame: '0' })
+    for (const key of ['texture', 'textureOpacity']) {
+      const value = url.searchParams.get(key)
+      if (value) pageParams.set(key, value)
+    }
+    await page.goto(`http://${host}/?${pageParams}`, { waitUntil: 'networkidle' })
+    await page.waitForTimeout(300)
+    await waitForAssets(page)
+
+    const locator = page.locator(
+      `div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`
+    )
+
+    const frames = []
+    for (let frame = 0; frame < durationInFrames; frame += 1) {
+      await page.evaluate((f) => {
+        if (typeof window.__setMotionFrame === 'function') window.__setMotionFrame(f)
+      }, frame)
+      // Let React commit the new frame before the shutter.
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => resolve())))
+      const png = await locator.first().screenshot({ type: 'png', scale: 'device' })
+      const raw = await sharp(png).resize(width, height, { fit: 'fill' }).removeAlpha().raw().toBuffer()
+      frames.push(raw)
+    }
+
+    await browser.close()
+    browser = null
+
+    // Hold the last frame ~1s so the loop reads as a finished design rather
+    // than a flicker.
+    const perFrame = Math.round(1000 / fps)
+    const delay = frames.map((_, i) => (i === frames.length - 1 ? 1000 : perFrame))
+
+    const gif = await sharp(Buffer.concat(frames), {
+      raw: { width, height: height * frames.length, channels: 3, pageHeight: height },
+    })
+      .gif({ delay, loop: 0, dither: 1.0 })
+      .toBuffer()
+
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'image/gif')
+    res.setHeader('Content-Disposition', `attachment; filename="${mode.exportName || modeKey}.gif"`)
+    res.end(gif)
+  } catch (error) {
+    if (browser) await browser.close().catch(() => {})
+    res.statusCode = 500
+    res.end(`Export failed: ${error?.message || 'Unknown error'}`)
+  }
+}
+
 function exportPlugin() {
   return {
     name: 'playwright-export-api',
@@ -126,6 +245,11 @@ function exportPlugin() {
           return
         }
 
+        if (url.pathname === '/api/export/gif') {
+          await handleGifExport(req, res, url)
+          return
+        }
+
         const isApi = url.pathname === '/api/export/png' || url.pathname === '/api/export/pdf'
         if (!isApi) return next()
 
@@ -161,17 +285,7 @@ function exportPlugin() {
           }
           await page.goto(`http://${host}/?${pageParams}`, { waitUntil: 'networkidle' })
           await page.waitForTimeout(300)
-          await page.evaluate(async () => {
-            await document.fonts.ready
-            await Promise.all(
-              Array.from(document.images)
-                .filter((img) => !img.complete)
-                .map((img) => new Promise((resolve) => {
-                  img.addEventListener('load', resolve, { once: true })
-                  img.addEventListener('error', resolve, { once: true })
-                }))
-            )
-          })
+          await waitForAssets(page)
 
           const locator = page.locator(`div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`)
 

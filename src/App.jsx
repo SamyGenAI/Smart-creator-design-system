@@ -20,6 +20,12 @@ import {
   getTexture,
 } from '../components/shared/textures/textureRegistry.js'
 import TextureSwatch from '../components/shared/textures/TextureSwatch.jsx'
+import {
+  MotionProvider,
+  useMotionTransport,
+  DEFAULT_FPS,
+  DEFAULT_DURATION_IN_FRAMES,
+} from '../components/shared/motion/index.js'
 
 function YtAiDesignSystemDeck() {
   return (
@@ -64,6 +70,17 @@ const MAX_ZOOM = ZOOM_STEPS[ZOOM_STEPS.length - 1]
  * which keeps them legible without going soft.
  */
 const MAX_AUTOFIT_ZOOM = 2
+
+/**
+ * GIF render scale — fixed at half, i.e. 540×675.
+ *
+ * Not a user choice: full 1080×1350 takes far longer to render and the extra
+ * resolution does not survive GIF's 256-colour quantisation anyway, so it just
+ * produces a slower, heavier file that reads worse.
+ */
+const GIF_SCALE = 0.5
+
+const EXPORT_EXTENSIONS = { png: 'png', gif: 'gif', pptx: 'pptx', pdf: 'pdf' }
 
 function downloadBlob(blob, fileName) {
   const url = URL.createObjectURL(blob)
@@ -110,6 +127,7 @@ export default function App() {
   const [textureId, setTextureId] = useState(readInitialTextureId)
   const [textureOpacity, setTextureOpacity] = useState(readInitialTextureOpacity)
   const [texturePanelOpen, setTexturePanelOpen] = useState(false)
+  const [exportMenuOpen, setExportMenuOpen] = useState(false)
 
   const stageRef = useRef(null)
   const designRef = useRef(null)
@@ -118,6 +136,13 @@ export default function App() {
   const entry = MODES[activeMode]
   const ActiveDesign = entry?.component
   const isDark = theme === 'dark'
+
+  // Motion is infographic-only. Non-animated modes still mount inside the
+  // provider — they just sit on the settled final frame, which is simpler than
+  // mounting the provider conditionally.
+  const isAnimated = entry?.type === 'infographic' && entry?.animated === true
+  const motionFps = entry?.motion?.fps ?? DEFAULT_FPS
+  const motionDuration = entry?.motion?.durationInFrames ?? DEFAULT_DURATION_IN_FRAMES
 
   const groupedModes = useMemo(() => {
     const groups = new Map()
@@ -143,13 +168,37 @@ export default function App() {
 
   useEffect(() => () => window.clearTimeout(noticeTimer.current), [])
 
-  function exportLabel() {
-    if (entry?.type === 'infographic') return 'Download PNG'
-    if (entry?.type === 'thumbnail') return 'Download PNG'
-    if (entry?.type === 'carousel') return 'Download PDF'
-    if (entry?.type === 'pptx') return 'Download PPTX'
-    return 'Download'
-  }
+  /**
+   * What the Export menu offers for the active design.
+   *
+   * Formats that do not apply are listed but disabled rather than hidden, so
+   * the menu reads the same everywhere and says *why* something is unavailable.
+   * GIF is the one that varies: infographic-only, and only when the design
+   * registers `animated: true`.
+   */
+  const exportFormats = useMemo(() => {
+    const type = entry?.type
+    const isInfographic = type === 'infographic'
+    return [
+      {
+        format: 'png',
+        label: 'Download PNG',
+        disabled: !(isInfographic || type === 'thumbnail'),
+      },
+      {
+        format: 'gif',
+        label: 'Download GIF',
+        disabled: !isAnimated,
+        hint: isAnimated
+          ? null
+          : isInfographic
+            ? 'This design is not animated'
+            : 'Animation is infographic-only',
+      },
+      { format: 'pdf', label: 'Download PDF', disabled: type !== 'carousel' },
+      { format: 'pptx', label: 'Download PPTX', disabled: type !== 'pptx' },
+    ].filter((f) => !f.disabled || f.format === 'gif' || f.format === 'png')
+  }, [entry?.type, isAnimated])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -249,22 +298,30 @@ export default function App() {
       texture: textureId,
       textureOpacity: String(activeTextureOpacity),
     })
+    // GIF sweeps the timeline, so the endpoint needs the design's fps/duration
+    // and the render scale chosen in the toolbar.
+    if (format === 'gif') {
+      params.set('fps', String(motionFps))
+      params.set('durationInFrames', String(motionDuration))
+      params.set('scale', String(GIF_SCALE))
+    }
     const res = await fetch(`/api/export/${format}?${params}`)
     if (!res.ok) throw new Error(await res.text())
     const blob = await res.blob()
-    const ext = format === 'png' ? 'png' : format === 'pptx' ? 'pptx' : 'pdf'
+    const ext = EXPORT_EXTENSIONS[format] || 'png'
     downloadBlob(blob, `${sanitizeFileName(entry.exportName)}.${ext}`)
   }
 
-  async function handleExport() {
+  async function handleExport(format) {
     if (!entry || isExporting) return
+    // Disabled rows are inert in the DOM; this is the belt-and-braces guard so
+    // a format can never reach the server for a design that cannot produce it.
+    if (!exportFormats.some((f) => f.format === format && !f.disabled)) return
+    setExportMenuOpen(false)
     setIsExporting(true)
-    setExportNotice('Preparing download...')
+    setExportNotice(format === 'gif' ? 'Rendering frames...' : 'Preparing download...')
     try {
-      if (entry.type === 'infographic') await exportFromServer('png')
-      else if (entry.type === 'thumbnail') await exportFromServer('png')
-      else if (entry.type === 'carousel') await exportFromServer('pdf')
-      else if (entry.type === 'pptx') await exportFromServer('pptx')
+      await exportFromServer(format)
       showNotice('Download started.')
     } catch (error) {
       showNotice(`Export failed: ${error?.message || 'Unknown error'}`)
@@ -313,97 +370,111 @@ export default function App() {
             {isDark ? <SunIcon /> : <MoonIcon />}
           </button>
 
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={isExporting}
-            className="scds-btn"
-            style={primaryBtnStyle(t, isExporting)}
-          >
-            {isExporting ? 'Preparing...' : exportLabel()}
-          </button>
+          <ExportMenu
+            t={t}
+            open={exportMenuOpen}
+            onOpenChange={setExportMenuOpen}
+            busy={isExporting}
+            formats={exportFormats}
+            onPick={handleExport}
+          />
         </div>
       </header>
 
-      <div style={subBarStyle(t)}>
-        <div style={zoomGroupStyle(t)}>
+      {/* One MotionProvider wraps the transport row AND the stage, so the
+          scrubber and the design share a single frame. */}
+      <MotionProvider
+        animated={isAnimated}
+        fps={motionFps}
+        durationInFrames={motionDuration}
+      >
+        <div style={subBarStyle(t)}>
+          <div style={zoomGroupStyle(t)}>
+            <button
+              type="button"
+              onClick={() => stepZoom(-1)}
+              disabled={zoom <= MIN_ZOOM + 0.001}
+              className="scds-btn"
+              style={zoomBtnStyle(t, zoom <= MIN_ZOOM + 0.001)}
+              aria-label="Zoom out"
+            >
+              <MinusIcon />
+            </button>
+            <span style={zoomReadoutStyle(t)}>{Math.round(zoom * 100)}%</span>
+            <button
+              type="button"
+              onClick={() => stepZoom(1)}
+              disabled={zoom >= MAX_ZOOM - 0.001}
+              className="scds-btn"
+              style={zoomBtnStyle(t, zoom >= MAX_ZOOM - 0.001)}
+              aria-label="Zoom in"
+            >
+              <PlusIcon />
+            </button>
+          </div>
+
           <button
             type="button"
-            onClick={() => stepZoom(-1)}
-            disabled={zoom <= MIN_ZOOM + 0.001}
+            onClick={() => setAutoFit(true)}
             className="scds-btn"
-            style={zoomBtnStyle(t, zoom <= MIN_ZOOM + 0.001)}
-            aria-label="Zoom out"
+            style={ghostBtnStyle(t, autoFit)}
+            aria-pressed={autoFit}
           >
-            <MinusIcon />
+            Fit to screen
           </button>
-          <span style={zoomReadoutStyle(t)}>{Math.round(zoom * 100)}%</span>
+
           <button
             type="button"
-            onClick={() => stepZoom(1)}
-            disabled={zoom >= MAX_ZOOM - 0.001}
+            onClick={() => {
+              setAutoFit(false)
+              setZoom(1)
+            }}
             className="scds-btn"
-            style={zoomBtnStyle(t, zoom >= MAX_ZOOM - 0.001)}
-            aria-label="Zoom in"
+            style={ghostBtnStyle(t, false)}
           >
-            <PlusIcon />
+            Actual size
           </button>
+
+          <div style={subBarDividerStyle(t)} aria-hidden="true" />
+
+          <TexturePicker
+            t={t}
+            open={texturePanelOpen}
+            onOpenChange={setTexturePanelOpen}
+            textureId={textureId}
+            onSelect={setTextureId}
+            opacity={activeTextureOpacity}
+            isCustomOpacity={textureId in textureOpacity}
+            onOpacityChange={(value) =>
+              setTextureOpacity((current) => ({ ...current, [textureId]: value }))
+            }
+            onOpacityReset={() => resetTextureOpacity(textureId)}
+          />
+
+          {isAnimated && (
+            <>
+              <div style={subBarDividerStyle(t)} aria-hidden="true" />
+              <TransportRow t={t} />
+            </>
+          )}
+
+          {exportNotice && <div style={noticeStyle(t)}>{exportNotice}</div>}
         </div>
 
-        <button
-          type="button"
-          onClick={() => setAutoFit(true)}
-          className="scds-btn"
-          style={ghostBtnStyle(t, autoFit)}
-          aria-pressed={autoFit}
-        >
-          Fit to screen
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setAutoFit(false)
-            setZoom(1)
-          }}
-          className="scds-btn"
-          style={ghostBtnStyle(t, false)}
-        >
-          Actual size
-        </button>
-
-        <div style={subBarDividerStyle(t)} aria-hidden="true" />
-
-        <TexturePicker
-          t={t}
-          open={texturePanelOpen}
-          onOpenChange={setTexturePanelOpen}
-          textureId={textureId}
-          onSelect={setTextureId}
-          opacity={activeTextureOpacity}
-          isCustomOpacity={textureId in textureOpacity}
-          onOpacityChange={(value) =>
-            setTextureOpacity((current) => ({ ...current, [textureId]: value }))
-          }
-          onOpacityReset={() => resetTextureOpacity(textureId)}
-        />
-
-        {exportNotice && <div style={noticeStyle(t)}>{exportNotice}</div>}
-      </div>
-
-      <main ref={stageRef} style={stageStyle(t)}>
-        {ActiveDesign ? (
-          <div style={zoomLayerStyle(zoom)}>
-            <div ref={designRef} style={{ display: 'inline-block' }}>
-              <TextureProvider textureId={textureId} opacityById={textureOpacity}>
-                <ActiveDesign />
-              </TextureProvider>
+        <main ref={stageRef} style={stageStyle(t)}>
+          {ActiveDesign ? (
+            <div style={zoomLayerStyle(zoom)}>
+              <div ref={designRef} style={{ display: 'inline-block' }}>
+                <TextureProvider textureId={textureId} opacityById={textureOpacity}>
+                  <ActiveDesign />
+                </TextureProvider>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div style={emptyStateStyle(t)}>No preview component registered for this design.</div>
-        )}
-      </main>
+          ) : (
+            <div style={emptyStateStyle(t)}>No preview component registered for this design.</div>
+          )}
+        </main>
+      </MotionProvider>
     </div>
   )
 }
@@ -523,6 +594,124 @@ function DesignPicker({ t, groups, value, currentLabel, onChange }) {
  * stored per texture because a readable Silk Grain and a readable Salon Broad
  * sit at very different values.
  */
+/**
+ * TransportRow — play/pause, a frame scrubber and a frame readout.
+ *
+ * Only rendered for animated infographics. It reads and writes the same
+ * MotionProvider the design renders under, so scrubbing moves the preview.
+ * Scrubbing pauses playback — otherwise the rAF loop would immediately fight
+ * the drag.
+ */
+function TransportRow({ t }) {
+  const { frame, setFrame, playing, setPlaying, durationInFrames, fps } = useMotionTransport()
+  const last = durationInFrames - 1
+
+  return (
+    <div style={transportGroupStyle(t)}>
+      <button
+        type="button"
+        onClick={() => setPlaying(!playing)}
+        className="scds-btn"
+        style={zoomBtnStyle(t, false)}
+        aria-label={playing ? 'Pause animation' : 'Play animation'}
+        title={playing ? 'Pause' : 'Play'}
+      >
+        {playing ? <PauseIcon /> : <PlayIcon />}
+      </button>
+
+      <input
+        type="range"
+        min={0}
+        max={last}
+        step={1}
+        value={frame}
+        onChange={(e) => {
+          setPlaying(false)
+          setFrame(Number(e.target.value))
+        }}
+        aria-label="Animation frame"
+        style={scrubberStyle(t)}
+      />
+
+      <span style={transportReadoutStyle(t)}>
+        {frame} / {last}
+        <span style={transportFpsStyle}>{fps}fps</span>
+      </span>
+    </div>
+  )
+}
+
+/**
+ * ExportMenu — one "Export" button opening a list of formats.
+ *
+ * Every design type gets the same control. Formats that do not apply to the
+ * active design are listed but disabled, so the menu also tells you what the
+ * design *cannot* produce: GIF stays visible on a static infographic, greyed
+ * out with the reason. GIF size is not a choice — see GIF_SCALE.
+ */
+function ExportMenu({ t, open, onOpenChange, busy, formats, onPick }) {
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return undefined
+    function onPointerDown(e) {
+      if (rootRef.current && !rootRef.current.contains(e.target)) onOpenChange(false)
+    }
+    function onKeyDown(e) {
+      if (e.key === 'Escape') onOpenChange(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open, onOpenChange])
+
+  return (
+    <div ref={rootRef} style={exportWrapStyle}>
+      <button
+        type="button"
+        onClick={() => onOpenChange(!open)}
+        disabled={busy}
+        className="scds-btn"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        style={primaryBtnStyle(t, busy)}
+      >
+        {busy ? 'Preparing...' : 'Export'}
+      </button>
+
+      {open && (
+        <div role="menu" style={exportMenuStyle(t)}>
+          {formats.map((f) => (
+            <button
+              key={f.format}
+              type="button"
+              role="menuitem"
+              className="scds-option scds-export-option"
+              disabled={f.disabled}
+              title={f.hint || undefined}
+              onClick={() => {
+                if (f.disabled) return
+                onPick(f.format)
+              }}
+              style={exportOptionStyle(t, f.disabled)}
+            >
+              <span style={menuOptionTextStyle}>{f.label}</span>
+              {f.hint && (
+                <span className="scds-export-hint" style={exportHintStyle()}>
+                  {f.hint}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function TexturePicker({
   t,
   open,
@@ -713,9 +902,25 @@ const GLOBAL_CSS = `
   }
   .scds-select { transition: border-color 0.15s ease; }
   .scds-select:hover { border-color: var(--shell-border-strong); }
-  .scds-option { transition: background 0.12s ease; }
+  .scds-option { transition: background 0.12s ease, color 0.12s ease; }
   .scds-option[aria-selected="false"]:hover { background: var(--shell-option-hover); }
   .scds-option:focus-visible { outline: 2px solid var(--shell-text); outline-offset: -2px; }
+  /*
+   * Export-menu rows invert to the button palette on hover — black-on-cream in
+   * light, cream-on-black in dark. The row carries the fill, so the label and
+   * the muted hint both have to flip with it or the hint drops to ~1.3:1
+   * against the new background.
+   */
+  .scds-export-option:not(:disabled):hover,
+  .scds-export-option:not(:disabled):focus-visible {
+    background: var(--shell-btn-bg) !important;
+    color: var(--shell-btn-text) !important;
+  }
+  .scds-export-option:not(:disabled):hover .scds-export-hint,
+  .scds-export-option:not(:disabled):focus-visible .scds-export-hint {
+    opacity: 0.72;
+  }
+  .scds-export-option:disabled { cursor: not-allowed; }
   .scds-texture-tile { transition: background 0.12s ease, border-color 0.12s ease; }
   .scds-texture-tile[aria-checked="false"]:hover { background: var(--shell-option-hover); }
   .scds-texture-tile:focus-visible { outline: 2px solid var(--shell-text); outline-offset: 2px; }
@@ -1043,6 +1248,71 @@ function subBarDividerStyle(t) {
   }
 }
 
+/* -- Transport + GIF split button (animated infographics only) -- */
+
+function transportGroupStyle(t) {
+  return {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    padding: 7,
+    paddingRight: 16,
+    borderRadius: 18,
+    border: `1px solid ${t.border}`,
+    background: t.surface,
+  }
+}
+
+function scrubberStyle(t) {
+  return {
+    width: 220,
+    accentColor: t.btnBg,
+    cursor: 'pointer',
+  }
+}
+
+function transportReadoutStyle(t) {
+  return {
+    minWidth: 118,
+    textAlign: 'right',
+    fontSize: 17,
+    fontWeight: 700,
+    color: t.text,
+    fontVariantNumeric: 'tabular-nums',
+    whiteSpace: 'nowrap',
+  }
+}
+
+const transportFpsStyle = { opacity: 0.6, marginLeft: 8, fontWeight: 600 }
+
+const exportWrapStyle = { position: 'relative', display: 'inline-flex' }
+
+function exportMenuStyle(t) {
+  return { ...menuStyle(t), left: 'auto', right: 0, minWidth: 340 }
+}
+
+/** A disabled row stays readable — it is telling you the format exists. */
+function exportOptionStyle(t, disabled) {
+  return {
+    ...menuOptionStyle(t, false),
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.45 : 1,
+  }
+}
+
+function exportHintStyle() {
+  return {
+    fontSize: 14,
+    fontWeight: 600,
+    // Inherits the row's colour (muted via opacity) so it flips with the hover
+    // fill rather than staying dark-on-dark.
+    color: 'inherit',
+    opacity: 0.6,
+    whiteSpace: 'nowrap',
+    marginLeft: 12,
+  }
+}
+
 function textureTriggerStyle(t, open) {
   return {
     display: 'inline-flex',
@@ -1311,6 +1581,23 @@ function MinusIcon() {
   return (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
       <path d="M5 12h14" />
+    </svg>
+  )
+}
+
+function PlayIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+      <path d="M8 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 8 5.5z" />
+    </svg>
+  )
+}
+
+function PauseIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+      <rect x="6.5" y="5" width="4" height="14" rx="1.4" />
+      <rect x="13.5" y="5" width="4" height="14" rx="1.4" />
     </svg>
   )
 }

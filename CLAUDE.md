@@ -112,6 +112,26 @@ preview toolbar. Same token rules as infographics — no chroma in the design fi
 
 ---
 
+## Animation (infographics only)
+
+Skill: [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SKILL.md) § Motion · Primitives: [`components/shared/motion/`](components/shared/motion/)
+
+**Opt-in.** Static is the default — only animate when the user's prompt asks for it. Carousels, newsletter thumbnails and slide decks have no motion layer, and `/api/export/gif` returns 400 for them.
+
+| Item | Rule |
+|---|---|
+| Model | **Frame-as-input**: every animated style is a pure function of `useCurrentFrame()`. Never CSS keyframes or `transition` — those are not deterministically seekable, so GIF frames would jitter. |
+| Primitives | `useCurrentFrame` · `useVideoConfig` · `interpolate` · `Easing` · `spring` · `Sequence` · `useInterpolateColors`, all from `components/shared/motion/index.js` |
+| Register | `animated: true` + `motion: { durationInFrames, fps }` on the infographic's `src/modes.js` entry |
+| Export | Preview toolbar **Export** dropdown → **PNG** or **GIF**. GIF is disabled for designs without `animated: true`, and always renders 540×675. |
+| Colour | `useInterpolateColors` takes **token names**, never literals, and mixes in OKLab — so the token lint stays green and rebranding still works |
+
+**The last frame must be the finished static design.** Outside a `MotionProvider`, `useCurrentFrame()` returns the final frame — that is what keeps PNG export, the Figma push and no-provider rendering working with zero changes. Every element must be mounted and settled before `durationInFrames - 1`, and springs need their asymptotic tail snapped to exactly 1.
+
+Reference: [`design/infographics/SocialListeningInfographic.jsx`](design/infographics/SocialListeningInfographic.jsx). Control (un-animated): [`design/infographics/GtmSystemInfographic.jsx`](design/infographics/GtmSystemInfographic.jsx).
+
+---
+
 ## Slides (PowerPoint / Google Slides 16:9 — `LAYOUT_16x9`, 10 in × 5.625 in)
 
 Skill: [`skills/pptx/SKILL.md`](skills/pptx/SKILL.md) + [`skills/pptx/slide-templates.md`](skills/pptx/slide-templates.md) + [`skills/pptx/pptxgenjs.md`](skills/pptx/pptxgenjs.md) · Agent: `.claude/agents/slide-agent.md` · Templates: [`design/pptx-slides/templates/slideTemplates.html`](design/pptx-slides/templates/slideTemplates.html) · Tokens: `DESIGN.md` + `src/index.css`.

@@ -9,6 +9,10 @@
  *   type        — 'infographic' | 'carousel' | 'thumbnail' | 'pptx'
  *   exportName  — file stem for downloads (no extension)
  *
+ * infographic modes only (optional — absent/false means today's behaviour):
+ *   animated    — true unlocks the transport row and the GIF export branch
+ *   motion      — { durationInFrames, fps } for the animation timeline
+ *
  * pptx modes only:
  *   deckFile    — deck definition under design/pptx-slides/ (exports { meta, slides })
  *   pptxFile    — output filename under design/pptx-slides/output/
@@ -16,7 +20,13 @@
  */
 export const MODES = {
   'gtm-system':       { label: 'GTM System on Claude Code', type: 'infographic', exportName: 'gtm-system' },
-  'social-listening': { label: 'Social Listening Routine',  type: 'infographic', exportName: 'social-listening' },
+  'social-listening': {
+    label: 'Social Listening Routine',
+    type: 'infographic',
+    exportName: 'social-listening',
+    animated: true,
+    motion: { durationInFrames: 90, fps: 30 }, // 3s
+  },
   mckinsey:           { label: 'McKinsey Carousel',         type: 'carousel',    exportName: 'mckinsey' },
   'social-listening-thumbnail': { label: 'Social Listening (Thumbnail)', type: 'thumbnail', exportName: 'social-listening-thumbnail' },
   'yt-ai-design-system': {

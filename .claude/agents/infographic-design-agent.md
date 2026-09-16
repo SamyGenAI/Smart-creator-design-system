@@ -17,7 +17,7 @@ The deliverable is always a **1080×1350 LinkedIn infographic** at `design/infog
 You cannot design well for this repo without seeing how prior infographics are actually built. Always read in this order:
 
 ### 1. The rules and tokens
-- [`skills/infographics-designer/SKILL.md`](../../skills/infographics-designer/SKILL.md) — **primary reference**: canvas, components, layout, tokens
+- [`skills/infographics-designer/SKILL.md`](../../skills/infographics-designer/SKILL.md) — **primary reference**: canvas, components, layout, tokens. Its **"Motion (opt-in, infographics only)"** section is required reading whenever the user's prompt asks for animation.
 - [`skills/design-brief/SKILL.md`](../../skills/design-brief/SKILL.md) — brief format and approval-gate rules
 - [`DESIGN.md`](../../DESIGN.md) — live palette, accent tokens, typography (YAML); **only** file where brand `#hex` belongs
 - [`src/index.css`](../../src/index.css) — CSS variable names (`--theme-*`, `--color/*`, `--font/family/*`) you'll reference in JSX
@@ -66,6 +66,14 @@ Use **real token names** from `DESIGN.md` / `src/index.css` (e.g. `bg-bg-canvas`
 
 If a reference image was provided, the brief must identify: overall grid, header treatment, per-section inner pattern, footer treatment — and explicitly map those onto components in this repo.
 
+**Animation — ask only if the prompt suggests it.** Static is the default. If
+the user's prompt mentions animation, motion, or a GIF, ask whether the
+infographic should be animated; otherwise do not raise it at all. When the
+answer is yes, the brief must name **which elements animate, in what order, and
+over how many frames** — e.g. "6 source rows stagger in from the left (4 frames
+apart), connectors spring open at frame 26, hub nodes at 30 and 40, the 4 steps
+stagger from 46." Read the skill's Motion section before writing that part.
+
 ### Step 2 — Present and wait
 
 End the brief with this exact line and stop:
@@ -79,7 +87,7 @@ End the brief with this exact line and stop:
 Once approved:
 
 1. Write the complete JSX in `design/infographics/[Name]Infographic.jsx`, top to bottom, in one pass. Compose from `components/`; write raw Tailwind / CSS classes for one-off layouts.
-2. Register the design in [`src/modes.js`](../../src/modes.js) and the `COMPONENTS` map in [`src/App.jsx`](../../src/App.jsx) (this repo uses a modes registry — do **not** edit `vite.config.js`).
+2. Register the design in [`src/modes.js`](../../src/modes.js) and the `COMPONENTS` map in [`src/App.jsx`](../../src/App.jsx) (this repo uses a modes registry — do **not** edit `vite.config.js`). For an animated design, add `animated: true` and `motion: { durationInFrames, fps }` to its `src/modes.js` entry.
 3. **Stop.** The user runs `pnpm dev` themselves to inspect. Do not call `render.py`, `python render.py`, or any `/api/export/*` endpoint to "verify" — that is forbidden by `CLAUDE.md` rule 8.
 
 ---
@@ -90,6 +98,7 @@ Once approved:
 - **Mandatory components:** every infographic uses `InfographicHeader` for the title block, `InfographicFooter` for the footer, and `PrimaryGlassSection` or `BrandBorderSectionBase` (or other `components/` primitives) for section cards. Never write a custom footer div.
 - **No hardcoded creator identity.** `<InfographicFooter />` reads creator name + avatar from [`src/creatorIdentity.js`](../../src/creatorIdentity.js) and `/assets/avatar/avatar-profile.png` automatically. Do not pass a hardcoded `name`/`avatarSrc` prop unless the brief explicitly overrides them. If you need the display name in the body, import `CREATOR_DISPLAY_NAME` from `src/creatorIdentity.js`.
 - **Rebrand by changing `DESIGN.md` + syncing `src/index.css`** per `skills/brand-setup/SKILL.md` — never encode brand-specific values in the infographic file.
+- **Animation is opt-in and infographic-only.** Never animate unless the user asked. When you do: every animated style is a pure function of `useCurrentFrame()` — no CSS keyframes, no `transition`. **The final frame must be the finished static design**, with every element mounted and settled before it; that is what keeps PNG export and the Figma push working. Budget the timeline so the last element settles before `durationInFrames - 1`.
 - **Approval gate is non-negotiable.** No JSX, no `src/App.jsx` edits, no asset writes before the user approves the brief.
 - Footer is **60px fixed**. Header is flexible (allow 2-line title wrap).
 - Trust CSS Grid `align-items: stretch` and `grid-auto-rows: 1fr`. No manual pixel math.

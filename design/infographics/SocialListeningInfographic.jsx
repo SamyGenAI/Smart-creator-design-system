@@ -12,12 +12,72 @@
  *               positioning is shared across columns.
  *   Section 2 — "How it works" — PrimaryGlassSection with a 4-step list.
  *   Footer
+ *
+ * MOTION (90 frames @ 30fps — registered `animated: true` in src/modes.js):
+ *   The 6 sources fade+slide in from the left, the connectors spring open, the
+ *   two hub nodes spring in behind them, and the 4 "How it works" steps
+ *   stagger in last.
+ *
+ *   Every animated value is a pure function of `useCurrentFrame()` — no CSS
+ *   keyframes, no transitions — so the GIF exporter can screenshot any frame
+ *   reproducibly. Outside a MotionProvider `useCurrentFrame()` reports the
+ *   final frame, and THE FINAL FRAME IS THE FINISHED STATIC DESIGN: every
+ *   animation lands on opacity 1 / no transform / full arrow, so PNG export and
+ *   the Figma push stay pixel-identical to the un-animated version.
  */
 
 import InfographicCanvas from '../../components/infographic/InfographicCanvas.jsx'
 import InfographicHeader from '../../components/infographic/InfographicHeader.jsx'
 import InfographicFooter from '../../components/infographic/InfographicFooter.jsx'
 import PrimaryGlassSection from '../../components/infographic/PrimaryGlassSection.jsx'
+import {
+  useCurrentFrame,
+  useVideoConfig,
+  interpolate,
+  Easing,
+  spring,
+  Sequence,
+} from '../../components/shared/motion/index.js'
+
+/* ─── Motion timeline (frames @ 30fps) ───────────────────────────────────── */
+const SOURCE_STAGGER = 4 // frames between consecutive source rows
+const CONNECTOR_FROM = 26
+const HUB_FROM = 30
+const HUB_STAGGER = 10 // Claude lands, then Your Inbox
+const STEPS_FROM = 46
+const STEP_STAGGER = 7
+const ENTRY_FRAMES = 14 // how long one element takes to arrive
+
+/**
+ * Spring configs settle asymptotically, so at the final frame they sit at
+ * 0.99997 rather than 1 — enough to leave a sub-pixel scale on the hub tiles
+ * and a 2-thousandths-short arrow. `settle()` snaps that tail to exactly 1 so
+ * the last frame is bit-identical to the static design.
+ */
+const SETTLE_EPSILON = 0.001
+function settle(value) {
+  return value > 1 - SETTLE_EPSILON ? 1 : value
+}
+
+/**
+ * The shared entrance: fade up from an offset, eased out so it decelerates into
+ * place. At and past ENTRY_FRAMES it returns the finished values (opacity 1,
+ * translate 0) — which is what keeps the last frame identical to the static
+ * design.
+ */
+function useEntrance({ slideX = 0, slideY = 0 } = {}) {
+  const frame = useCurrentFrame()
+  const opacity = interpolate(frame, [0, ENTRY_FRAMES], [0, 1], {
+    easing: Easing.out(Easing.cubic),
+  })
+  const offset = interpolate(frame, [0, ENTRY_FRAMES], [1, 0], {
+    easing: Easing.out(Easing.cubic),
+  })
+  return {
+    opacity,
+    transform: `translate(${slideX * offset}px, ${slideY * offset}px)`,
+  }
+}
 
 const FONT_TITLE = 'var(--font\\/family\\/title)'
 const FONT_BODY = 'var(--font\\/family\\/body)'
@@ -122,8 +182,9 @@ function Caption({ children, accent = ACCENT_1 }) {
 
 /* ─── Source row: tile + label + caption ────────────────────────────────── */
 function SourceRow({ src, alt, label, caption, fullBleed }) {
+  const motion = useEntrance({ slideX: -28 })
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', ...motion }}>
       <LogoTile src={src} alt={alt} fullBleed={fullBleed} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0 }}>
         <span
@@ -146,10 +207,21 @@ function SourceRow({ src, alt, label, caption, fullBleed }) {
 
 /* ─── Single straight connector (Claude → Your Inbox), drawn in its own lane ── */
 function StraightConnector({ width, height }) {
+  const frame = useCurrentFrame()
+  const { fps } = useVideoConfig()
+  // The shaft draws itself left→right; the head pops in as it lands.
+  const draw = settle(spring({ frame, fps, config: { damping: 30, stiffness: 140 } }))
+  const shaftEnd = (width - 13) * draw
+  const headOpacity = interpolate(draw, [0.7, 1], [0, 1])
+
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none" style={{ flexShrink: 0, overflow: 'visible' }}>
-      <line x1="0" y1={height / 2} x2={width - 13} y2={height / 2} stroke={C_TEXT} strokeWidth="3" strokeLinecap="round" />
-      <polygon points={`${width - 15},${height / 2 - 8} ${width - 15},${height / 2 + 8} ${width},${height / 2}`} fill={C_TEXT} />
+      <line x1="0" y1={height / 2} x2={shaftEnd} y2={height / 2} stroke={C_TEXT} strokeWidth="3" strokeLinecap="round" />
+      <polygon
+        points={`${width - 15},${height / 2 - 8} ${width - 15},${height / 2 + 8} ${width},${height / 2}`}
+        fill={C_TEXT}
+        opacity={headOpacity}
+      />
     </svg>
   )
 }
@@ -157,9 +229,15 @@ function StraightConnector({ width, height }) {
 /* ─── Hub node — big tile + label + caption. Shared by Claude and Your Inbox
  *     so the two nodes stay visually twinned. ─────────────────────────────── */
 function HubNode({ src, alt, label, tileBg, imgSize, caption, captionStyle }) {
+  const frame = useCurrentFrame()
+  const { fps } = useVideoConfig()
+  const appear = settle(spring({ frame, fps, config: { damping: 18, stiffness: 150 } }))
+
   return (
     <div
       style={{
+        opacity: interpolate(appear, [0, 0.6], [0, 1]),
+        transform: `scale(${interpolate(appear, [0, 1], [0.86, 1])})`,
         position: 'relative',
         zIndex: 1,
         display: 'flex',
@@ -240,8 +318,9 @@ const STEPS = [
 
 /* ─── Step row for "How it works" ────────────────────────────────────────── */
 function StepRow({ n, text }) {
+  const motion = useEntrance({ slideY: 18 })
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, width: '100%' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, width: '100%', ...motion }}>
       <div
         style={{
           width: 38,
@@ -326,8 +405,10 @@ export default function SocialListeningInfographic() {
                 justifyContent: 'space-between',
               }}
             >
-              {SOURCES.map((s) => (
-                <SourceRow key={s.key} src={s.src} alt={s.alt} label={s.label} caption={s.caption} fullBleed={s.fullBleed} />
+              {SOURCES.map((s, i) => (
+                <Sequence key={s.key} from={i * SOURCE_STAGGER}>
+                  <SourceRow src={s.src} alt={s.alt} label={s.label} caption={s.caption} fullBleed={s.fullBleed} />
+                </Sequence>
               ))}
             </div>
 
@@ -341,7 +422,9 @@ export default function SocialListeningInfographic() {
                 justifyContent: 'center',
               }}
             >
-              <StraightConnector width={ARROW_LANE_W} height={30} />
+              <Sequence from={CONNECTOR_FROM}>
+                <StraightConnector width={ARROW_LANE_W} height={30} />
+              </Sequence>
             </div>
 
             {/* CLAUDE NODE */}
@@ -354,20 +437,22 @@ export default function SocialListeningInfographic() {
                 justifyContent: 'center',
               }}
             >
-              <HubNode
-                src={LOGOS.claude}
-                alt="Claude"
-                label="Claude"
-                tileBg={C_CLAY}
-                imgSize={76}
-                caption="Reads all 6 sources, finds what matters, drafts the digest."
-                captionStyle={{
-                  background: SURFACE_GLASS_STRONG,
-                  border: `2px solid ${BORDER_1}`,
-                  color: C_TEXT_SEC,
-                  fontWeight: 600,
-                }}
-              />
+              <Sequence from={HUB_FROM}>
+                <HubNode
+                  src={LOGOS.claude}
+                  alt="Claude"
+                  label="Claude"
+                  tileBg={C_CLAY}
+                  imgSize={76}
+                  caption="Reads all 6 sources, finds what matters, drafts the digest."
+                  captionStyle={{
+                    background: SURFACE_GLASS_STRONG,
+                    border: `2px solid ${BORDER_1}`,
+                    color: C_TEXT_SEC,
+                    fontWeight: 600,
+                  }}
+                />
+              </Sequence>
             </div>
 
             {/* ARROW LANE — Claude → Your Inbox */}
@@ -380,7 +465,9 @@ export default function SocialListeningInfographic() {
                 justifyContent: 'center',
               }}
             >
-              <StraightConnector width={ARROW_LANE_W} height={30} />
+              <Sequence from={CONNECTOR_FROM + HUB_STAGGER}>
+                <StraightConnector width={ARROW_LANE_W} height={30} />
+              </Sequence>
             </div>
 
             {/* YOUR INBOX NODE — twin of the Claude node */}
@@ -393,19 +480,21 @@ export default function SocialListeningInfographic() {
                 justifyContent: 'center',
               }}
             >
-              <HubNode
-                src={LOGOS.gmail}
-                alt="Your Inbox"
-                label="Your Inbox"
-                tileBg={SURFACE_GLASS_STRONG}
-                imgSize={80}
-                caption="Weekly social listening digest on autopilot"
-                captionStyle={{
-                  background: ACCENT_3,
-                  color: C_TEXT_SEC,
-                  fontWeight: 700,
-                }}
-              />
+              <Sequence from={HUB_FROM + HUB_STAGGER}>
+                <HubNode
+                  src={LOGOS.gmail}
+                  alt="Your Inbox"
+                  label="Your Inbox"
+                  tileBg={SURFACE_GLASS_STRONG}
+                  imgSize={80}
+                  caption="Weekly social listening digest on autopilot"
+                  captionStyle={{
+                    background: ACCENT_3,
+                    color: C_TEXT_SEC,
+                    fontWeight: 700,
+                  }}
+                />
+              </Sequence>
             </div>
           </div>
         </div>
@@ -426,8 +515,10 @@ export default function SocialListeningInfographic() {
                 boxSizing: 'border-box',
               }}
             >
-              {STEPS.map((s) => (
-                <StepRow key={s.n} n={s.n} text={s.text} />
+              {STEPS.map((s, i) => (
+                <Sequence key={s.n} from={STEPS_FROM + i * STEP_STAGGER}>
+                  <StepRow n={s.n} text={s.text} />
+                </Sequence>
               ))}
             </div>
           </PrimaryGlassSection>
