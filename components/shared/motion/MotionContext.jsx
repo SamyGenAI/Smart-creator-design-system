@@ -84,14 +84,20 @@ export function MotionProvider({
   // A non-animated mode, or one with no frame to play, sits on its last frame —
   // the finished design.
   const settled = total - 1;
+  // Export never plays. A headless screenshot of a running animation captures
+  // whichever frame the compositor happened to be on, so `?export=1` with no
+  // `frame` (the PNG and Figma paths) must land on the settled final frame —
+  // the finished design — not at frame 0 with the timeline running.
   const initialFrame = isFrozen
     ? Math.min(frozenFrame, settled)
-    : animated
+    : animated && !exporting
       ? 0
       : settled;
 
   const [frame, setFrame] = useState(initialFrame);
-  const [playing, setPlaying] = useState(animated && !isFrozen);
+  const [playing, setPlaying] = useState(
+    animated && !isFrozen && !exporting,
+  );
 
   // Switching design resets the timeline rather than carrying the old position.
   const configKey = `${total}:${rate}:${animated}`;
@@ -100,10 +106,14 @@ export function MotionProvider({
     if (lastConfig.current === configKey) return;
     lastConfig.current = configKey;
     setFrame(
-      isFrozen ? Math.min(frozenFrame, total - 1) : animated ? 0 : total - 1,
+      isFrozen
+        ? Math.min(frozenFrame, total - 1)
+        : animated && !exporting
+          ? 0
+          : total - 1,
     );
-    setPlaying(animated && !isFrozen);
-  }, [configKey, animated, isFrozen, frozenFrame, total]);
+    setPlaying(animated && !isFrozen && !exporting);
+  }, [configKey, animated, isFrozen, frozenFrame, total, exporting]);
 
   /**
    * Export hook: the GIF endpoint drives frames through this instead of
