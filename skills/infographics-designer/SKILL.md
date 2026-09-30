@@ -23,6 +23,8 @@ In `components/` (repo root). Compose what fits; write raw CSS or new JSX for on
 
 - `InfographicCanvas` — root wrapper with grid texture
 - `InfographicHeader` / `InfographicFooter` — title block + 60px footer bar
+  - `highlightWord` draws a highlighter bar behind a word or phrase inside `title`. It must appear in `title` verbatim or it is ignored (the component does a plain `includes` / `split`), so match case and spacing exactly.
+  - The bar's default fill is **`color-mix(in oklab, var(--theme-accent-1) 75%, var(--theme-surface-canvas))`** — accent-1 lightened slightly against the canvas, so it stays solid without competing with the title glyphs. **Do not pass `highlightColor` just to restyle the default**; the tint is deliberate and is already brand-agnostic (`color-mix` lightens whatever accent-1 resolves to, so it survives a rebrand). Override only when a design genuinely needs a different accent, and pass a token, never a literal.
 - `BrandBorderSectionBase` — bordered section card with numbered header pill
 - `PrimaryGlassSection` — frosted glass panel with brand header bar
 - `IconBullet` — icon + text rows (up to 4)

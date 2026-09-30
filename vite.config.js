@@ -3,8 +3,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { chromium } from 'playwright'
 import sharp from 'sharp'
+// gifenc ships as CommonJS, so it has no named ESM exports — destructure the
+// default import. Named `import { GIFEncoder } from 'gifenc'` throws at load.
+import gifenc from 'gifenc'
 import { MODES } from './src/modes.js'
 import { ensureAllPptxDecks, ensurePptxDeck, readPptxFile } from './scripts/sync-pptx-previews.mjs'
+
+const { GIFEncoder, quantize, applyPalette } = gifenc
 
 const SIZES = {
   carousel: { width: 1080, height: 1350 },
@@ -92,7 +97,11 @@ async function waitForAssets(page) {
 }
 
 /**
- * GIF export — infographics only. Output is the full 1080×1350 canvas.
+ * GIF export — infographics only.
+ *
+ * Output size is the design's own 1080×1350 by default, or `outputScale`×that
+ * for a smaller file (the toolbar offers 0.5 → 540×675). The page is always
+ * rasterised at full density and downsampled, so the small variant stays sharp.
  *
  * One Chromium, one page, N screenshots. The frame is driven in-page through
  * `window.__setMotionFrame` (published by MotionProvider when `export=1`);
@@ -107,10 +116,19 @@ async function waitForAssets(page) {
  *                        and a 166-frame render at full size is long enough
  *                        that a determinate bar matters.
  *
- * Encoding note, learned the hard way: `pageHeight` MUST sit inside the `raw`
- * object. Outside it, sharp silently produces a 1-frame GIF. And
- * `sharp(pngBuffers, { join: { animated: true } })` drops every per-frame delay
- * after the first.
+ * ENCODING: frames are encoded INCREMENTALLY with gifenc — quantised and
+ * written to the GIF stream as each one is captured, then discarded. Peak
+ * memory is one frame and there is no cap on timeline length.
+ *
+ * Do not go back to sharp for this. Both of sharp's animated-GIF forms are
+ * dead ends here:
+ *   - `sharp(concat, { raw: { pageHeight } })` needs every frame stacked into
+ *     one tall image, which trips `limitInputPixels` (268,402,689 px) past
+ *     ~184 frames at 1080×1350 → "Input image exceeds pixel limit".
+ *   - `sharp(pngBuffers, { join: { animated: true } })` drops every per-frame
+ *     delay after the first.
+ * (And in the strip form, `pageHeight` had to sit INSIDE `raw` or sharp
+ * silently emitted a 1-frame GIF.)
  */
 async function handleGifExport(req, res, url) {
   let browser = null
@@ -122,7 +140,7 @@ async function handleGifExport(req, res, url) {
     if (!streaming || !sseOpen) return
     // Explicit escapes, not a multi-line template: the SSE framing
     // (`event:`, `data:`, blank-line terminator) must survive any reformat.
-    res.write('event: ' + event + '\n' + 'data: ' + JSON.stringify(data) + '\n\n')
+    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
   }
   const fail = (status, message) => {
     if (streaming && sseOpen) {
@@ -160,17 +178,38 @@ async function handleGifExport(req, res, url) {
 
     const size = SIZES.infographic
     const fps = Math.max(1, Math.min(60, Number(url.searchParams.get('fps') || 30)))
+    // The incremental encoder has no duration ceiling, so this cap exists only
+    // to stop a typo'd query param from launching an hours-long render. It used
+    // to be 300, which SILENTLY TRUNCATED longer designs — and a design's tail
+    // is exactly where its settled final frame lives, so truncation dropped the
+    // finished state. 1800 frames is 60s at 30fps, well past any infographic.
     const durationInFrames = Math.max(
       1,
-      Math.min(300, Number(url.searchParams.get('durationInFrames') || 90))
+      Math.min(1800, Number(url.searchParams.get('durationInFrames') || 90))
     )
-    // Full size: the GIF must come out at the design's own 1080×1350, same as
-    // every other export. `scale` still drives Chromium's deviceScaleFactor so
-    // a caller can render at >1 for crisper downsampling, but the OUTPUT is
-    // pinned to the canvas size regardless.
+    // TWO INDEPENDENT SIZE KNOBS — do not collapse them into one.
+    //
+    //   scale     → Chromium's deviceScaleFactor, i.e. how densely the PAGE is
+    //               rasterised before capture (supersampling).
+    //   outputW/H → what the GIF actually is.
+    //
+    // Keeping them separate is what makes the half-size GIF look good: the page
+    // is still rendered at full density and then downsampled, so text and logo
+    // edges stay clean. Rendering small directly would just be blurry.
     const scale = Math.max(0.25, Math.min(2, Number(url.searchParams.get('scale') || 1)))
-    const width = size.width
-    const height = size.height
+
+    // `outputScale` shrinks the OUTPUT only. 1 = the design's own 1080×1350;
+    // 0.5 = 540×675, which is ~4x fewer pixels and so roughly a quarter of the
+    // bytes. Clamped to (0, 1] — upscaling a GIF past the canvas size only adds
+    // weight without adding detail.
+    const outputScale = Math.max(0.1, Math.min(1, Number(url.searchParams.get('outputScale') || 1)))
+    // Plain rounding, NOT rounded-to-even. GIF has no chroma subsampling, so
+    // odd dimensions are fine here — and forcing even would distort the aspect
+    // ratio, since 1350 * 0.5 = 675 is odd: rounding it to 676 stretches the
+    // design vertically and makes the exported file disagree with the 540x675
+    // the Export menu promises.
+    const width = Math.max(1, Math.round(size.width * outputScale))
+    const height = Math.max(1, Math.round(size.height * outputScale))
 
     const host = req.headers.host || 'localhost:5173'
 
@@ -198,7 +237,20 @@ async function handleGifExport(req, res, url) {
 
     sendEvent('progress', { phase: 'rendering', frame: 0, total: durationInFrames })
 
-    const frames = []
+    // Hold the last frame ~1s so the loop reads as a finished design rather
+    // than a flicker.
+    const perFrame = Math.round(1000 / fps)
+
+    // INCREMENTAL ENCODE. Each frame is quantised and written into the GIF
+    // stream the moment it is captured, then dropped — so peak memory is one
+    // frame, not the whole timeline, and there is no upper bound on duration.
+    //
+    // This replaces a `sharp(Buffer.concat(frames), { raw: { pageHeight } })`
+    // film strip, which stacked every frame into ONE tall image. That hit
+    // sharp's `limitInputPixels` (0x3FFF ** 2 = 268,402,689 px) at 185+ frames
+    // of 1080×1350 and failed with "Input image exceeds pixel limit" — so any
+    // timeline past ~6.1s was unexportable regardless of content.
+    const encoder = GIFEncoder()
     for (let frame = 0; frame < durationInFrames; frame += 1) {
       await page.evaluate((f) => {
         if (typeof window.__setMotionFrame === 'function') window.__setMotionFrame(f)
@@ -206,30 +258,46 @@ async function handleGifExport(req, res, url) {
       // Let React commit the new frame before the shutter.
       await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => resolve())))
       const png = await locator.first().screenshot({ type: 'png', scale: 'device' })
-      const raw = await sharp(png).resize(width, height, { fit: 'fill' }).removeAlpha().raw().toBuffer()
-      frames.push(raw)
+      // gifenc quantises RGBA, so keep the alpha channel here rather than
+      // calling .removeAlpha() as the film-strip path did.
+      // This resize is BOTH the scale normaliser and the output downsampler:
+      // the screenshot arrives at (canvas * deviceScaleFactor), and this lands
+      // it on the requested output size. Lanczos3 is sharp's default and is the
+      // right kernel here — it keeps small type legible at 540×675, where a
+      // cheaper kernel turns the 14.5px stat labels to mush.
+      const rgba = await sharp(png)
+        .resize(width, height, { fit: 'fill', kernel: 'lanczos3' })
+        .ensureAlpha()
+        .raw()
+        .toBuffer()
+
+      // Per-frame palette: each frame gets the 256 colours that suit it, which
+      // is what keeps the glow gradients from banding. rgba4444 is gifenc's
+      // fast path and is plenty for flat brand colour plus soft shadows.
+      const palette = quantize(rgba, 256, { format: 'rgba4444' })
+      const indexed = applyPalette(rgba, palette, 'rgba4444')
+      encoder.writeFrame(indexed, width, height, {
+        palette,
+        delay: frame === durationInFrames - 1 ? 1000 : perFrame,
+      })
+
       // Real progress: one event per captured frame, which is the only part of
-      // this job whose duration actually scales with the timeline.
+      // this job whose duration actually scales with the timeline. Quantising
+      // now happens inside this loop too, so each tick covers capture AND
+      // encode for that frame — the bar reflects the true per-frame cost.
       sendEvent('progress', { phase: 'rendering', frame: frame + 1, total: durationInFrames })
     }
 
     await browser.close()
     browser = null
 
-    // Hold the last frame ~1s so the loop reads as a finished design rather
-    // than a flicker.
-    const perFrame = Math.round(1000 / fps)
-    const delay = frames.map((_, i) => (i === frames.length - 1 ? 1000 : perFrame))
-
-    // Quantising 166 full-size frames is slow enough to deserve its own phase,
-    // otherwise the bar sits at 100% for seconds with nothing explaining why.
+    // Still worth announcing: writing the trailer and concatenating the byte
+    // chunks for a long timeline is not instant, and the client pulses the
+    // full bar on this phase rather than sitting silently at 100%.
     sendEvent('progress', { phase: 'encoding', frame: durationInFrames, total: durationInFrames })
 
-    const gif = await sharp(Buffer.concat(frames), {
-      raw: { width, height: height * frames.length, channels: 3, pageHeight: height },
-    })
-      .gif({ delay, loop: 0, dither: 1.0 })
-      .toBuffer()
+    encoder.finish()
+    const gif = Buffer.from(encoder.bytes())
 
     const fileName = `${mode.exportName || modeKey}.gif`
 

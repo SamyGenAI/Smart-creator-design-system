@@ -2,7 +2,10 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import McKinseyCarousel from '../design/carousels/McKinseyCarousel.jsx'
 import GtmSystemInfographic from '../design/infographics/GtmSystemInfographic.jsx'
 import SocialListeningInfographic from '../design/infographics/SocialListeningInfographic.jsx'
+import AiDesignSystemInfographic from '../design/infographics/AiDesignSystemInfographic.jsx'
 import SocialListeningThumbnail from '../design/newsletter-thumbnails/SocialListeningThumbnail.jsx'
+import PromptTenXThumbnail from '../design/newsletter-thumbnails/PromptTenXThumbnail.jsx'
+import StopAiDesignSlopThumbnail from '../design/newsletter-thumbnails/StopAiDesignSlopThumbnail.jsx'
 import PptxSlideViewer from '../components/pptx/PptxSlideViewer.jsx'
 import { renderDeckToSlides } from '../design/pptx-slides/slide-preview.jsx'
 import ytAiDesignSystemDeck from '../design/pptx-slides/decks/yt-ai-design-system/deck.mjs'
@@ -40,8 +43,11 @@ function YtAiDesignSystemDeck() {
 const COMPONENTS = {
   'gtm-system':          GtmSystemInfographic,
   'social-listening':    SocialListeningInfographic,
+  'ai-design-system':    AiDesignSystemInfographic,
   mckinsey:              McKinseyCarousel,
   'social-listening-thumbnail': SocialListeningThumbnail,
+  'prompt-10x-thumbnail': PromptTenXThumbnail,
+  'stop-ai-design-slop-thumbnail': StopAiDesignSlopThumbnail,
   'yt-ai-design-system': YtAiDesignSystemDeck,
 }
 
@@ -74,11 +80,19 @@ const MAX_AUTOFIT_ZOOM = 2
 /**
  * GIF render scale — 1, i.e. the full 1080×1350 canvas.
  *
- * Not a user choice. This is Chromium's deviceScaleFactor for the capture; the
- * server pins the OUTPUT to the design's own 1080×1350 either way, so every
- * export leaves at the canvas size.
+ * Not a user choice. This is Chromium's deviceScaleFactor for the CAPTURE —
+ * separate from the output size, which the Export menu does let you choose
+ * (see GIF_SMALL_OUTPUT_SCALE).
  */
 const GIF_SCALE = 1
+
+/**
+ * Output size for the "GIF (small)" menu entry, as a fraction of the design's
+ * own canvas. 0.5 → 540×675: a quarter of the pixels, so roughly a quarter of
+ * the bytes. The page is still captured at full density and downsampled, so
+ * this costs sharpness, not legibility.
+ */
+const GIF_SMALL_OUTPUT_SCALE = 0.5
 
 const EXPORT_EXTENSIONS = { png: 'png', gif: 'gif', pptx: 'pptx', pdf: 'pdf' }
 
@@ -200,22 +214,38 @@ export default function App() {
     const isInfographic = type === 'infographic'
     return [
       {
+        id: 'png',
         format: 'png',
         label: 'Download PNG',
         disabled: !(isInfographic || type === 'thumbnail'),
       },
+      // Two GIF rows, same render path, different OUTPUT size. Full size is
+      // listed first and is the one to reach for; the half-size variant exists
+      // because a long timeline at 1080×1350 runs to tens of MB (334 frames is
+      // ~47MB), which is awkward to attach or preview even well inside
+      // LinkedIn's 100MB ceiling.
       {
+        id: 'gif',
         format: 'gif',
-        label: 'Download GIF',
+        label: 'Download GIF (full size)',
+        outputScale: 1,
         disabled: !isAnimated,
         hint: isAnimated
-          ? null
+          ? '1080x1350'
           : isInfographic
             ? 'This design is not animated'
             : 'Animation is infographic-only',
       },
-      { format: 'pdf', label: 'Download PDF', disabled: type !== 'carousel' },
-      { format: 'pptx', label: 'Download PPTX', disabled: type !== 'pptx' },
+      {
+        id: 'gif-small',
+        format: 'gif',
+        label: 'Download GIF (small)',
+        outputScale: GIF_SMALL_OUTPUT_SCALE,
+        disabled: !isAnimated,
+        hint: isAnimated ? '540x675' : null,
+      },
+      { id: 'pdf', format: 'pdf', label: 'Download PDF', disabled: type !== 'carousel' },
+      { id: 'pptx', format: 'pptx', label: 'Download PPTX', disabled: type !== 'pptx' },
     ].filter((f) => !f.disabled || f.format === 'gif' || f.format === 'png')
   }, [entry?.type, isAnimated])
 
@@ -310,7 +340,7 @@ export default function App() {
     })
   }
 
-  async function exportFromServer(format) {
+  async function exportFromServer(format, choice = {}) {
     // The texture rides along so the headless render matches the preview.
     const params = new URLSearchParams({
       mode: activeMode,
@@ -323,6 +353,8 @@ export default function App() {
       params.set('fps', String(motionFps))
       params.set('durationInFrames', String(motionDuration))
       params.set('scale', String(GIF_SCALE))
+      // Output size — the one thing that differs between the two GIF entries.
+      params.set('outputScale', String(choice.outputScale ?? 1))
       // Ask for the progress stream instead of the plain binary: a binary
       // response gives no way to know which frame the server is on.
       params.set('stream', '1')
@@ -394,11 +426,14 @@ export default function App() {
     return finished
   }
 
-  async function handleExport(format) {
+  async function handleExport(id) {
     if (!entry || isExporting) return
     // Disabled rows are inert in the DOM; this is the belt-and-braces guard so
     // a format can never reach the server for a design that cannot produce it.
-    if (!exportFormats.some((f) => f.format === format && !f.disabled)) return
+    // Resolved by `id` because the two GIF variants share a `format`.
+    const choice = exportFormats.find((f) => f.id === id && !f.disabled)
+    if (!choice) return
+    const { format } = choice
     setExportMenuOpen(false)
     setIsExporting(true)
     if (format === 'gif') {
@@ -411,7 +446,7 @@ export default function App() {
       setExportNotice('Preparing download...')
     }
     try {
-      await exportFromServer(format)
+      await exportFromServer(format, choice)
       showNotice('Download started.')
     } catch (error) {
       showNotice(`Export failed: ${error?.message || 'Unknown error'}`)
@@ -822,7 +857,9 @@ function ExportMenu({ t, open, onOpenChange, busy, formats, onPick }) {
         <div role="menu" style={exportMenuStyle(t)}>
           {formats.map((f) => (
             <button
-              key={f.format}
+              // Keyed on `id`, not `format`: the two GIF rows share a format
+              // and would collide on a format key.
+              key={f.id}
               type="button"
               role="menuitem"
               className="scds-option scds-export-option"
@@ -830,7 +867,7 @@ function ExportMenu({ t, open, onOpenChange, busy, formats, onPick }) {
               title={f.hint || undefined}
               onClick={() => {
                 if (f.disabled) return
-                onPick(f.format)
+                onPick(f.id)
               }}
               style={exportOptionStyle(t, f.disabled)}
             >

@@ -9,6 +9,8 @@
  *   subtitle       {string}  — smaller italic line below the title (32px, title font token).
  *                              Optional — omit or pass null/empty to hide.
  *   highlightColor {string}  — background color of the highlight rectangle.
+ *                              Defaults to a 75% tint of --theme-accent-1 over
+ *                              the canvas — slightly lightened, still solid.
  *                              Default: `--theme-accent-1`
  *   titleStyle     {object}  — inline style overrides for the title (e.g. fontSize, letterSpacing)
  *   subtitleStyle  {object}  — inline style overrides for the subtitle
@@ -27,7 +29,15 @@
 // brand only while it reads against the canvas, and to the text colour
 // otherwise, so a light brand does not render near-illegible titles.
 const COLOR_TITLE = "var(--theme-color-title, var(--theme-color-text-primary))"
-const ACCENT_1 = "var(--theme-accent-1)"
+// The highlight rectangle is a slight TINT of accent-1 rather than accent-1
+// at full strength: mixed 25% toward the canvas, so the bar still reads as a
+// solid highlighter swipe but stops competing with the title glyphs. 45% was
+// tried first and washed out to near-invisible. color-mix keeps this
+// brand-agnostic -- it lightens whatever --theme-accent-1 resolves to, so a
+// rebrand needs no change here, and it stays token-only for the chroma lint.
+// Pass `highlightColor` to override per design (e.g. the undiluted
+// "var(--theme-accent-1)").
+const ACCENT_1 = "color-mix(in oklab, var(--theme-accent-1) 75%, var(--theme-surface-canvas))"
 const FONT_TITLE = "var(--font\\/family\\/title)"
 // Tracking belongs with the font token: -2.1884px was tuned for Montserrat and
 // visibly collides glyphs when the brand font is a serif.

@@ -90,7 +90,7 @@ preview toolbar. Same token rules as infographics — no chroma in the design fi
 
 ## Global rules
 
-1. **Assets:** local paths only; no downloading icons · Figma image URLs expire (~7 days) → save under `assets/`.
+1. **Assets:** design files reference **local paths only**. Brand/tool logos **may be downloaded** when missing — fetch from the vendor's own domain (favicon, `og:image`, press kit), verify the file is a real image at usable resolution, save under `assets/logos/app/`, and reference it locally from then on. Never hotlink a remote URL from a design file, and never substitute a different company's mark for a missing one. Icons still come from `assets/icons/` — don't download those. Figma image URLs expire (~7 days) → save under `assets/`.
 2. **Images:** containers `flex items-center justify-center` · `img` `w-full h-full object-contain` · never `display: contents`.
 3. **Primary glass icons:** supply **dark, single-colour** SVGs. `PrimaryGlassSection` filters them to whatever reads on the brand fill via `--theme-on-primary-icon-filter` (white on a dark brand, black on a light one) — do **not** hardcode `brightness(0) invert(1)`.
 4. **Preserve** `data-node-id` / `data-name` on design-system nodes.
@@ -123,7 +123,7 @@ Skill: [`skills/infographics-designer/SKILL.md`](skills/infographics-designer/SK
 | Model | **Frame-as-input**: every animated style is a pure function of `useCurrentFrame()`. Never CSS keyframes or `transition` — those are not deterministically seekable, so GIF frames would jitter. |
 | Primitives | `useCurrentFrame` · `useVideoConfig` · `interpolate` · `Easing` · `spring` · `Sequence` · `useInterpolateColors`, all from `components/shared/motion/index.js` |
 | Register | `animated: true` + `motion: { durationInFrames, fps }` on the infographic's `src/modes.js` entry |
-| Export | Preview toolbar **Export** dropdown → **PNG** or **GIF**. GIF is disabled for designs without `animated: true`, and always renders 540×675. |
+| Export | Preview toolbar **Export** dropdown → **PNG**, **GIF (full size)** (1080×1350) or **GIF (small)** (540×675, ~2.4× smaller). Both GIF entries are disabled for designs without `animated: true`. Frames are encoded **incrementally** (gifenc), so there is no cap on timeline length. The page is always captured at full density and downsampled, so the small variant stays legible. |
 | Colour | `useInterpolateColors` takes **token names**, never literals, and mixes in OKLab — so the token lint stays green and rebranding still works |
 
 **The last frame must be the finished static design.** Outside a `MotionProvider`, `useCurrentFrame()` returns the final frame — that is what keeps PNG export, the Figma push and no-provider rendering working with zero changes. Every element must be mounted and settled before `durationInFrames - 1`, and springs need their asymptotic tail snapped to exactly 1.

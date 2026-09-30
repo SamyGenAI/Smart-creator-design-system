@@ -27,8 +27,11 @@ export const MODES = {
     animated: true,
     motion: { durationInFrames: 90, fps: 30 }, // 3s
   },
+  'ai-design-system': { label: 'AI Design System Architecture (v2)', type: 'infographic', exportName: 'ai-design-system' },
   mckinsey:           { label: 'McKinsey Carousel',         type: 'carousel',    exportName: 'mckinsey' },
   'social-listening-thumbnail': { label: 'Social Listening (Thumbnail)', type: 'thumbnail', exportName: 'social-listening-thumbnail' },
+  'prompt-10x-thumbnail': { label: 'Prompt to 10x AI results (Thumbnail)', type: 'thumbnail', exportName: 'prompt-10x-thumbnail' },
+  'stop-ai-design-slop-thumbnail': { label: 'Stop AI design slop (Thumbnail)', type: 'thumbnail', exportName: 'stop-ai-design-slop-thumbnail' },
   'yt-ai-design-system': {
     label: 'YT: AI Design System',
     type: 'pptx',
