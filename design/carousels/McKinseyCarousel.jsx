@@ -558,7 +558,7 @@ export default function McKinseyCarousel() {
     <div
       data-node-id="281:211"
       data-name="McKinseyCarousel"
-      style={{ display: 'flex', gap: 88, alignItems: 'flex-start' }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 88, alignItems: 'flex-start' }}
     >
       <SlideCover />
       <SlideStory1 />

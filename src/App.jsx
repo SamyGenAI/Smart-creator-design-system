@@ -150,6 +150,7 @@ export default function App() {
   const [theme, setTheme] = useState(readStoredTheme)
   const [zoom, setZoom] = useState(1)
   const [autoFit, setAutoFit] = useState(true)
+  const [naturalSize, setNaturalSize] = useState(null)
   const [textureId, setTextureId] = useState(readInitialTextureId)
   const [textureOpacity, setTextureOpacity] = useState(readInitialTextureOpacity)
   const [texturePanelOpen, setTexturePanelOpen] = useState(false)
@@ -168,6 +169,7 @@ export default function App() {
   const entry = MODES[activeMode]
   const ActiveDesign = entry?.component
   const isDark = theme === 'dark'
+  const isCarousel = entry?.type === 'carousel'
 
   // Motion is infographic-only. Non-animated modes still mount inside the
   // provider — they just sit on the settled final frame, which is simpler than
@@ -303,7 +305,11 @@ export default function App() {
     const design = designRef.current
     if (!stage || !design) return
     const naturalW = design.scrollWidth
-    const naturalH = design.scrollHeight
+    // Carousels stack their slides vertically and the stage scrolls, so fit
+    // one slide's height rather than the whole column.
+    const naturalH = isCarousel
+      ? design.firstElementChild?.firstElementChild?.offsetHeight || design.scrollHeight
+      : design.scrollHeight
     if (!naturalW || !naturalH) return
     // Stage padding is fluid (clamp), so measure it instead of assuming.
     const cs = window.getComputedStyle(stage)
@@ -314,12 +320,26 @@ export default function App() {
     if (availableW <= 0 || availableH <= 0) return
     const next = Math.min(availableW / naturalW, availableH / naturalH, MAX_AUTOFIT_ZOOM)
     setZoom(clampZoom(Number(next.toFixed(3))))
-  }, [])
+  }, [isCarousel])
 
   useLayoutEffect(() => {
     if (!autoFit) return
     fitToStage()
   }, [autoFit, activeMode, fitToStage])
+
+  // Track the design's unscaled size so the zoom box can reserve its scaled
+  // footprint (see zoomBoxStyle).
+  useLayoutEffect(() => {
+    const design = designRef.current
+    if (!design) return undefined
+    const measure = () =>
+      setNaturalSize({ width: design.offsetWidth, height: design.offsetHeight })
+    measure()
+    if (typeof ResizeObserver === 'undefined') return undefined
+    const observer = new ResizeObserver(measure)
+    observer.observe(design)
+    return () => observer.disconnect()
+  }, [activeMode])
 
   useEffect(() => {
     if (!autoFit) return undefined
@@ -593,11 +613,13 @@ export default function App() {
 
         <main ref={stageRef} style={stageStyle(t)}>
           {ActiveDesign ? (
-            <div style={zoomLayerStyle(zoom)}>
-              <div ref={designRef} style={{ display: 'inline-block' }}>
-                <TextureProvider textureId={textureId} opacityById={textureOpacity}>
-                  <ActiveDesign />
-                </TextureProvider>
+            <div style={zoomBoxStyle(naturalSize, zoom)}>
+              <div style={zoomLayerStyle(zoom)}>
+                <div ref={designRef} style={{ display: 'inline-block' }}>
+                  <TextureProvider textureId={textureId} opacityById={textureOpacity}>
+                    <ActiveDesign />
+                  </TextureProvider>
+                </div>
               </div>
             </div>
           ) : (
@@ -1771,12 +1793,30 @@ function stageStyle(t) {
   }
 }
 
+/**
+ * A transform does not change layout size, so this box takes the design's
+ * scaled footprint. Without it a tall carousel column leaves the stage
+ * scrolling through empty space when zoomed out (or clips when zoomed in).
+ */
+function zoomBoxStyle(size, zoom) {
+  if (!size) return { flexShrink: 0 }
+  return {
+    width: size.width * zoom,
+    height: size.height * zoom,
+    flexShrink: 0,
+    // Auto margins centre it, but unlike justify-content they never push an
+    // oversized box past the stage's left edge where it can't be scrolled to.
+    marginInline: 'auto',
+    transition: 'width 0.12s ease-out, height 0.12s ease-out',
+  }
+}
+
 function zoomLayerStyle(zoom) {
   return {
+    width: 'max-content',
     transform: `scale(${zoom})`,
-    transformOrigin: 'top center',
+    transformOrigin: 'top left',
     transition: 'transform 0.12s ease-out',
-    flexShrink: 0,
   }
 }
 

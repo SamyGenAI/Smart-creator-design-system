@@ -255,7 +255,7 @@ export default function LinkedInCarouselTemplate() {
     <div
       data-node-id="template:root"
       data-name="LinkedInCarouselTemplate"
-      style={{ display: 'flex', gap: 88, alignItems: 'flex-start' }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 88, alignItems: 'flex-start' }}
     >
       <SlideCover />
       <SlideContext />

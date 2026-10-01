@@ -63,7 +63,7 @@ Delegate to the `carousel-design-agent` subagent with the approved brief.
 - `design/carousels/[Name]Carousel.jsx` — complete carousel with all slides as JSX
 - Updated `src/App.jsx` — imports the new carousel
 
-**Each slide is an independent 1080×1350px panel.** The root component renders them side by side with `gap: 88px` (matching `design/carousels/LinkedInCarousel.jsx` pattern).
+**Each slide is an independent 1080×1350px panel.** The root component stacks them vertically (`flexDirection: 'column'`) with `gap: 88px` (matching `design/carousels/LinkedInCarousel.jsx` pattern).
 
 ---
 
