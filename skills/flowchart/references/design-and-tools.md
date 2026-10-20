@@ -59,7 +59,7 @@ f.write(Path(__file__).with_name('request-flow.excalidraw'))
 
 Theme roles: canvas, surface, muted, text, accent, secondary, connector, border and tint. When the diagram must match this repo's brand, pass values from `DESIGN.md` tokens. The helper's default grays are for an unbranded scene. No machine-specific path is required.
 
-Icons: company, company-enrich, score, person, person-search, person-enrich, person-score, brain, waterfall, verify, rank, split, mail-ai, send, chart, tools, file, microphone, book, calendar, pen, message, layers and eye.
+Icons: company, company-enrich, score, person, person-search, person-enrich, person-score, knowledge, waterfall, verify, rank, split, mail-ai, send, chart, tools, file, microphone, book, calendar, pen, message, layers and eye.
 
 Keys and parent groups identify placements. Add a parent to the front of `f.groups` while building its contents, then remove it. For multiple scenes on one canvas, prefix every ID, group ID, binding reference and frame reference to avoid collisions.
 

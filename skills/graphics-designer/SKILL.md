@@ -3,13 +3,15 @@ name: graphics-designer
 description: Decide the job of one graphic, carousel or banner, then hand the build to the design system. Use before infographics-designer, carousel-designer or newsletter-thumbnail-designer.
 ---
 
-Workspace: this repo is the Content OS. Read `CLAUDE.md` here, then `brain/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, and sibling pages). Never write `brain/raw/`. Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. The finished image goes in `brain/outputs/content/<channel>/drafts/<title>/Assets/`. If `brain/` is not checked out, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo, and do not invent numbers, results or testimonials.
+Vault: follow [`pipelines/vault.md`](../../pipelines/vault.md). `$VAULT` is the `VAULT_PATH` checkout (default `../Samy-SmartOS`). Read `$VAULT/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Never write `$VAULT/raw/`. Topic knowledge starts at `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. The finished image goes in `$VAULT/outputs/content/<channel>/drafts/<title>/Assets/`. If `$VAULT` is missing, stop and ask Samy to set `VAULT_PATH`. Do not copy vault files into this repo, and do not invent numbers, results or testimonials.
+
+A platform writer calls this for one visual, after the copy for that asset exists. Not a pipeline.
 
 # Design a graphic
 
 This skill chooses what the graphic says. It does not replace the design system.
 
-`infographics-designer` stays the skill that builds a 1080×1350 LinkedIn infographic in JSX. `carousel-designer` builds the carousel. `newsletter-thumbnail-designer` builds the 420×300 email thumbnail. `youtube-thumbnail` is a different surface (a YouTube still) and is not this skill. `flowchart` builds an editable process map. Read the content brief, `DESIGN.md`, and the positioning, ICP and voice pages in `brain/raw/me/` before choosing.
+`infographics-designer` stays the skill that builds a 1080×1350 LinkedIn infographic in JSX. `carousel-designer` builds the carousel. `newsletter-thumbnail-designer` builds the 420×300 email thumbnail. `youtube-thumbnail` is a different surface (a YouTube still) and is not this skill. `flowchart` builds an editable process map. Read the content brief, `DESIGN.md`, and the positioning, ICP and voice pages in `$VAULT/raw/me/` before choosing.
 
 Establish the information relationship before choosing a composition: a thesis, sequence, comparison, hierarchy, evidence or reflection. Keep the copy faithful to its source. A missing number or screenshot is not permission to invent one.
 

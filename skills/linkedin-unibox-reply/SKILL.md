@@ -3,13 +3,15 @@ name: linkedin-unibox-reply
 description: Draft LinkedIn DM replies in the author's voice from a pasted thread, one at a time, and never send. Use when Samy pastes a LinkedIn thread and wants a reply. There is no inbox tool yet.
 ---
 
-Workspace: this repo is the Content OS. Read `CLAUDE.md` here, then `brain/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, and sibling pages). Never write `brain/raw/`. Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. If a reply belongs to a piece, file it under `brain/outputs/content/linkedin/drafts/<title>/`. If `brain/` is not checked out, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `references/` resolve from this skill directory.
+Vault: follow [`pipelines/vault.md`](../../pipelines/vault.md). `$VAULT` is the `VAULT_PATH` checkout (default `../Samy-SmartOS`). Read `$VAULT/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Never write `$VAULT/raw/`. Topic knowledge starts at `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. If a reply belongs to a piece, file it under `$VAULT/outputs/content/linkedin/drafts/<title>/`. If `$VAULT` is missing, stop and ask Samy to set `VAULT_PATH`. Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `references/` resolve from this skill directory.
+
+Not a channel pipeline. One reply from a pasted thread. Never send.
 
 # LinkedIn replies
 
 There is no inbox tool yet. Work from a thread the author pastes: the counterpart, the messages, and the link if they have one. Draft 1 LinkedIn DM reply at a time in the author's voice. Never send. Sending happens only after the author approves that exact draft and sends it themselves. If the copy changes after approval, ask again.
 
-Voice sources: `brain/raw/me/voice.md`, compressed for DMs, and the author's own past messages in the paste. Avoid the shapes in [references/anti-patterns.md](references/anti-patterns.md).
+Voice sources: `$VAULT/raw/me/voice.md`, compressed for DMs, and the author's own past messages in the paste. Avoid the shapes in [references/anti-patterns.md](references/anti-patterns.md).
 
 ## DM, comment, post
 
@@ -39,7 +41,7 @@ Voice sources: `brain/raw/me/voice.md`, compressed for DMs, and the author's own
 3. **Classify 1 intent:** deliverable (send what they asked for), clarify (answer with the mechanism), qualify (1 or 2 concrete questions about their workflow), continue (1 specific advance), schedule (only if they asked), decline or redirect (an honest mismatch), social (peer warmth).
 4. **Draft exactly 1 reply** and show: counterpart, intent, draft, thread link.
 5. **Gate:** preview only. The author sends only after they approve this exact copy; if the copy changes after approval, ask again.
-6. **Learn:** when the author approves or edits a reply, keep their final wording as a voice example they can file. Do not write `brain/raw/` yourself. Propose the line for `brain/raw/me/voice.md` and let them apply it.
+6. **Learn:** when the author approves or edits a reply, keep their final wording as a voice example they can file. Do not write `$VAULT/raw/` yourself. Propose the line for `$VAULT/raw/me/voice.md` and let them apply it.
 
 ## Morning digest
 

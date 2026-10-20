@@ -3,13 +3,15 @@ name: youtube-title-outlier-packaging
 description: Find YouTube packaging outliers in the author's niche, draft 2 A/B titles from proven structures with every claim marked, and brief thumbnail concepts. Use when choosing or split-testing a YouTube title or packaging a video before recording.
 ---
 
-Workspace: this repo is the Content OS. Read `CLAUDE.md` here, then `brain/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, and sibling pages). Never write `brain/raw/`. Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. Save the packaging brief to `brain/outputs/content/youtube/drafts/<title>/`. If `brain/` is not checked out, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo, and do not invent numbers, results or testimonials.
+Vault: follow [`pipelines/vault.md`](../../pipelines/vault.md). `$VAULT` is the `VAULT_PATH` checkout (default `../Samy-SmartOS`). Read `$VAULT/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Never write `$VAULT/raw/`. Topic knowledge starts at `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. Save the packaging brief to `$VAULT/outputs/content/youtube/drafts/<title>/`. If `$VAULT` is missing, stop and ask Samy to set `VAULT_PATH`. Do not copy vault files into this repo, and do not invent numbers, results or testimonials.
+
+Called by `youtube-writer` for `titles.md`. Not a pipeline.
 
 # YouTube title and outlier packaging
 
 Turn a video idea into packaging: measured outlier references, 2 title variants for a split test and concrete thumbnail concepts. The author owns the final pick. This skill prepares the brief; it does not upload or invent proof.
 
-Read `brain/raw/me/proof.md` before any public number, the ICP pages in `brain/raw/me/` for who the title must stop, and the brief from `content-waterfall` when there is one. This skill owns the outlier pass. Hand the chosen thumbnail concepts to `youtube-thumbnail`. Do not use `newsletter-thumbnail-designer` for a YouTube still.
+Read `$VAULT/raw/me/proof.md` before any public number, the ICP pages in `$VAULT/raw/me/` for who the title must stop, and the brief from `content-waterfall` when there is one. This skill owns the outlier pass. Hand the chosen thumbnail concepts to `youtube-thumbnail`. Do not use `newsletter-thumbnail-designer` for a YouTube still.
 
 ## Rules
 
@@ -50,7 +52,7 @@ Avoid "The X nobody talks about" and career titles when the buyer is a founder.
 1. Name the video's real outcome in 1 line.
 2. Pick 2 different structures, not 2 synonyms of the same hook.
 3. Put a risky or numeric claim in parentheses or the second clause so it can be swapped.
-4. Mark each claim: **proven**, **on video only** or **packaging hypothesis**. Proven means it is in `brain/raw/me/proof.md` or shown in the cut.
+4. Mark each claim: **proven**, **on video only** or **packaging hypothesis**. Proven means it is in `$VAULT/raw/me/proof.md` or shown in the cut.
 5. Deliver Variant A and Variant B, each with a 1-line reason.
 
 ## Thumbnail concepts

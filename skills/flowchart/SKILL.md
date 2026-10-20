@@ -3,11 +3,13 @@ name: flowchart
 description: Create editable flowcharts, system maps and funnels with semantic icons, structured operation cards, distinct skill and decision shapes, and verified routing.
 ---
 
-Workspace: this repo is the Content OS. Read `CLAUDE.md` here, then `brain/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, and sibling pages). Never write `brain/raw/`. Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. Save the `.excalidraw` scene in the draft's `Assets/` folder: `brain/outputs/content/<channel>/drafts/<title>/Assets/`. If `brain/` is not checked out, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `references/` and `scripts/` resolve from this skill directory.
+Vault: follow [`pipelines/vault.md`](../../pipelines/vault.md). `$VAULT` is the `VAULT_PATH` checkout (default `../Samy-SmartOS`). Read `$VAULT/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Never write `$VAULT/raw/`. Topic knowledge starts at `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. Save the `.excalidraw` scene in the draft's `Assets/` folder: `$VAULT/outputs/content/<channel>/drafts/<title>/Assets/`. If `$VAULT` is missing, stop and ask Samy to set `VAULT_PATH`. Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `references/` and `scripts/` resolve from this skill directory.
+
+A platform writer calls this for one process map. Not a pipeline. The icon for a knowledge store is `knowledge`.
 
 # Draw an editable flowchart
 
-Read `CLAUDE.md`, the actual workflow sources and `DESIGN.md` when the diagram must match the brand. For a content funnel, read `brain/wiki/content-os.md` and the pipeline in `pipelines/`. When editing, inspect the existing scene and generator, preserve manual changes and retain the current viewing URL.
+Read `CLAUDE.md`, the actual workflow sources and `DESIGN.md` when the diagram must match the brand. For a content funnel, read `$VAULT/wiki/content-os.md` and the pipeline in `pipelines/`. When editing, inspect the existing scene and generator, preserve manual changes and retain the current viewing URL.
 
 ## Model the process
 
@@ -25,10 +27,10 @@ Read [the visual grammar and helper API](references/design-and-tools.md) when au
 - **Function/operation:** square card, light title band, semantic icon, labeled input/work rows and a distinct output strip.
 - **Skill:** rounded card and contrasting title band for a procedure that applies context or judgment. Classify its responsibility, not whether its name contains AI.
 - **Decision:** short question inside a diamond, with labeled exits and explicit hold/retry destinations.
-- **Signal/result:** a compact event or result shape. A numeric result can use large type with its unit, population and date. The number must come from `brain/raw/me/proof.md` or a source named on the diagram.
+- **Signal/result:** a compact event or result shape. A numeric result can use large type with its unit, population and date. The number must come from `$VAULT/raw/me/proof.md` or a source named on the diagram.
 - **Grouping:** shared alignments or a light container for a meaningful stage. Use different compositions for an overview, taxonomy, funnel and result breakdown.
 
-Use semantic line icons for recognizable concepts such as a source file, person, company, context brain, calendar, message or verification. Keep icon size and stroke consistent. Each icon stays editable and grouped with its card. Icons are not a substitute for readable labels.
+Use semantic line icons for recognizable concepts such as a source file, person, company, knowledge, calendar, message or verification. Keep icon size and stroke consistent. Each icon stays editable and grouped with its card. Icons are not a substitute for readable labels.
 
 Use `DESIGN.md` tokens when the diagram must match the brand. The included helper defaults to neutral grays and a standard font slot; it contains no logo, signature or client connections. Do not invent a logo or a result.
 

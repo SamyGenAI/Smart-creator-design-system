@@ -3,7 +3,9 @@ name: linkedin-hook-writer
 description: Write, revise or compare LinkedIn hooks in the author's voice, with measured character counts and mobile-first opening budgets. Use for hook options, first-line edits, or the opening pass inside linkedin-copywriter.
 ---
 
-Workspace: this repo is the Content OS. Read `CLAUDE.md` here, then `brain/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, and sibling pages). Never write `brain/raw/`. Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. The hook is part of the post saved to `brain/outputs/content/linkedin/drafts/<title>/`. If `brain/` is not checked out, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `scripts/` resolve from this skill directory.
+Vault: follow [`pipelines/vault.md`](../../pipelines/vault.md). `$VAULT` is the `VAULT_PATH` checkout (default `../Samy-SmartOS`). Read `$VAULT/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Never write `$VAULT/raw/`. Topic knowledge starts at `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. The hook is part of the post saved to `$VAULT/outputs/content/linkedin/drafts/<title>/`. If `$VAULT` is missing, stop and ask Samy to set `VAULT_PATH`. Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `scripts/` resolve from this skill directory.
+
+Called by `linkedin-writer` for the opening. Not a pipeline. Hook options go in `hooks.md` only when he asks. Otherwise the hook stays in the post.
 
 # LinkedIn hook writer
 
@@ -11,7 +13,7 @@ Own the opening, including how it connects to the body. The full post's voice, f
 
 ## Ground the hook
 
-Read `brain/raw/me/voice.md` and the draft or factual brief. Identify the intended reader (ICP in `brain/raw/me/`) and the specific point the body supports. Check tone against the author's recent posts in `brain/wiki/` and in published drafts. Public numbers follow `brain/raw/me/proof.md`.
+Read `$VAULT/raw/me/voice.md` and the draft or factual brief. Identify the intended reader (ICP in `$VAULT/raw/me/`) and the specific point the body supports. Check tone against the author's recent posts in `$VAULT/wiki/` and in published drafts. Public numbers follow `$VAULT/raw/me/proof.md`.
 
 The author's current instructions and wording come first. The first line can be a claim, question, confession, comparison, result, story detail or framework promise. No invented drama, no automatic "I" opener, no compulsory number.
 
