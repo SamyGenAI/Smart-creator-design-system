@@ -1,15 +1,15 @@
 # Pipelines
 
-One path per channel, plus the waterfall that feeds all of them. Read `brain/CLAUDE.md` (Content Workflow) first. If `brain/` is missing, stop and ask Samy to add the submodule. The command is in the README.
+One content pipeline: the waterfall. It covers LinkedIn, the newsletter, X and YouTube. Per-platform work is a writer skill plus a row in [`platforms.json`](platforms.json), not a second pipeline.
 
-Nothing here posts or sends. Samy approves, publishes, moves the folder from `drafts/` to `published/`, and updates the Notion calendar.
+Read [`vault.md`](vault.md) and `$VAULT/CLAUDE.md` (Content Workflow) first. `$VAULT` is `VAULT_PATH` in `.env`, default `../Samy-SmartOS`. If that checkout is missing, stop and ask Samy to set the path.
+
+Nothing here posts or sends. Samy approves. A folder moves from `drafts/` to `published/` only after he says the piece is published. The Notion calendar is his.
 
 Notion stages, in order: **Idea**, **Research / Scripting**, **Design or Filming**, **Final copy / Editing**, **Scheduled**, **Posted**.
 
 | Doc | When |
 |---|---|
-| [content-waterfall.md](content-waterfall.md) | One idea becomes a video and posts on every channel |
-| [linkedin.md](linkedin.md) | One LinkedIn post |
-| [newsletter.md](newsletter.md) | One newsletter issue |
-| [x.md](x.md) | X posts or an X Article |
-| [youtube.md](youtube.md) | Titles, description and a thumbnail concept. Video and motion are later |
+| [content-waterfall.md](content-waterfall.md) | The only pipeline. One idea, one asset at a time, newsletter then YouTube then LinkedIn then X |
+| [platforms.json](platforms.json) | Writers, asset filenames, design handoff |
+| [vault.md](vault.md) | `VAULT_PATH` and the read-only `raw/` rules |

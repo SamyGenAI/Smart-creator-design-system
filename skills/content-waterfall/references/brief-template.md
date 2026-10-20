@@ -1,53 +1,43 @@
-# Brief template: idea of the week
+# Brief template: one idea
 
-Copy this into `brain/outputs/content/youtube/drafts/<title>/brief.md`, fill every section and delete the hints. Never write `brain/raw/`.
+Copy this into `$VAULT/outputs/content/newsletter/drafts/<title>/brief.md` when that file is missing. Fill every section and delete the hints. If `brief.md` or any other draft is already there, do not overwrite it. Never write `$VAULT/raw/`.
 
 ```markdown
-# <Idea> waterfall
+# <Idea>
 
-The YouTube video goes live on YYYY-MM-DD and feeds <n> pieces, all dated from that day.
+Newsletter first, then YouTube, then LinkedIn, then X. One asset at a time. Release day D is YYYY-MM-DD.
 
 ## The brief
 
-- **Idea, in the author's words.** "<quote>"
-- **Pillar and funnel stage.** <1 pillar from brain/wiki/, start at content-os.md>, <top, middle or bottom>
+- **Idea, in Samy's words.** "<quote>"
+- **Pillar and funnel stage.** <1 pillar from $VAULT/wiki/, start at content-os.md>, <top, middle or bottom>
 - **Reader problem.** <the question the reader actually has>
-- **Claim.** <1 sentence the video proves>
-- **Worked example.** <what the author shows on screen; prefer an existing asset or a real run>
-- **Next action.** <1 thing the viewer does after watching>
-- **Resource.** <the existing kit or lead magnet the video points to>
-- **Stance check.** <what the author said publicly on this recently, and how the video builds on it>
+- **Claim.** <1 sentence the newsletter and the video can both support>
+- **Worked example.** <what he shows; prefer an existing asset>
+- **Next action.** <1 thing the reader does>
+- **Resource.** <the existing kit, or none>
+- **Stance check.** <what he already published on this, and what this piece adds>
 
 ## Facts, verified YYYY-MM-DD
 
-<Only claims checked at the source, each with its source. Numbers outside brain/raw/me/proof.md stay out. No invented results or testimonials.>
+<Only claims checked at the source, each with its source. Numbers outside $VAULT/raw/me/proof.md stay out. No invented results or testimonials.>
 
-## Video outline
+## Publish calendar
 
-<Length and format.> Titles, thumbnail and newsletter may only claim what these chapters show. This outline is the script; there is no separate script skill in this repo.
+Production order is not this calendar. Draft the next missing asset only.
 
-| # | Chapter | On screen | Makes this claim deliverable |
-|---|---|---|---|
-| 1 | Cold open | <the result, shown> | <the title's promise> |
-| … | … | … | … |
-| n | Close | <resource, newsletter> | 1 action |
-
-## Packaging
-
-<2 titles, 2 thumbnail directions, their claim status.>
-
-## The waterfall, dated
-
-| Date | Piece | Status | Job | Skill | Draft path |
-|---|---|---|---|---|---|
-| D | <video> (the big post) | Drafting | Trunk | | brain/outputs/content/youtube/drafts/<title>/ |
-| … | | | | | |
+| Date | Piece | Status | Channel | Draft path |
+|---|---|---|---|---|
+| D | Newsletter issue | Drafting | newsletter | $VAULT/outputs/content/newsletter/drafts/<title>/ |
+| D | YouTube | | youtube | $VAULT/outputs/content/youtube/drafts/<title>/ |
+| | LinkedIn | | linkedin | $VAULT/outputs/content/linkedin/drafts/<title>/ |
+| | X | | x | $VAULT/outputs/content/x/drafts/<title>/ |
 
 ## Open decisions
 
-1. <only what the author alone can decide>
+1. <only what Samy alone can decide>
 
 ## Results
 
-<URLs, replies, signups, time spent, the winners and the next idea. Samy moves each finished folder to published/ and sets Notion to Posted.>
+<Filled after he publishes. He says the word, then the folder moves to published/. Nothing is posted from this repo.>
 ```

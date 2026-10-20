@@ -1,155 +1,165 @@
 ---
 name: content-waterfall
-description: Run a weekly content waterfall: find the idea of the week from what is hot on YouTube, X and LinkedIn, make 1 long video, grow its 3 roots into posts on every platform, ship the week and turn the engagers into conversations. Use when the author gives the idea of the week, wants posts from a video, hands over a recording or YouTube link, or asks to repurpose. Orchestrates the stage skills.
+description: Run one content waterfall from idea to draft to published. Newsletter first, then YouTube, then LinkedIn, then X, one asset at a time. Use when Samy gives the idea of the week, wants the next platform piece, or asks to repurpose. Calls the four writers. Does not post.
 ---
 
-Workspace: this repo is the Content OS. Read `CLAUDE.md` here, then `brain/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, and sibling pages). Never write `brain/raw/`. Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. The operating order for this skill is [`pipelines/content-waterfall.md`](../../pipelines/content-waterfall.md). The master brief is saved to `brain/outputs/content/youtube/drafts/<title>/brief.md`. Each piece is then drafted in its own channel folder under `brain/outputs/content/<channel>/drafts/<title>/`, with images in that folder's `Assets/`. If `brain/` is not checked out, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `references/` resolve from this skill directory.
+Vault: follow [`pipelines/vault.md`](../../pipelines/vault.md). `$VAULT` is the `VAULT_PATH` checkout (default `../Samy-SmartOS`). Read `$VAULT/CLAUDE.md` and follow its Content Workflow. Voice, proof, offer, ICP and positioning are read from `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Never write `$VAULT/raw/`. Topic knowledge starts at `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. The operating order is [`pipelines/content-waterfall.md`](../../pipelines/content-waterfall.md). Config is [`pipelines/platforms.json`](../../pipelines/platforms.json). The brief is `$VAULT/outputs/content/newsletter/drafts/<title>/brief.md`. Each asset goes in `$VAULT/outputs/content/<channel>/drafts/<title>/`, images in `Assets/`. If `$VAULT` is missing, stop and ask Samy to set `VAULT_PATH`. Do not copy vault files into this repo, and do not invent numbers, results or testimonials. Skill-local `references/` resolve from this skill directory.
 
 # Content waterfall
 
-1 idea a week becomes 1 long video, and everything else flows down from it. The idea is the most important piece, so it gets its own stage. The live video is the trunk, 3 roots grow from it in parallel, idea posts fill open slots after the release week, and the people who engage become conversations. The full walkthrough is on YouTube: https://www.youtube.com/watch?v=8z_GiPtnO80.
+One idea becomes a newsletter issue, then a YouTube package, then LinkedIn, then X. Production order is that sequence. One asset at a time. The four writers do the drafting. This skill decides which asset is next and stops there.
 
-This skill is the operating order. Each stage has its own skill; use it, do not redo its work here. Video cutting, motion graphics and upload automation are **later**. Samy records and uploads.
+```bash
+node scripts/content-waterfall.mjs status --title "<title>"
+node scripts/content-waterfall.mjs next --title "<title>"
+```
+
+A bare `next` returns the first missing required asset: newsletter issue, YouTube script, titles, description, LinkedIn post, X Article. Optional assets (thumbnail, carousel, thread, post, a separate hooks file) show in `status` and in `next --channel <channel>`. Pass `--asset <id>` to draft that one even when earlier assets are still open. If the command says `exists`, do not write another file.
+
+Publish dates live in the brief. They are not a reason to draft every channel in one pass.
+
+Video cutting, motion graphics and upload automation are later. Samy records and uploads. This repo never posts or sends.
 
 ## The stages at a glance
 
-| Stage | What happens | Output | The author decides |
+| Stage | What happens | Output | Samy decides |
 |---|---|---|---|
 | 0 Idea | Scan what is hot on YouTube, X and LinkedIn, add last week's signals | A slate of 3 to 5 ideas with proof of heat | The pick |
-| 1 Brief | Packaging first, then the brief and a video outline | 1 brief page (`references/brief-template.md`) | Release date; their verdict when the video is a review |
-| 2 Board | The big post plus its dated sub-posts | 1 dated plan in the brief, and a Notion update only if Samy asked | Nothing, unless a date collides |
-| 3 Record | The author records from the outline | Raw recording | Everything on camera. **Later** for any edit automation |
-| 4 Package | Titles, description, thumbnail concept. Cut and upload stay with Samy | The packaging files in the YouTube draft | Title and thumbnail pick; the upload |
-| 5 Draft | Root by root, newsletter first; mine the transcript for idea posts | Copy in each channel draft | Edits; which ideas stand on their own |
-| 6 Schedule | Queue each piece on its date, by hand | A plan Samy can schedule himself | Go for anything that publishes or sends |
-| 7 Convert | Engagers into conversations, from threads Samy pastes | DM drafts | Every send |
-| 8 Close | Mark what shipped, rank the winners, collect questions | Results in the brief, next idea | The next idea; what doubles down. Samy moves folders to `published/` |
+| 1 Brief | Packaging notes, then the brief | `brief.md` from `references/brief-template.md`, only if missing | Release date |
+| 2 Next | Read the vault folders and `waterfall.json` | One asset id | Skip or redirect |
+| 3 Draft | The writer for that asset only | One new file, or an edit he asked for | The wording |
+| 4 Visual | The design handoff on that asset, when `handsTo` is set | One export in `Assets/` | Whether it needs a visual |
+| 5 Review | He approves before anything is queued | The same file | Go |
+| 6 Publish | He publishes. Then the folder may move | `published/<title>/` | The word published |
 
-Enter where the work is. A raw recording starts at stage 4 and a YouTube link at stage 5, but create the big post first if it is missing.
+Enter where the work is. A title that already has an issue starts at the next missing asset.
 
 ## Standing rules
 
-- The idea is the author's. The slate proposes 3 to 5 ideas with proof of heat; the author picks. Never pick or invent the idea of the week for them.
-- Truth over packaging: every title, thumbnail and newsletter claim must be shown in the video. Numbers come only from `brain/raw/me/proof.md`; drop planned numbers the video does not show.
-- Write in the author's voice (`brain/raw/me/voice.md`). When the author calls a line generic or AI-sounding, rewrite the section from their own words.
-- Link videos with the full `https://www.youtube.com/watch?v=<id>` URL. Never a shortener: link shorteners trip spam and phishing filters.
-- 1 big post per waterfall with dated sub-posts, not a board full of separate cards. Every sub-post has a status, platform and date.
-- Date everything from the video's release day (D). The newsletter and the X Article go out on D; posts follow.
-- Text, image and graphic pieces carry the week. The video itself goes out only as the native upload of the finished video on LinkedIn and X.
-- Drafting is not publishing. Nothing is sent, scheduled or posted without the author's go. This repo never posts or sends.
+- The idea is his. The slate proposes 3 to 5 ideas with proof of heat. He picks. Never pick the idea of the week for him.
+- One asset per run. A later run calls `status` and continues. Do not regenerate a file that is already in the draft folder.
+- Never overwrite a draft he wrote. If the folder holds `How to design with AI.md`, that file is the asset. Propose a change or wait until he asks.
+- Truth over packaging. Numbers come only from `$VAULT/raw/me/proof.md` or a wiki page that cites a source. Drop a planned number the video does not show.
+- Write in his voice (`$VAULT/raw/me/voice.md`). When he calls a line generic, rewrite that section from his words.
+- The newsletter issue is the argument. YouTube, LinkedIn and X adapt it. They do not invent a thesis.
+- Link videos with the full `https://www.youtube.com/watch?v=<id>` URL. Never a shortener.
+- Drafting is not publishing. Notion **Scheduled** only after he queues it. Notion **Posted** only after he says it is live.
 
-## The system: 1 trunk, 3 roots
+## Writers
 
-| Part | What it reuses | Pieces | Funnel job |
+| Order | Channel | Writer | Formats |
 |---|---|---|---|
-| Trunk | The live video: the file, the argument, the transcript | The YouTube video | |
-| Root 1, the file | The video itself | LinkedIn video, X video: the native upload | Reach |
-| Root 2, the argument | The newsletter's argument | Newsletter, X Article, lesson post, resource post | Belief; the resource post is Signup |
-| Root 3, the transcript | Ideas that stand on their own | Chapter post, graphic, proof post, opinion post, micro posts | Reach, or Belief for graphic and proof |
+| 1 | Newsletter | `newsletter-writer` | Issue, then the 420×300 thumbnail |
+| 2 | YouTube | `youtube-writer` | Script, titles, description, thumbnail concept |
+| 3 | LinkedIn | `linkedin-writer` | Post, hooks, carousel |
+| 4 | X | `x-writer` | Article, thread, post |
 
-Timing from D: the video, newsletter, X Article and X video on D; the LinkedIn video and lesson that week; the resource post on D+7. Idea posts fill open slots after that; the rest waits in a backlog. Winners get reposted on the other platform at the close.
-
-Platform jobs: YouTube is the library, the newsletter the list you own, X the builders, LinkedIn the buyers. The funnel job (Reach, Belief, Signup) is a writing decision per piece, set before drafting; it decides the hook and the ask.
+Format modules those writers call: `linkedin-copywriter`, `linkedin-hook-writer`, `youtube-title-outlier-packaging`, `youtube-description`, `youtube-thumbnail`, `x-article-writer`, `x-planner`. They are not pipelines.
 
 ## Stage 0: Find the idea
 
-| Scan | Tools | What to bring back |
-|---|---|---|
-| Your signals | Last week's close: winners, the best questions from the comments, customer wins and calls | What already worked for this audience |
-| YouTube | The vidIQ plugin if installed (trend radar, video ideas), `youtube-title-outlier-packaging` | Outliers and rising topics in the niche, with their titles and thumbnails |
-| X | X Radar (X Premium) on your keywords, X search, the viral lane of `x-planner` | Posts going viral in the niche |
-| LinkedIn | By hand: scroll the creators you follow, LinkedIn search, saved posts | Outlier posts, with their hooks |
+| Scan | What to bring back |
+|---|---|
+| Last week's close | Winners, the best questions, customer wins he has already cleared |
+| YouTube | Outliers from `youtube-title-outlier-packaging` |
+| X | Posts going viral in the niche, checked the way `x-planner` describes |
+| LinkedIn | Outlier posts, with their hooks, from creators he follows |
 
-The slate: 3 to 5 ideas, each with its proof of heat (the outlier or the numbers), the pillar from `brain/wiki/` (start at `brain/wiki/content-os.md`), the funnel job and the receipt the author can show on camera. Prefer ideas with more demand than supply. Content only about what the author finds interesting is the most common miss.
+The slate: 3 to 5 ideas, each with its proof of heat, the pillar from `$VAULT/wiki/` (start at `content-os.md`), the funnel job and the receipt he can show on camera. Prefer ideas with more demand than supply.
+
+Run `init` once he picks, so the newsletter draft folder and `waterfall.json` exist. `init` does not write the issue and does not touch a file he already saved.
 
 Notion stage after the pick: **Idea**.
 
 ## Stage 1: Brief
 
-1. Take the picked idea in the author's words. Choose 1 pillar and 1 funnel stage; ground in `brain/raw/me/` (positioning, ICP, offer) and `brain/raw/me/voice.md`.
-2. Stance check: read what the author published on the topic recently, starting from `brain/wiki/`. The video builds on it or names the change.
-3. Facts: check every product, model or market claim at its source and date it. Numbers, results and testimonials come only from `brain/raw/me/proof.md` or a source quoted in the brief.
-4. Worked example and resource: prefer what the author can show on screen and what already exists. The resource is usually an existing kit, not a new build.
-5. Packaging first: 2 titles (`youtube-title-outlier-packaging`) and 2 thumbnail directions (`youtube-thumbnail`) before the outline. The outline has to deliver that promise.
-6. Outline: chapters with what is on screen and which claim each makes deliverable. 1 chapter answers 1 buyer objection, so it can be sent as an answer in a DM later. There is no separate script skill in this repo; the outline is the script.
-7. Write the brief from `references/brief-template.md` to `brain/outputs/content/youtube/drafts/<title>/brief.md`.
-
-Ask the author only what they alone know: the release date and their verdict. Decide the rest and list it under open decisions.
+1. Take the picked idea in his words. Choose 1 pillar and 1 funnel stage from `offer.md`, the ICP pages and `voice.md`.
+2. Stance check: read what he published on the topic, starting from `$VAULT/wiki/`. The new piece builds on it or names the change.
+3. Facts: check every product, model or market claim at its source and date it. Numbers, results and testimonials come only from `proof.md` or a source quoted in the brief.
+4. Worked example and resource: prefer what he can show and what already exists.
+5. Write the brief from `references/brief-template.md` to the newsletter draft's `brief.md` when that file is absent. Do not overwrite an existing brief.
+6. Ask him only what he alone knows: the release date. List everything else under open decisions.
 
 Notion stage: **Research / Scripting**.
 
-## Stage 2: Board
+## Stage 2: Next asset
 
-The content calendar lives in Notion. Look for the dates around the release and for an existing card on the same topic first; reuse a card that exists. Update Notion only when the author asked and `brain/wiki/` documents that database. 1 big post for the video, each piece noted with a status, platform and date. The Notion stages are Idea, Research / Scripting, Design or Filming, Final copy / Editing, Scheduled, Posted. Without Notion, return the dated plan in chat and keep it in the brief.
+```bash
+node scripts/content-waterfall.mjs next --title "<title>"
+```
 
-Default sub-posts from release day D:
+Link a folder that does not use the title as its name:
 
-| Day | Piece | Platform | Root, job | Skill |
-|---|---|---|---|---|
-| D | The video (the big post) | YouTube | Trunk | stage 4 |
-| D | Newsletter | Newsletter | Root 2, Belief | `newsletter-writer` |
-| D | X Article | X | Root 2, Belief | `x-article-writer` |
-| D | The video is live | X | Root 1, Reach | `x-article-writer` (the video post) |
-| Author's pick | The video, native | LinkedIn | Root 1, Reach | `linkedin-copywriter` |
-| That week's slot | The lesson | LinkedIn | Root 2, Belief | `linkedin-copywriter` |
-| D+7 | The resource post | LinkedIn | Root 2, Signup | `linkedin-copywriter` |
-| Open slots | 1 or 2 idea posts after the harvest | LinkedIn | Root 3 | `linkedin-copywriter` |
+```bash
+node scripts/content-waterfall.mjs link --title "<title>" --channel linkedin --folder "<folder>"
+```
 
-Create everything else only when it is picked: micro posts, chapter threads, reposts of winners. That keeps the card near 8 sub-posts, not 30. Other X posts are planned with the author in `x-planner`.
+Skip what this idea does not need:
 
-## Stage 3: Record
+```bash
+node scripts/content-waterfall.mjs skip --title "<title>" --channel linkedin --asset carousel
+```
 
-The author records from the outline. Remind them: a clean screen, accounts that are safe to show, no client data on screen, 1 dry run. Editing and motion graphics are **later**.
+The content calendar lives in Notion. Update a card only when he asked and `$VAULT/wiki/` documents that database. Otherwise keep the dated plan in the brief. Stages: Idea, Research / Scripting, Design or Filming, Final copy / Editing, Scheduled, Posted.
 
-Notion stage while the video is being made: **Design or Filming**.
+Default publish calendar, counted from release day D. This is when pieces go out, not permission to draft them all now.
 
-## Stage 4: Package
-
-| # | Step | Skill | Done when |
+| Day | Piece | Platform | Writer |
 |---|---|---|---|
-| 1 | Cut | later | Samy cuts. Only false starts, dead air and the tail removed from screen demos |
-| 2 | Final-cut transcript | later | Samy supplies the transcript. Chapter times come from the final cut, not the raw file |
-| 3 | Promise check, title A/B | `youtube-title-outlier-packaging` | Both titles deliverable from the cut, or marked provisional if there is no cut yet |
-| 4 | Description and chapters | `youtube-description` | Paste-ready block |
-| 5 | Thumbnail | `youtube-thumbnail` | Concept checked at 1280×720 and 320×180. This app has no YouTube thumbnail canvas yet |
-| 6 | Upload | The author | The YouTube video ID; private first. Nothing in this repo uploads |
+| D | Newsletter | Newsletter | `newsletter-writer` |
+| D | The video | YouTube | `youtube-writer` |
+| D | X Article | X | `x-writer` |
+| His pick | Native video post | LinkedIn | `linkedin-writer` |
+| That week's slot | The lesson | LinkedIn | `linkedin-writer` |
+| D+7 | The resource post | LinkedIn | `linkedin-writer` |
+| Open slots | Idea posts that stand without the video | LinkedIn or X | the matching writer |
 
-## Stage 5: Draft
+## Stage 3: Draft
 
-Write the newsletter first; it is the approved argument every other piece reuses. Then the X Article from the newsletter, the X video post, then the LinkedIn posts. Do not re-derive the argument from the transcript for each piece. Run LinkedIn copy through `linkedin-copywriter` and `linkedin-hook-writer`. On LinkedIn, links go in the first comment and the post says so.
+Call the one writer. Pass the asset id. Do not call the other three.
 
-Save each piece under `brain/outputs/content/<channel>/drafts/<title>/`:
+Save under `$VAULT/outputs/content/<channel>/drafts/<title>/` using the filename in `platforms.json`. An existing markdown draft satisfies the primary asset for that channel. Leave it in place.
 
-| Piece | Folder |
-|---|---|
-| Newsletter | `brain/outputs/content/newsletter/drafts/<title>/` |
-| X Article and X posts | `brain/outputs/content/x/drafts/<title>/` |
-| LinkedIn posts | `brain/outputs/content/linkedin/drafts/<title>/` |
-| Titles, description, thumbnail concept | `brain/outputs/content/youtube/drafts/<title>/` |
+Notion stage once that asset is in the folder: **Final copy / Editing**.
 
-Root 3, the harvest: read the final-cut transcript and tag every idea by type: chapter, framework, proof moment, strong claim, line, receipt, take. Ask of each: does it stand on its own without the video? Yes: a chapter post, a graphic (`graphics-designer`, then the design-system skill it names, or `flowchart`), a proof post or an opinion post, or a micro post through `x-planner`. No: the backlog.
+## Stage 4: Visual
 
-Notion stage once copy is in draft: **Final copy / Editing**.
+Only for the asset just drafted, and only when he wants it. Read `handsTo` in `platforms.json`.
 
-## Stage 6: Schedule
+| Asset | Design skill | Render |
+|---|---|---|
+| Newsletter thumbnail | `newsletter-thumbnail-designer` | 420×300 PNG |
+| YouTube thumbnail | `youtube-thumbnail` | Concept file only, 1280×720 |
+| LinkedIn infographic | `infographics-designer` | 1080×1350 PNG |
+| LinkedIn carousel | `carousel-designer` | 1080×1350 PDF |
+| X figure or process map | `graphics-designer` or `flowchart` | PNG, PDF or `.excalidraw` |
 
-Queue each piece on its date only on the author's go, in that platform's own scheduler. There is no publishing tool wired in this repo. The newsletter stays a draft in the email tool until approved. Keep each status truthful: drafted until it is live. Keep 1 LinkedIn post a day; idea posts fill open slots, never a second post.
+`pnpm dev`, then the preview toolbar Export menu. With the server up: `GET /api/export/png?mode=<modeKey>`, `GET /api/export/pdf?mode=<modeKey>`, `GET /api/export/pptx?mode=<modeKey>`, `GET /api/export/gif?mode=<modeKey>` for an animated infographic. Do not call `render.py`. Save the file in that draft's `Assets/`.
 
-Notion stage **Scheduled** only after the author has queued it. The agent does not schedule.
+## Stage 5: Review
 
-## Stage 7: Convert
+He approves the copy and the visual. **Scheduled** only after he queues it himself. Keep 1 LinkedIn post a day. The newsletter stays a draft in the email tool until he says go.
 
-Impressions alone do not pay. There is no inbox tool yet. Work from threads and engagers the author pastes.
+## Stage 6: Publish
 
-- Qualify company and person fit from the paste and from ICP in `brain/raw/me/`. Do not invent fit.
-- People who commented the keyword on a resource post get the resource by DM and nothing else. Draft that DM with `linkedin-unibox-reply`. The author sends it.
-- Replies: `linkedin-unibox-reply` drafts from the pasted thread. The author sends. Answer an objection with the chapter that answers it: the full YouTube URL plus `&t=<seconds>s`.
-- No sequence, workflow or send without the author's go. Nothing is sent automatically.
+He posts, sends or uploads. Then, and only then:
 
-## Stage 8: Close
+```bash
+node scripts/content-waterfall.mjs approve --title "<title>" --channel <channel> --yes
+```
 
-The author marks each piece published as it goes live: they move the draft folder to the matching `published/` folder and set the Notion stage to **Posted**. Rank the week's pieces, including older ones still running. The top 1 or 2 are candidates for a repost on the other platform and for the next video. Customer wins go into the next brief only with permission and cleared numbers from `brain/raw/me/proof.md`. Bring the winners and the best questions to the author with the ask for next week's idea; the idea stays theirs. Record results and replies in the brief.
+The command moves that channel's folder from `drafts/` to `published/`. It does not post, send, upload or schedule. Without `--yes` it refuses. If the published folder already exists, it refuses so his copy is safe.
+
+## Convert and close
+
+There is no inbox tool. Work from threads he pastes.
+
+- Qualify company and person fit from the paste and from ICP in `$VAULT/raw/me/`. Do not invent fit.
+- `linkedin-unibox-reply` drafts one reply. He sends it. If the copy changes after approval, ask again.
+- No sequence and no send without his go.
+
+At the close, rank pieces he has already published. The top one or two can be repurposed later as their own `next` run. Customer wins go into the next brief only with permission and cleared numbers from `proof.md`. The next idea stays his. Record results in the brief.
 
 ## Hand-off
 
-After each stage, tell the author the file and the next stage. Keep the brief current: titles, description, thumbnail files, dates and links.
+After the asset, tell him the file path, what `status` now shows, and the following asset. Do not start that following asset in the same run unless he asked for it.

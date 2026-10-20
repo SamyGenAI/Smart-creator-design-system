@@ -1,35 +1,83 @@
 # Content waterfall
 
-One idea becomes one long video, then posts on YouTube, the newsletter, X and LinkedIn. The skill `skills/content-waterfall` is the stage-by-stage order. This page is the path an agent follows, and the gate at the end.
+One pipeline for every channel. One idea becomes a newsletter issue, then a YouTube package, then LinkedIn, then X. One asset at a time. The skill [`skills/content-waterfall`](../skills/content-waterfall/SKILL.md) is the stage order. This page is the path an agent runs.
 
-Video cutting, transcription, upload and motion graphics are **later**.
+There are no per-channel pipelines. [`platforms.json`](platforms.json) is the config: writers, asset files, and what each asset hands the design system. The writers are skills, not pipelines.
+
+| Order | Writer | Required assets | Optional, on request |
+|---|---|---|---|
+| 1 | `newsletter-writer` | Issue | 420×300 thumbnail |
+| 2 | `youtube-writer` | Script, titles, description | Thumbnail concept |
+| 3 | `linkedin-writer` | Post | Hooks file, carousel |
+| 4 | `x-writer` | Article | Thread, post |
+
+Video cutting, transcription, upload and motion graphics are later. Samy does those.
+
+## State
+
+Asset state is the vault folders `outputs/content/<channel>/{drafts,published}/<title>/`. A markdown file Samy already saved counts. `waterfall.json` in the newsletter folder records the linked folder names, skips and approval. It does not replace the files.
+
+```bash
+node scripts/content-waterfall.mjs init --title "<title>"
+node scripts/content-waterfall.mjs status --title "<title>"
+node scripts/content-waterfall.mjs next --title "<title>"
+```
+
+`next` returns the first missing required asset in the order above. It does not create the copy. `next --channel linkedin` continues that platform, including an optional asset. `next --channel linkedin --asset carousel` asks for that asset only. If the file exists, the command says `exists` and the agent stops.
+
+Link a folder whose name is not the title, without moving it:
+
+```bash
+node scripts/content-waterfall.mjs link --title "<title>" --channel linkedin --folder "<folder>"
+```
+
+Skip a piece he does not want:
+
+```bash
+node scripts/content-waterfall.mjs skip --title "<title>" --channel x --asset thread
+```
 
 ## 1. Idea
 
-Skill stage 0. Scan YouTube, X and LinkedIn, plus last week's winners. Bring Samy 3 to 5 ideas with proof of heat. He picks. Never pick for him. Notion stage: **Idea**.
+Samy names the idea, or stage 0 of the skill brings him 3 to 5 ideas with proof of heat. He picks. Never pick for him. Notion stage: **Idea**.
 
 ## 2. Research
 
-Skill stage 1. Read `brain/CLAUDE.md`, then `brain/wiki/index.md` and `brain/wiki/content-os.md`. Ground the brief in `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`, plus ICP and positioning). Check every product or market claim at its source. Write `brain/outputs/content/youtube/drafts/<title>/brief.md` from `skills/content-waterfall/references/brief-template.md`. Notion stage: **Research / Scripting**.
+Read [`vault.md`](vault.md), then `$VAULT/CLAUDE.md`, `$VAULT/wiki/index.md` and `$VAULT/wiki/content-os.md`. Ground the brief in `$VAULT/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Check every product or market claim at its source.
 
-## 3. Draft
+Write `brief.md` in the newsletter draft from [`skills/content-waterfall/references/brief-template.md`](../skills/content-waterfall/references/brief-template.md) only when that file is missing. Notion stage: **Research / Scripting**.
 
-Newsletter first (`pipelines/newsletter.md`, skill `newsletter-writer`). Then the X Article and the X video post (`pipelines/x.md`, skill `x-article-writer`). Then the LinkedIn posts (`pipelines/linkedin.md`, skills `linkedin-copywriter` and `linkedin-hook-writer`). YouTube titles and description use `pipelines/youtube.md`.
+## 3. Draft the next asset
 
-Do not re-derive the argument from the transcript for each piece. The newsletter is the argument. Harvest extra ideas only when they stand without the video.
+Run `next`. Call that row's writer and no other. The newsletter issue is the argument. Do not re-derive it per channel.
 
-## 4. Visuals
+| Asset | Writer | Also read |
+|---|---|---|
+| Issue, thumbnail | `newsletter-writer` | |
+| Script, titles, description, thumbnail concept | `youtube-writer` | `youtube-title-outlier-packaging`, `youtube-description`, `youtube-thumbnail` |
+| Post, hooks, carousel | `linkedin-writer` | `linkedin-copywriter`, `linkedin-hook-writer`, `carousel-designer` for the build |
+| Article, thread, post | `x-writer` | `x-article-writer`, `x-planner` |
 
-Each channel page names the design skill and the render command. Graphics go through `skills/graphics-designer`. Process maps use `skills/flowchart`. Rendered images go in that draft's `Assets/` folder.
+A later run starts at `status` and continues from the files already in the vault.
 
-The YouTube thumbnail is a concept only until a 1280×720 canvas exists. Notion stage for design, and for filming Samy does himself: **Design or Filming**.
+## 4. Visuals for that asset
+
+`platforms.json` names the design skill, the canvas and the render for the asset just drafted. Do the handoff only when `handsTo` is set and he wants the visual. `graphics-designer` chooses a graphic. `flowchart` builds a process map. Rendered images go in that draft's `Assets/`.
+
+The YouTube thumbnail is a concept until a 1280×720 canvas exists. Do not use the newsletter thumbnail for it. Notion stage for design, and for filming he does himself: **Design or Filming**.
 
 ## 5. Review
 
-Samy approves every piece before it is queued. Notion stage: **Final copy / Editing**. **Scheduled** only after he queues it in that platform. There is no publishing tool in this repo.
+He approves the asset before it is queued. Notion stage: **Final copy / Editing**. **Scheduled** only after he queues it on that platform. There is no publishing tool in this repo.
 
-Engagers become conversations only from threads he pastes. `skills/linkedin-unibox-reply` drafts. He sends. Nothing is sent automatically.
+Engagers become conversations only from threads he pastes. `linkedin-unibox-reply` drafts. He sends. Nothing is sent automatically.
 
 ## 6. Publishing
 
-Samy publishes each piece, moves that folder from `drafts/<title>/` to `published/<title>/`, and sets Notion to **Posted**. He records results in the brief. The next idea is still his.
+He publishes the piece himself. Nothing is posted or sent by this repo. When he says that channel's piece is published:
+
+```bash
+node scripts/content-waterfall.mjs approve --title "<title>" --channel newsletter --yes
+```
+
+Without `--yes` the command refuses. With `--yes` it moves `drafts/<folder>/` to `published/<folder>/` and does nothing else. If `published/` already has that folder, it refuses rather than overwrite. He sets Notion to **Posted**. The next idea is still his.
