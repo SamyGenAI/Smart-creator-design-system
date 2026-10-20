@@ -1,4 +1,43 @@
-# Smart Creator Design System
+# Smart Creator Content OS
+
+Content skills, channel pipelines, and the on-brand design system for **The Smart Creator**, in one repo. Samy writes the newsletter here and drafts the content that sells the Smart Operating System, an AI agent swarm on Grok Bot. Grok Bot orchestrates. Claude Code, Codex, or Cursor do the work. This repo is Content OS. The sibling repo `Smart-creator-lead-gen-system` is GTM OS. The repo name stays as it is.
+
+The shared brain is the private vault [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS), built on Karpathy's LLM-wiki layout. Its root `CLAUDE.md` is the schema. `raw/me/voice.md`, `raw/me/proof.md` and `raw/me/offer.md` are immutable. `wiki/` is compiled knowledge (`wiki/index.md`, `wiki/content-os.md`). Drafts live in the vault at `outputs/content/{linkedin,newsletter,x,youtube}/{drafts,published}/<title>/`, with images in that folder's `Assets/`. The content calendar is in Notion.
+
+## Structure
+
+| Path | What it is |
+|---|---|
+| `brain/` | Git submodule of the private vault. A submodule stores the URL and a commit id, not the vault files. |
+| `skills/` | Content skills and design skills. Each skill is a folder with `SKILL.md`. |
+| `pipelines/` | One markdown pipeline per channel, plus the content waterfall. |
+| `components/`, `design/`, `src/` | The design system: React previews, brand tokens, and export. |
+
+### Brain
+
+This checkout cannot read the private vault, so `brain/` is not linked yet. A gitlink needs a real commit id from that repo, and inventing one would make `git submodule update` fail. From a machine that can see the vault:
+
+```bash
+git submodule add -b main https://github.com/SamyGenAI/Samy-SmartOS.git brain
+git submodule update --init --recursive
+```
+
+Do not copy vault files into this repo. Do not edit `brain/raw/`. If `voice.md`, `proof.md` or `offer.md` are empty, fill them in the vault before asking an agent to draft. Agents will not invent voice, proof, or numbers.
+
+### Skill names
+
+Two content skills sit next to design skills that sound similar. Both pairs are different jobs, so both names stayed.
+
+- **`graphics-designer` and `infographics-designer`.** `infographics-designer` still builds the 1080×1350 JSX infographic. `graphics-designer` decides what the graphic should say, then hands the build to `infographics-designer`, `carousel-designer`, `newsletter-thumbnail-designer`, or `flowchart`.
+- **`youtube-thumbnail` and `newsletter-thumbnail-designer`.** The newsletter skill is the 420×300 email image and still owns that canvas. The YouTube skill writes a 1280×720 thumbnail concept. The app has no YouTube thumbnail canvas yet, so that render is later, with video and motion.
+
+### Pipelines
+
+`pipelines/` has one doc for LinkedIn, the newsletter, X, YouTube, and the content waterfall. Each one runs idea → research in the wiki → draft with a content skill → visuals with a design skill and a render command → Samy's review → publishing. Samy moves the folder to `published/` and updates the Notion stage. Notion stages are Idea, Research / Scripting, Design or Filming, Final copy / Editing, Scheduled, Posted. Nothing is posted or sent automatically.
+
+---
+
+## Design system
 
 A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.png`**, **`.pdf`**, or **`.pptx`**.
 
@@ -274,9 +313,12 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 
 ```
 .
-├── CLAUDE.md                 ← master rules for Claude Code
+├── CLAUDE.md                 ← Content OS rules for Claude Code, then the design system
+├── AGENTS.md                 ← the same Content OS rules for Codex
+├── brain/                    ← private vault submodule (add it with the command above)
+├── pipelines/                ← linkedin, newsletter, x, youtube, content-waterfall
 ├── .claude/agents/           ← subagent definitions (design / slide / carousel)
-├── skills/                   ← includes `infographics-designer/SKILL.md` (read first for 1080×1350)
+├── skills/                   ← content skills + design skills (`infographics-designer` for 1080×1350)
 ├── references/               ← optional notes (not required for infographics)
 ├── DESIGN.md                 ← all design tokens (front matter)
 ├── tailwind.config.js        ← consumes tokens from DESIGN.md
