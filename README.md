@@ -1,28 +1,28 @@
 # Smart Creator Content OS
 
-Content skills, channel pipelines, and the on-brand design system for **The Smart Creator**, in one repo. Samy writes the newsletter here and drafts the content that sells the Smart Operating System, an AI agent swarm on Grok Bot. Grok Bot orchestrates. Claude Code, Codex, or Cursor do the work. This repo is Content OS. The sibling repo `Smart-creator-lead-gen-system` is GTM OS. The repo name stays as it is.
+Content skills, one content waterfall, and the on-brand design system for **The Smart Creator**, in one repo. Samy drafts the newsletter here, and the content that sells the Smart Operating System, an AI agent swarm on Grok Bot. Grok Bot orchestrates. Claude Code, Codex, or Cursor do the work. This repo is Content OS. The sibling repo `Smart-creator-lead-gen-system` is GTM OS. The repo name stays as it is.
 
-The shared brain is the private vault [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS), built on Karpathy's LLM-wiki layout. Its root `CLAUDE.md` is the schema. `raw/me/voice.md`, `raw/me/proof.md` and `raw/me/offer.md` are immutable. `wiki/` is compiled knowledge (`wiki/index.md`, `wiki/content-os.md`). Drafts live in the vault at `outputs/content/{linkedin,newsletter,x,youtube}/{drafts,published}/<title>/`, with images in that folder's `Assets/`. The content calendar is in Notion.
+The private vault is [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS), on Karpathy's LLM-wiki layout. This repo points at a local checkout with `VAULT_PATH` (default `../Samy-SmartOS`, see `.env.example`). The vault's root `CLAUDE.md` is the schema. `raw/` is immutable: voice in `raw/me/voice.md`, proof in `raw/me/proof.md`, the offer in `raw/me/offer.md`, ideas in `raw/ideas/`, content research in `raw/content/`. `wiki/` is compiled knowledge (`wiki/index.md`, `wiki/content-os.md`, `wiki/log.md`). Drafts live at `outputs/content/{newsletter,youtube,linkedin,x}/{drafts,published}/<title>/`, with images in that folder's `Assets/`. The content calendar is in Notion.
 
 ## Structure
 
 | Path | What it is |
 |---|---|
-| `brain/` | Git submodule of the private vault. A submodule stores the URL and a commit id, not the vault files. |
-| `skills/` | Content skills and design skills. Each skill is a folder with `SKILL.md`. |
-| `pipelines/` | One markdown pipeline per channel, plus the content waterfall. |
+| `VAULT_PATH` | Local checkout of the private vault. Not a folder in this repo. Default `../Samy-SmartOS`. |
+| `skills/` | Four platform writers, the waterfall, and the design skills. Each skill is a folder with `SKILL.md`. |
+| `pipelines/` | The one content waterfall, plus `platforms.json` and `vault.md`. |
+| `scripts/content-waterfall.mjs` | Reads the vault folders, names the next asset, and moves a folder to `published/` only with `--yes`. |
 | `components/`, `design/`, `src/` | The design system: React previews, brand tokens, and export. |
 
-### Brain
+### Vault
 
-This checkout cannot read the private vault, so `brain/` is not linked yet. A gitlink needs a real commit id from that repo, and inventing one would make `git submodule update` fail. From a machine that can see the vault:
+Clone the private vault beside this repo, or set `VAULT_PATH` in `.env` to the checkout you already have:
 
 ```bash
-git submodule add -b main https://github.com/SamyGenAI/Samy-SmartOS.git brain
-git submodule update --init --recursive
+git clone https://github.com/SamyGenAI/Samy-SmartOS.git ../Samy-SmartOS
 ```
 
-Do not copy vault files into this repo. Do not edit `brain/raw/`. If `voice.md`, `proof.md` or `offer.md` are empty, fill them in the vault before asking an agent to draft. Agents will not invent voice, proof, or numbers.
+Do not copy vault files into this repo. Do not edit `raw/`. If `voice.md`, `proof.md` or `offer.md` are empty, fill them in the vault before asking an agent to draft. Agents will not invent voice, proof, or numbers. See `pipelines/vault.md`.
 
 ### Skill names
 
@@ -31,9 +31,22 @@ Two content skills sit next to design skills that sound similar. Both pairs are 
 - **`graphics-designer` and `infographics-designer`.** `infographics-designer` still builds the 1080×1350 JSX infographic. `graphics-designer` decides what the graphic should say, then hands the build to `infographics-designer`, `carousel-designer`, `newsletter-thumbnail-designer`, or `flowchart`.
 - **`youtube-thumbnail` and `newsletter-thumbnail-designer`.** The newsletter skill is the 420×300 email image and still owns that canvas. The YouTube skill writes a 1280×720 thumbnail concept. The app has no YouTube thumbnail canvas yet, so that render is later, with video and motion.
 
-### Pipelines
+### The waterfall
 
-`pipelines/` has one doc for LinkedIn, the newsletter, X, YouTube, and the content waterfall. Each one runs idea → research in the wiki → draft with a content skill → visuals with a design skill and a render command → Samy's review → publishing. Samy moves the folder to `published/` and updates the Notion stage. Notion stages are Idea, Research / Scripting, Design or Filming, Final copy / Editing, Scheduled, Posted. Nothing is posted or sent automatically.
+There is one content pipeline, `pipelines/content-waterfall.md`. It produces one asset at a time and continues from the files already in the vault. Default order: newsletter, YouTube, LinkedIn, X. The four writers are `newsletter-writer`, `youtube-writer`, `linkedin-writer` and `x-writer`. They are skills the waterfall calls, not separate pipelines.
+
+```bash
+node scripts/content-waterfall.mjs status --title "<title>"
+node scripts/content-waterfall.mjs next --title "<title>"
+```
+
+`next` names the writer, the file, and the design handoff for that asset. A file Samy already saved counts, including a markdown draft that is not named `issue.md` or `post.md`. Nothing is posted or sent. When he says a channel is published:
+
+```bash
+node scripts/content-waterfall.mjs approve --title "<title>" --channel newsletter --yes
+```
+
+Without `--yes` the command refuses. Notion stages are Idea, Research / Scripting, Design or Filming, Final copy / Editing, Scheduled, Posted. He updates the Notion stage.
 
 ---
 
@@ -105,6 +118,8 @@ cp .env.example .env
 ```
 
 ```
+VAULT_PATH=../Samy-SmartOS
+
 BRANDFETCH_API_KEY=
 LOGO_DEV_API_KEY=
 FIRECRAWL_API_KEY=
@@ -117,6 +132,7 @@ FIGMA_INFOGRAPHIC_NODE_ID=
 
 | Key | What it does | Where to get it | Required? |
 |---|---|---|---|
+| `VAULT_PATH` | Checkout of the private vault the writers read and draft into. Default `../Samy-SmartOS` | A local clone of [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS) | Required before an agent drafts. The design preview runs without it |
 | `BRANDFETCH_API_KEY` | Fetches company **wordmark SVGs** (e.g. "Notion" logotype) via `node scripts/fetch-logo.mjs notion.com` | [brandfetch.com/developers](https://brandfetch.com/developers) — free tier available | Optional — only if you use wordmarks in your designs |
 | `LOGO_DEV_API_KEY` | Fetches square **app-icon PNGs** (64×64) via `node scripts/fetch-app-logo.mjs notion.com` | [logo.dev](https://www.logo.dev/) — free tier available | Optional — only if you use app icons |
 | `FIRECRAWL_API_KEY` | Powers **`node scripts/fetch-brand-from-url.mjs`** during `/setup` (Track A): scrape **branding** + full-page **screenshot** for `public/brand-data.json` | [firecrawl.dev](https://www.firecrawl.dev/) — sign up and copy an API key from the dashboard | Required for **Track A** URL extraction; not used on Theme Factory-only onboarding |
@@ -315,10 +331,17 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 .
 ├── CLAUDE.md                 ← Content OS rules for Claude Code, then the design system
 ├── AGENTS.md                 ← the same Content OS rules for Codex
-├── brain/                    ← private vault submodule (add it with the command above)
-├── pipelines/                ← linkedin, newsletter, x, youtube, content-waterfall
+├── pipelines/
+│   ├── content-waterfall.md  ← the only content pipeline
+│   ├── platforms.json        ← writers, asset files, design handoff
+│   └── vault.md              ← VAULT_PATH and read-only raw/
 ├── .claude/agents/           ← subagent definitions (design / slide / carousel)
-├── skills/                   ← content skills + design skills (`infographics-designer` for 1080×1350)
+├── skills/
+│   ├── newsletter-writer/    ← issue, then the email thumbnail
+│   ├── youtube-writer/       ← script, titles, description, thumbnail concept
+│   ├── linkedin-writer/      ← post, hooks, carousel
+│   ├── x-writer/             ← Article, thread, post
+│   └── content-waterfall/    ← which asset comes next
 ├── references/               ← optional notes (not required for infographics)
 ├── DESIGN.md                 ← all design tokens (front matter)
 ├── tailwind.config.js        ← consumes tokens from DESIGN.md
@@ -333,6 +356,8 @@ Agent files under `.claude/agents/` define specialized flows (`infographic-desig
 │       └── output/           ←     editable .pptx deliverables
 ├── src/App.jsx               ← preview app + MODES registry
 ├── scripts/
+│   ├── content-waterfall.mjs ← status, next, approve. Never posts
+│   ├── lib/vault.mjs         ← resolves VAULT_PATH. Refuses writes to raw/
 │   ├── validate-design.mjs   ← DESIGN.md schema validation
 │   ├── apply-brand-answers.mjs ← setup answers -> DESIGN.md
 │   ├── generate-design-output.mjs ← template -> design output + App registry

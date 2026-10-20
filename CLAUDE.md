@@ -7,19 +7,25 @@ This repo is Samy's **Content OS**: content skills, channel pipelines, and the d
 Four things to do, in order:
 
 1. **This is the Content OS.** Copy and visuals are one workflow. The design system below is the render layer, and its rules still apply.
-2. **Read the brain first.** The shared brain is the private vault [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS), linked at `brain/` (Karpathy's LLM-wiki layout). Read `brain/CLAUDE.md` and follow its **Content Workflow**. That file is the schema. If `brain/CLAUDE.md` is missing, stop and ask Samy to add the submodule (command in the README). Do not copy vault files into this repo. Never write `brain/raw/`.
-3. **Pick the pipeline and the skill.** Pipelines live in [`pipelines/`](pipelines/). Content skills live in `skills/` next to the design skills. Voice, proof, offer, ICP and positioning are read from `brain/raw/me/` (`voice.md`, `proof.md`, `offer.md`). Topic knowledge starts at `brain/wiki/index.md` and `brain/wiki/content-os.md`. Drafts go to `brain/outputs/content/{linkedin,newsletter,x,youtube}/drafts/<title>/`, with images in that folder's `Assets/`.
+2. **Read the vault first.** The private vault is [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS), on Karpathy's LLM-wiki layout. Its path is `VAULT_PATH` in `.env`, default `../Samy-SmartOS`. Rules: [`pipelines/vault.md`](pipelines/vault.md). Read `$VAULT/CLAUDE.md` and follow its **Content Workflow**. Never write `$VAULT/raw/`. Never overwrite a draft that is already in the folder. Do not copy vault files into this repo. If the checkout is missing, stop and ask Samy to set `VAULT_PATH`.
+3. **Run the one waterfall.** The only content pipeline is [`pipelines/content-waterfall.md`](pipelines/content-waterfall.md). It calls four writers, in order: newsletter, YouTube, LinkedIn, X. One asset at a time. State is the vault folders `outputs/content/<channel>/{drafts,published}/<title>/`, plus `waterfall.json` for that idea. Asset names and design handoffs are in [`pipelines/platforms.json`](pipelines/platforms.json).
 4. **Render with the design system, as today.** Build visuals with the design skills and export from this app. Samy runs `pnpm dev` and uses the preview toolbar **Export** menu. With the dev server up, the same routes are `GET /api/export/png?mode=<modeKey>`, `GET /api/export/pdf?mode=<modeKey>` (carousels), `GET /api/export/pptx?mode=<modeKey>` (decks) and `GET /api/export/gif?mode=<modeKey>` (animated infographics only). Save the file into the draft's `Assets/`. Do not call `render.py`.
 
-| Channel | Pipeline | Draft skill |
+| Order | Writer | Formats |
 |---|---|---|
-| One idea, every channel | [`pipelines/content-waterfall.md`](pipelines/content-waterfall.md) | `content-waterfall` |
-| LinkedIn | [`pipelines/linkedin.md`](pipelines/linkedin.md) | `linkedin-copywriter`, `linkedin-hook-writer` |
-| Newsletter | [`pipelines/newsletter.md`](pipelines/newsletter.md) | `newsletter-writer` |
-| X | [`pipelines/x.md`](pipelines/x.md) | `x-planner`, `x-article-writer` |
-| YouTube | [`pipelines/youtube.md`](pipelines/youtube.md) | `youtube-title-outlier-packaging`, `youtube-description`, `youtube-thumbnail` |
+| 1. Newsletter | `newsletter-writer` | Issue, then the 420×300 thumbnail |
+| 2. YouTube | `youtube-writer` | Script, titles, description, thumbnail concept |
+| 3. LinkedIn | `linkedin-writer` | Post, hooks, carousel |
+| 4. X | `x-writer` | Article, thread, post |
 
-Public numbers, results and testimonials come only from `brain/raw/me/proof.md` or a source named in the draft. The content calendar is in Notion. Stages: **Idea**, **Research / Scripting**, **Design or Filming**, **Final copy / Editing**, **Scheduled**, **Posted**. Samy approves every piece. Nothing is posted or sent automatically. There is no inbox tool yet; `linkedin-unibox-reply` drafts from threads he pastes. Video editing and motion graphics are **later**. Samy publishes, moves the folder to `published/`, and updates the Notion stage.
+Check what already exists before writing:
+
+```bash
+node scripts/content-waterfall.mjs status --title "<title>"
+node scripts/content-waterfall.mjs next --title "<title>"
+```
+
+Public numbers, results and testimonials come only from `$VAULT/raw/me/proof.md` or a source named in the draft. The content calendar is in Notion. Stages: **Idea**, **Research / Scripting**, **Design or Filming**, **Final copy / Editing**, **Scheduled**, **Posted**. Samy approves every piece. Nothing is posted or sent automatically. A channel counts as published only after he says so. Then `node scripts/content-waterfall.mjs approve --title "<title>" --channel <channel> --yes` moves that folder and does not post. There is no inbox tool yet; `linkedin-unibox-reply` drafts from threads he pastes. Video editing and motion graphics are **later**.
 
 `graphics-designer` chooses a graphic and hands the build to a design skill. It does not replace `infographics-designer`. `youtube-thumbnail` is a 1280×720 concept. `newsletter-thumbnail-designer` is the 420×300 email image. Do not swap them.
 
