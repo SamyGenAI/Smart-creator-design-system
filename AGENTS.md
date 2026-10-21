@@ -1,35 +1,4 @@
-# Smart Creator Content OS — Master Rules for Codex
-
-## What this repo is
-
-This repo is Samy's **Content OS**: content skills, channel pipelines, and the design system in one place. It drafts The Smart Creator newsletter and the content that sells the Smart Operating System. Grok Bot orchestrates. Claude Code, Codex, or Cursor do the work. The sibling repo `Smart-creator-lead-gen-system` is GTM OS. Do not rename this repo.
-
-Four things to do, in order:
-
-1. **This is the Content OS.** Copy and visuals are one workflow. The design system below is the render layer, and its rules still apply.
-2. **Read the vault first.** The private vault is [Samy-SmartOS](https://github.com/SamyGenAI/Samy-SmartOS), on Karpathy's LLM-wiki layout. Its path is `VAULT_PATH` in `.env`, default `../Samy-SmartOS`. Rules: [`pipelines/vault.md`](pipelines/vault.md). Read `$VAULT/CLAUDE.md` and follow its **Content Workflow**. Never write `$VAULT/raw/`. Never overwrite a draft that is already in the folder. Do not copy vault files into this repo. If the checkout is missing, stop and ask Samy to set `VAULT_PATH`.
-3. **Run the one waterfall.** The only content pipeline is [`pipelines/content-waterfall.md`](pipelines/content-waterfall.md). It calls four writers, in order: newsletter, YouTube, LinkedIn, X. One asset at a time. State is the vault folders `outputs/content/<channel>/{drafts,published}/<title>/`, plus `waterfall.json` for that idea. Asset names and design handoffs are in [`pipelines/platforms.json`](pipelines/platforms.json).
-4. **Render with the design system, as today.** Build visuals with the design skills and export from this app. Samy runs `pnpm dev` and uses the preview toolbar **Export** menu. With the dev server up, the same routes are `GET /api/export/png?mode=<modeKey>`, `GET /api/export/pdf?mode=<modeKey>` (carousels), `GET /api/export/pptx?mode=<modeKey>` (decks) and `GET /api/export/gif?mode=<modeKey>` (animated infographics only). Save the file into the draft's `Assets/`. Do not call `render.py`.
-
-| Order | Writer | Formats |
-|---|---|---|
-| 1. Newsletter | `newsletter-writer` | Issue, then the 420×300 thumbnail |
-| 2. YouTube | `youtube-writer` | Script, titles, description, thumbnail concept |
-| 3. LinkedIn | `linkedin-writer` | Post, hooks, carousel |
-| 4. X | `x-writer` | Article, thread, post |
-
-Check what already exists before writing:
-
-```bash
-node scripts/content-waterfall.mjs status --title "<title>"
-node scripts/content-waterfall.mjs next --title "<title>"
-```
-
-Public numbers, results and testimonials come only from `$VAULT/raw/me/proof.md` or a source named in the draft. The content calendar is in Notion. Stages: **Idea**, **Research / Scripting**, **Design or Filming**, **Final copy / Editing**, **Scheduled**, **Posted**. Samy approves every piece. Nothing is posted or sent automatically. A channel counts as published only after he says so. Then `node scripts/content-waterfall.mjs approve --title "<title>" --channel <channel> --yes` moves that folder and does not post. There is no inbox tool yet; `linkedin-unibox-reply` drafts from threads he pastes. Video editing and motion graphics are **later**.
-
-`graphics-designer` chooses a graphic and hands the build to a design skill. It does not replace `infographics-designer`. `youtube-thumbnail` is a 1280×720 concept. `newsletter-thumbnail-designer` is the 420×300 email image. Do not swap them.
-
----
+# Smart Creator — Master Rules for Codex
 
 ## What we ship
 LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** JSX live preview + `.pptx` via PptxGenJS): brand tokens in `DESIGN.md` / `src/index.css` → optional Figma push for infographics (`mcp__figma__generate_figma_design`).

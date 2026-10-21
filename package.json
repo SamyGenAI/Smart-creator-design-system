@@ -17,9 +17,7 @@
     "design:sync": "node scripts/generate-index-css.mjs",
     "design:check": "node scripts/generate-index-css.mjs --check",
     "tokens:lint": "node scripts/lint-infographic-tokens.mjs",
-    "verify": "pnpm design:validate && pnpm tokens:lint && pnpm templates:check",
-    "waterfall": "node scripts/content-waterfall.mjs",
-    "waterfall:check": "node scripts/content-waterfall.mjs self-test"
+    "verify": "pnpm design:validate && pnpm tokens:lint && pnpm templates:check"
   },
   "dependencies": {
     "gifenc": "^1.0.3",
