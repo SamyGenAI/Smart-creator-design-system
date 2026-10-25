@@ -1,4 +1,4 @@
-# Slide Templates — Smart Creator
+# Slide Templates — Smart Design System
 
 Canonical layout library for PowerPoint decks. Every **content slide** must map to one of the 15 templates below. Hero and CTA bookends use dedicated layouts in `design/pptx-slides/layouts/`.
 

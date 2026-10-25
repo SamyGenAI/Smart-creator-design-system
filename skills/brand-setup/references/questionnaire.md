@@ -15,7 +15,7 @@
 
 1. Ask: *Do you already have a website URL or settled visual identity (logo, fonts, palette) we can mirror?*
    - **Yes** → **Track A** — continue with URL + Firecrawl scrape; follow “After URL scrape” below starting at URL confirm.
-   - **No / not yet / starting blank** → **Track B** — run [`skills/theme-factory/SKILL.md`](../../theme-factory/SKILL.md): show [`theme-showcase.pdf`](../../theme-factory/theme-showcase.pdf), wait for preset # or **Create your Own Theme**, load `themes/*.md`, map to DESIGN tokens per SKILL **§ Smart Creator — DESIGN.md mapping**. Collect `brandName` + tagline verbally; screenshots step may be skipped.
+   - **No / not yet / starting blank** → **Track B** — run [`skills/theme-factory/SKILL.md`](../../theme-factory/SKILL.md): show [`theme-showcase.pdf`](../../theme-factory/theme-showcase.pdf), wait for preset # or **Create your Own Theme**, load `themes/*.md`, map to DESIGN tokens per SKILL **§ Smart Design System — DESIGN.md mapping**. Collect `brandName` + tagline verbally; screenshots step may be skipped.
 
 ---
 

@@ -4,7 +4,7 @@ The deck uses a **single source file**: `design/pptx-slides/decks/[slug]/deck.mj
 
 Using:
 - `skills/pptx/SKILL.md` + `skills/pptx/slide-templates.md`
-- The Smart Creator design system (`DESIGN.md` + `src/index.css`)
+- The Smart design system (`DESIGN.md` + `src/index.css`)
 
 ---
 

@@ -6,7 +6,7 @@ model: claude-sonnet-4-20250514
 
 # Carousel QC Agent — Quality Checker
 
-You are the **Carousel QC Agent** for the Smart Creator Design System. You receive the path to a carousel JSX file and verify it against all quality rules.
+You are the **Carousel QC Agent** for the Smart Design System. You receive the path to a carousel JSX file and verify it against all quality rules.
 
 ## Required reading
 

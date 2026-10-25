@@ -1,4 +1,4 @@
-# Smart Creator — Master Rules for Codex
+# Smart Design System — Master Rules for Codex
 
 ## What we ship
 LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** JSX live preview + `.pptx` via PptxGenJS): brand tokens in `DESIGN.md` / `src/index.css` → optional Figma push for infographics (`mcp__figma__generate_figma_design`).

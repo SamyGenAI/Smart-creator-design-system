@@ -3,7 +3,7 @@ name: infographics-designer
 description: LinkedIn infographics (1080×1350). Canvas, components, tokens, layout, render — content-driven, single-pass.
 ---
 
-# Smart Creator Infographic Skill
+# Smart Design System Infographic Skill
 
 Produce 1080×1350 LinkedIn infographics in React, rendered to PNG via Playwright. Optional Figma push.
 

@@ -1,4 +1,4 @@
-# Smart Creator Design System
+# Smart Design System
 
 A Claude-Code-driven workflow that generates **on-brand graphic designs** — infographics, carousels, and slide decks — from plain-English prompts, then ships them directly to **Figma** or exports them as **`.png`**, **`.pdf`**, or **`.pptx`**.
 
@@ -6,7 +6,7 @@ A Claude-Code-driven workflow that generates **on-brand graphic designs** — in
 
 Instead of building in Figma from scratch every time, you describe what you want ("infographic comparing Notion and Airtable", "carousel on AI agent patterns"), and Claude lays out the design using tokens and `components/`, then you preview in the browser and optionally push to Figma or export slides.
 
-![Smart Creator Design System demo](public/smart-creator-design-system-GIF.gif)
+![Smart Design System demo](public/smart-design-system-GIF.gif)
 
 ---
 
@@ -48,8 +48,8 @@ The rules, tokens, and layout guidance live in **`skills/infographics-designer/S
 ### 1. Download, open, and install
 
 ```bash
-git clone https://github.com/SamyGenAI/Smart-creator-design-system.git
-cd Smart-creator-design-system
+git clone https://github.com/SamyGenAI/Smart-design-system.git
+cd Smart-design-system
 pnpm install
 ```
 

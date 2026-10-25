@@ -11,7 +11,7 @@ license: Proprietary. LICENSE.txt has complete terms
 | Task | Guide |
 |------|-------|
 | Read/analyze content | `python -m markitdown presentation.pptx` |
-| Create Smart Creator decks | Read [slide-templates.md](slide-templates.md) first |
+| Create Smart Design System decks | Read [slide-templates.md](slide-templates.md) first |
 | Edit or create from template | Read [editing.md](editing.md) |
 | PptxGenJS API reference | Read [pptxgenjs.md](pptxgenjs.md) |
 
@@ -27,7 +27,7 @@ python -m markitdown presentation.pptx
 python scripts/office/unpack.py presentation.pptx unpacked/
 ```
 
-**Smart Creator slide decks:** visual preview via Playwright against live JSX slides — the slide-agent runs `pnpm screenshot <mode-key> --preview` after `pnpm dev` is up. Playwright targets `[data-name="pptx-slide"]` elements (all slides rendered in DOM by `PptxSlideViewer`; visibility toggled per capture — no navigation clicking). See [slide-templates.md](slide-templates.md).
+**Smart Design System slide decks:** visual preview via Playwright against live JSX slides — the slide-agent runs `pnpm screenshot <mode-key> --preview` after `pnpm dev` is up. Playwright targets `[data-name="pptx-slide"]` elements (all slides rendered in DOM by `PptxSlideViewer`; visibility toggled per capture — no navigation clicking). See [slide-templates.md](slide-templates.md).
 
 ---
 
@@ -40,7 +40,7 @@ python scripts/office/unpack.py presentation.pptx unpacked/
 
 ---
 
-## Creating Smart Creator Decks
+## Creating Smart Design System Decks
 
 **Read [slide-templates.md](slide-templates.md) first.**
 
@@ -208,7 +208,7 @@ Report ALL issues found, including minor ones.
 
 ---
 
-## Visual QA (Smart Creator decks)
+## Visual QA (Smart Design System decks)
 
 The slide-agent runs these commands itself — the user never runs them:
 
@@ -226,5 +226,5 @@ See [slide-templates.md](slide-templates.md) for the full workflow.
 ## Dependencies
 
 - `pip install "markitdown[pptx]"` — text extraction (optional, for editing workflow)
-- `pptxgenjs` — creating Smart Creator decks (see [pptxgenjs.md](pptxgenjs.md))
+- `pptxgenjs` — creating Smart Design System decks (see [pptxgenjs.md](pptxgenjs.md))
 - `pnpm dev` + Playwright — browser preview photos via `scripts/screenshot.mjs`

@@ -1,6 +1,6 @@
 ---
 name: carousel-designer
-description: Design and generate LinkedIn carousels (multi-slide, 1080×1350px each) using the Smart Creator Design System. Use when the user asks to create, design, or build a LinkedIn carousel, slide deck, or swipeable post. Triggers on requests like "make a carousel about...", "create a LinkedIn carousel on...", "design a swipeable post about...", "build a carousel for...", or any multi-slide visual content for LinkedIn.
+description: Design and generate LinkedIn carousels (multi-slide, 1080×1350px each) using the Smart Design System. Use when the user asks to create, design, or build a LinkedIn carousel, slide deck, or swipeable post. Triggers on requests like "make a carousel about...", "create a LinkedIn carousel on...", "design a swipeable post about...", "build a carousel for...", or any multi-slide visual content for LinkedIn.
 ---
 
 # Carousel Designer — Copy-First Workflow

@@ -60,9 +60,9 @@ To handle cases where none of the existing themes work for an artifact, create a
 
 ---
 
-## Smart Creator — `DESIGN.md` mapping (brand onboarding)
+## Smart Design System — `DESIGN.md` mapping (brand onboarding)
 
-When [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) routes a user through **Track B — Theme factory**, this skill supplies the **starter palette and fonts**. The agent must **expand** each theme’s short list into Smart Creator’s semantic roles (answers JSON → `apply-brand-answers.mjs` on stdin). Use this mapping — adjust per theme wording (some themes describe “Primary background” vs “Primary dark”) but keep **contrast**:
+When [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) routes a user through **Track B — Theme factory**, this skill supplies the **starter palette and fonts**. The agent must **expand** each theme’s short list into Smart Design System’s semantic roles (answers JSON → `apply-brand-answers.mjs` on stdin). Use this mapping — adjust per theme wording (some themes describe “Primary background” vs “Primary dark”) but keep **contrast**:
 
 | DESIGN.md semantic role | How to derive from theme Markdown |
 |---|---|
@@ -79,6 +79,6 @@ When [`skills/brand-setup/SKILL.md`](../brand-setup/SKILL.md) routes a user thro
 
 **Border / state derivation:** Optionally extend into `DESIGN.md` front matter manually later (`apply-brand-answers` may not expose every nested key)—at minimum populate **bg/text** semantics.
 
-**Elevation:** Preserve Smart Creator mandatory shadows per `DESIGN.md` (**Color Contrast & Composition Laws**); theme files do not override shadow tokens unless user edits beyond defaults.
+**Elevation:** Preserve Smart Design System mandatory shadows per `DESIGN.md` (**Color Contrast & Composition Laws**); theme files do not override shadow tokens unless user edits beyond defaults.
 
 Always **present** hex values to user for tweak approval before merging into `DESIGN.md`.

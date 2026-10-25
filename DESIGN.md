@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: Smart Creator
+name: Smart Design System
 description: >
   LinkedIn infographic design system for fixed 1080×1350px visual content.
   Optimised for AI-assisted generation with Claude Code and Cursor.

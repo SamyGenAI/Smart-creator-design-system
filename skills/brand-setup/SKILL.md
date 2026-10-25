@@ -1,6 +1,6 @@
 ---
 name: brand-setup
-description: Capture creator first+last name, update src/creatorIdentity.js (single source of truth), place assets/avatar/avatar-profile.png, then onboard Smart Creator via Track A (website URL + Firecrawl scrape) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
+description: Capture creator first+last name, update src/creatorIdentity.js (single source of truth), place assets/avatar/avatar-profile.png, then onboard Smart Design System via Track A (website URL + Firecrawl scrape) when the user has visual identity, or Track B (skills/theme-factory presets / custom theme) when they have no site or VI yet — then DESIGN.md via apply-brand-answers, validation. Use for /setup, @setup, branding, workspace onboarding.
 ---
 
 # Brand setup (workspace onboarding)
@@ -57,7 +57,7 @@ When Track B applies:
 1. Read [`skills/theme-factory/SKILL.md`](../theme-factory/SKILL.md) fully.
 2. Surface [`skills/theme-factory/theme-showcase.pdf`](../theme-factory/theme-showcase.pdf) for the user (open in IDE or OS viewer; **do not** edit the PDF). Use the SKILL's numbered theme list and wait for explicit **theme # or name**.
 3. If none fit, follow the SKILL section **Create your Own Theme**, then derive hex + fonts from what the user approves (same mapping rules as presets).
-4. Open the preset file under **`skills/theme-factory/themes/*.md`** and map palettes + typography into the **answers JSON** semantics using **§ Smart Creator — DESIGN.md mapping** inside the theme-factory SKILL.
+4. Open the preset file under **`skills/theme-factory/themes/*.md`** and map palettes + typography into the **answers JSON** semantics using **§ Smart Design System — DESIGN.md mapping** inside the theme-factory SKILL.
 5. **Do not** run `scripts/fetch-brand-from-url.mjs` on Track B unless the user later provides a URL. Collect **brand display name + one-line description** by questionnaire instead of trusting `public/brand-data.json` alone (see Prerequisites note below).
 
 ### From here, both tracks converge (steps 5-8)
