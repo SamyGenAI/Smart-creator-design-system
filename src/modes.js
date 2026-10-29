@@ -42,3 +42,15 @@ export const MODES = {
     previewSlug: 'YT - AI Design system',
   },
 }
+
+// Gitignored, machine-local modes (src/modes.local.js exports LOCAL_MODES).
+// Absent on a fresh clone → nothing is added. A local mode may carry its own
+// `size: { width, height }` and `exportPng: true` for types not listed above.
+// Under plain Node import.meta.glob is undefined; vite.config.js resolves local
+// modes itself.
+try {
+  const local = Object.values(import.meta.glob('./modes.local.js', { eager: true }))[0]
+  Object.assign(MODES, local?.LOCAL_MODES ?? {})
+} catch {
+  // not running under Vite
+}

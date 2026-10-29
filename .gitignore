@@ -15,3 +15,8 @@ assets/avatar/avatar-profile.png
 
 # Generated decks — rebuilt by pnpm dev, and embed the creator name as author
 design/pptx-slides/output/*.pptx
+
+# Local-only designs — never committed. Hooked in via import.meta.glob in
+# src/modes.js / src/App.jsx and findMode() in vite.config.js.
+src/*.local.js
+src/*.local.jsx

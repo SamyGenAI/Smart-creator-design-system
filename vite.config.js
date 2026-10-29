@@ -6,6 +6,7 @@ import sharp from 'sharp'
 // gifenc ships as CommonJS, so it has no named ESM exports — destructure the
 // default import. Named `import { GIFEncoder } from 'gifenc'` throws at load.
 import gifenc from 'gifenc'
+import { pathToFileURL } from 'node:url'
 import { MODES } from './src/modes.js'
 import { ensureAllPptxDecks, ensurePptxDeck, readPptxFile } from './scripts/sync-pptx-previews.mjs'
 
@@ -15,6 +16,20 @@ const SIZES = {
   carousel: { width: 1080, height: 1350 },
   infographic: { width: 1080, height: 1350 },
   thumbnail: { width: 420, height: 300 },
+}
+
+/**
+ * Mode lookup that also sees gitignored local modes (src/modes.local.js).
+ * Re-imported on a miss so modes added while the server runs are exportable
+ * without a restart. Absent file → only the tracked MODES.
+ */
+async function findMode(modeKey) {
+  if (MODES[modeKey]) return MODES[modeKey]
+  const localPath = 'src/modes.local.js'
+  if (!fs.existsSync(localPath)) return undefined
+  const href = `${pathToFileURL(fs.realpathSync(localPath)).href}?t=${Date.now()}`
+  const { LOCAL_MODES = {} } = await import(/* @vite-ignore */ href)
+  return LOCAL_MODES[modeKey]
 }
 
 function pdfFromJpegs(pages) {
@@ -386,21 +401,23 @@ function exportPlugin() {
 
         try {
           const modeKey = url.searchParams.get('mode') || ''
-          const mode = MODES[modeKey]
+          const mode = await findMode(modeKey)
           if (!mode) {
             res.statusCode = 400
             res.end(`Unknown mode "${modeKey}"`)
             return
           }
 
-          const size = SIZES[mode.type]
-          if (!size) {
+          // Local modes may size themselves at render time: they pass an
+          // `exportSelector` instead of a fixed size.
+          const size = SIZES[mode.type] ?? mode.size
+          if (!size && !mode.exportSelector) {
             res.statusCode = 400
             res.end(`Unsupported mode type "${mode.type}" for image/PDF export.`)
             return
           }
           const host = req.headers.host || 'localhost:5173'
-          const scale = Math.max(1, Math.min(4, Number(url.searchParams.get('scale') || (mode.type === 'infographic' || mode.type === 'thumbnail' ? '3' : '2'))))
+          const scale = Math.max(1, Math.min(4, Number(url.searchParams.get('scale') || mode.exportScale || (mode.type === 'infographic' || mode.type === 'thumbnail' ? '3' : '2'))))
 
           const browser = await chromium.launch()
           const context = await browser.newContext({
@@ -418,7 +435,9 @@ function exportPlugin() {
           await page.waitForTimeout(300)
           await waitForAssets(page)
 
-          const locator = page.locator(`div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`)
+          const locator = page.locator(
+            mode.exportSelector ?? `div[style*="width: ${size.width}px"][style*="height: ${size.height}px"]`
+          )
 
           if (url.pathname === '/api/export/png') {
             const buffer = await locator.first().screenshot({ type: 'png', scale: 'device' })

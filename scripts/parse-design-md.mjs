@@ -276,11 +276,15 @@ function buildFontFamilies(typography) {
   const titleFamily = String(typography.hero?.fontFamily ?? firstFamily ?? 'sans-serif')
   const bodyFamily = String(typography.body?.fontFamily ?? titleFamily)
   const serifFamily = String(typography['title-serif']?.fontFamily ?? titleFamily)
+  // Code / file trees. Not a brand choice, so a missing role falls back to the
+  // platform mono rather than the brand sans.
+  const monoFamily = String(typography.code?.fontFamily ?? 'ui-monospace')
 
   const families = {
     title: [titleFamily, 'sans-serif'],
     body: [bodyFamily, 'sans-serif'],
     serif: [serifFamily, 'serif'],
+    mono: [monoFamily, 'monospace'],
     // Backward-compatible aliases consumed by existing classes/components.
     montserrat: [titleFamily, 'sans-serif'],
     'noto-serif': [serifFamily, 'serif'],
@@ -291,7 +295,7 @@ function buildFontFamilies(typography) {
     const name = String(spec.fontFamily)
     const key = name.toLowerCase().replace(/\s+/g, '-')
     if (!families[key]) {
-      families[key] = [name, genericFallbackFor(name, serifFamily)]
+      families[key] = name === monoFamily ? [name, 'monospace'] : [name, genericFallbackFor(name, serifFamily)]
     }
   }
 

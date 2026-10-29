@@ -16,6 +16,7 @@ LinkedIn infographics (**1080×1350**, React preview) and slide decks (**16:9** 
 | [`DESIGN.md`](DESIGN.md) | YAML tokens — **only** place brand `#hex` and font names belong; drives Tailwind via `tailwind.config.js` |
 | [`skills/brand-setup/SKILL.md`](skills/brand-setup/SKILL.md) | Onboarding / rebrand: Track A or B → `DESIGN.md` + sync `src/index.css` |
 | [`skills/newsletter-thumbnail/SKILL.md`](skills/newsletter-thumbnail/SKILL.md) | Newsletter thumbnail **420×300** — canvas, title block, visual area |
+| [`skills/newsletter-asset/SKILL.md`](skills/newsletter-asset/SKILL.md) | In-text newsletter images (no title) — framed screenshot or JSX-designed asset · `/newsletter-asset` · local-only |
 
 ---
 

@@ -129,6 +129,11 @@ typography:
     fontSize: 12px
     fontWeight: 500
     lineHeight: 16px
+  code:
+    fontFamily: JetBrains Mono
+    fontSize: 15px
+    fontWeight: 400
+    lineHeight: 26px
 
 rounded:
   glass-header: 10px

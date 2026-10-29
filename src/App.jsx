@@ -51,10 +51,14 @@ const COMPONENTS = {
   'yt-ai-design-system': YtAiDesignSystemDeck,
 }
 
+// Gitignored, machine-local designs (src/App.local.jsx). Absent on a fresh
+// clone → nothing is added.
+const LOCAL = Object.values(import.meta.glob('./App.local.jsx', { eager: true }))[0] ?? {}
+
 const MODES = Object.fromEntries(
   Object.entries(MODE_REGISTRY).map(([key, meta]) => [
     key,
-    { ...meta, component: COMPONENTS[key] ?? null },
+    { ...meta, component: COMPONENTS[key] ?? LOCAL.LOCAL_COMPONENTS?.[key] ?? null },
   ])
 )
 
@@ -64,6 +68,7 @@ const TYPE_LABELS = {
   carousel:    'Carousels',
   thumbnail:   'Newsletter thumbnails',
   pptx:        'Slide decks',
+  ...LOCAL.LOCAL_TYPE_LABELS,
 }
 
 const THEME_KEY = 'scds:theme'
@@ -219,7 +224,7 @@ export default function App() {
         id: 'png',
         format: 'png',
         label: 'Download PNG',
-        disabled: !(isInfographic || type === 'thumbnail'),
+        disabled: !(isInfographic || type === 'thumbnail' || entry?.exportPng),
       },
       // Two GIF rows, same render path, different OUTPUT size. Full size is
       // listed first and is the one to reach for; the half-size variant exists

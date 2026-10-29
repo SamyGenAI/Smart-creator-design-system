@@ -141,6 +141,7 @@ export function buildRootBlock(tokens) {
   push('font/family/title', quoteFont(fam.title))
   push('font/family/body', quoteFont(fam.body))
   push('font/family/title-serif', quoteFont(fam.serif))
+  push('font/family/mono', quoteFont(fam.mono))
 
   // Tracking belongs with the font token, not baked into a component: display
   // tracking tuned for a geometric sans collides glyphs on a serif.
